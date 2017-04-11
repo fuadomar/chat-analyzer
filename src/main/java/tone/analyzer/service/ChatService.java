@@ -1,6 +1,6 @@
 package tone.analyzer.service;
 
-import tone.analyzer.model.ChatMessage;
+import tone.analyzer.domain.ChatMessage;
 
 /**
  * Created by mozammal on 4/11/17.

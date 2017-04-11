@@ -1,4 +1,4 @@
-package tone.analyzer.model;
+package tone.analyzer.domain;
 
 import java.util.Date;
 

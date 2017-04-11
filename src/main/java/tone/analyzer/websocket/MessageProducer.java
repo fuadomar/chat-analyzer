@@ -3,7 +3,7 @@ package tone.analyzer.websocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-import tone.analyzer.model.ChatMessage;
+import tone.analyzer.domain.ChatMessage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

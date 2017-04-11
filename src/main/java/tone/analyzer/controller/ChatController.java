@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import tone.analyzer.gateway.ChatGateway;
-import tone.analyzer.model.ChatMessage;
+import tone.analyzer.domain.ChatMessage;
 
 /** Created by mozammal on 4/11/17. */
 @RestController

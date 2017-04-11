@@ -2,7 +2,7 @@ package tone.analyzer.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tone.analyzer.model.ChatMessage;
+import tone.analyzer.domain.ChatMessage;
 import tone.analyzer.service.ChatService;
 
 /**

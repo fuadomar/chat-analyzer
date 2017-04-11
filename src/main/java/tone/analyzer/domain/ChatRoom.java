@@ -1,4 +1,4 @@
-package tone.analyzer.model;
+package tone.analyzer.domain;
 
 /** Created by mozammal on 4/11/17. */
 public class ChatRoom {
