@@ -5,13 +5,24 @@
     <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.2.0/jquery.min.js"></script>
     <script type="text/javascript" src="//cdn.jsdelivr.net/sockjs/1.0.3/sockjs.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
 <div id="chat">
-    <input type="text" id="input"/>
+    <h3>Messages:</h3>
+    <ol id="messages"></ol>
 </div>
-<h3>Messages:</h3>
-<ol id="messages"></ol>
+
+<div class="container">
+
+
+                <div class="panel-footer">
+                    <div class="input-group">
+                        <input id="btn-input" type="text" class="form-control input-sm chat_input"
+                               placeholder="Write your message here..."/>
+
+    </div>
+</div>
 </div>
 
 <script type="text/javascript">
@@ -22,6 +33,7 @@
                 .toString(16)
                 .substring(1);
         }
+
         return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
             s4() + '-' + s4() + s4() + s4();
     }
@@ -44,15 +56,27 @@
                 messageList.append("<li>" + message + "</li>");
             });
 
-            $('#input').keydown(function (e) {
+            stompClient.subscribe("/app/topic/chat.participants", function (data) {
+
+                var messageArray =  JSON.parse(data.body);
+                console.log(messageArray)
+                for (var i = 0 ; i< messageArray.length; i++) {
+                    messageList.append("<li>" + messageArray[i].userName + "</li>");
+                }
+
+            });
+
+
+            $('#btn-input').keydown(function (e) {
                 if (e.keyCode === 13) {
                     var msg = $(this).val();
-                    stompClient.send("/app/chat-message/message", {}, JSON.stringify({ 'topic':"message" ,'message': msg,
-                        'recipient': sessionId, 'sender': sessionId }));
+                    stompClient.send("/app/chat-message/message", {}, JSON.stringify({
+                        'topic': "message", 'message': msg,
+                        'recipient': sessionId, 'sender': sessionId
+                    }));
                     $(this).val('');
                 }
             });
-
         });
     });
 </script>

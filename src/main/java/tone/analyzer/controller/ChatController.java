@@ -8,11 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 import tone.analyzer.ToneAnalyzerApplication;
+import tone.analyzer.domain.repository.LoginEvent;
+import tone.analyzer.domain.repository.ParticipantRepository;
 import tone.analyzer.gateway.ChatGateway;
 import tone.analyzer.domain.ChatMessage;
+
+import java.util.Collection;
 
 /** Created by mozammal on 4/11/17. */
 @RestController
@@ -22,6 +27,7 @@ public class ChatController {
 
   @Autowired private ChatGateway chatGateway;
 
+  @Autowired private ParticipantRepository participantRepository;
   /* @RequestMapping(
     value = "/chat-message/{topic}"
   )*/
@@ -31,5 +37,11 @@ public class ChatController {
 
     //messageProducer.sendMessageToRecipient(topic, recipient, message);
     return "Ok";
+  }
+
+  @SubscribeMapping("/chat.participants")
+  public Collection<LoginEvent> retrieveParticipants() {
+    log.info("retrieveParticipants method fired");
+    return participantRepository.getActiveSessions().values();
   }
 }

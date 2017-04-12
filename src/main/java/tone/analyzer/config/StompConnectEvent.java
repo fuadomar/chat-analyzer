@@ -8,6 +8,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.repository.LoginEvent;
 import tone.analyzer.websocket.MessageProducer;
 
 /**
@@ -28,6 +29,7 @@ public class StompConnectEvent implements ApplicationListener<SessionConnectEven
         logger.info("Connect event [sessionId: " + sha.getSessionId() +"; user: "+ user + " ]");
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setRecipient(user);
-        messageProducer.sendMessageForLiveUser(chatMessage);
+        LoginEvent loginEvent = new LoginEvent(user);
+        messageProducer.sendMessageForLiveUser(loginEvent);
     }
 }

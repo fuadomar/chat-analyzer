@@ -4,9 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.repository.LoginEvent;
+import tone.analyzer.domain.repository.ParticipantRepository;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /** Created by mozammal on 4/11/17. */
 @Component
@@ -16,30 +17,21 @@ public class MessageProducer {
 
   @Autowired private SimpMessagingTemplate template;
 
+  @Autowired private ParticipantRepository participantRepository;
+
   public void sendMessageToRecipient(ChatMessage chatMessage) {
-    StringBuilder builder = new StringBuilder();
-    builder.append("[");
-    builder.append(dateFormatter.format(new Date()));
-    builder.append("] ");
-    builder.append(chatMessage.getMessage());
 
     this.template.convertAndSend(
-        "/topic/message" + "-" + chatMessage.getRecipient(), builder.toString());
+        "/topic/message" + "-" + chatMessage.getRecipient(), chatMessage.getMessage());
     /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
   }
 
+  public void sendMessageForLiveUser(LoginEvent loginevent) {
 
-  public void sendMessageForLiveUser(ChatMessage chatMessage) {
-    StringBuilder builder = new StringBuilder();
-    builder.append("[");
-    builder.append(dateFormatter.format(new Date()));
-    builder.append("] ");
-    builder.append(chatMessage.getMessage());
+    participantRepository.add(loginevent.getUserName(), loginevent);
 
-    this.template.convertAndSend(
-            "/topic/newUser", chatMessage.getRecipient());
+   /* this.template.convertAndSend(
+        "/topic/chat.participants", participantRepository.getActiveSessions().values());*/
     /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
   }
-
-
 }
