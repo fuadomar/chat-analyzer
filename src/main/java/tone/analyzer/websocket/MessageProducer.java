@@ -30,8 +30,8 @@ public class MessageProducer {
 
     participantRepository.add(loginevent.getUserName(), loginevent);
 
-   /* this.template.convertAndSend(
-        "/topic/chat.participants", participantRepository.getActiveSessions().values());*/
+    /* this.template.convertAndSend(
+    "/topic/chat.participants", participantRepository.getActiveSessions().values());*/
     /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
   }
 }

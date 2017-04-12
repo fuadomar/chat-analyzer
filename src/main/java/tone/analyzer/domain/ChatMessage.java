@@ -58,11 +58,19 @@ public class ChatMessage {
 
   @Override
   public String toString() {
-    return "ChatMessage{" +
-            "recipient='" + recipient + '\'' +
-            ", sender='" + sender + '\'' +
-            ", message='" + message + '\'' +
-            ", topic='" + topic + '\'' +
-            '}';
+    return "ChatMessage{"
+        + "recipient='"
+        + recipient
+        + '\''
+        + ", sender='"
+        + sender
+        + '\''
+        + ", message='"
+        + message
+        + '\''
+        + ", topic='"
+        + topic
+        + '\''
+        + '}';
   }
 }

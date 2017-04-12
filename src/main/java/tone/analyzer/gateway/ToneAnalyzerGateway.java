@@ -6,17 +6,13 @@ import tone.analyzer.domain.ChatMessage;
 import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.service.ToneAnalyzerService;
 
-/**
- * Created by mozammal on 4/11/17.
- */
-
+/** Created by mozammal on 4/11/17. */
 @Component
 public class ToneAnalyzerGateway {
 
-    @Autowired
-    private ToneAnalyzerService toneAnalyzerService;
+  @Autowired private ToneAnalyzerService toneAnalyzerService;
 
-    public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
-        return toneAnalyzerService.analyzerConversationalTone(chatMessage);
-    }
+  public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
+    return toneAnalyzerService.analyzerConversationalTone(chatMessage);
+  }
 }

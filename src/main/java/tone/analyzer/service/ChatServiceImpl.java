@@ -11,29 +11,29 @@ import tone.analyzer.websocket.MessageProducer;
 
 import java.util.Date;
 
-/**
- * Created by mozammal on 4/11/17.
- */
+/** Created by mozammal on 4/11/17. */
 @Component
 public class ChatServiceImpl implements ChatService {
 
-    @Autowired
-    private MessageProducer messageProducer;
+  @Autowired private MessageProducer messageProducer;
 
-    @Autowired
-    private ConversationRepository conversationRepository;
+  @Autowired private ConversationRepository conversationRepository;
 
-    @Autowired
-    private MessageRepository messageRepository;
+  @Autowired private MessageRepository messageRepository;
 
-    @Override
-    public void sendMessageTo(ChatMessage chatMessage) {
-        messageProducer.sendMessageToRecipient(chatMessage);
-        Conversation conversation = conversationRepository.findConversationBySenderAndRecipient(chatMessage.getSender(), chatMessage.getRecipient());
-        if (conversation == null) {
-            conversation = conversationRepository.save(new Conversation(chatMessage.getSender(), chatMessage.getRecipient()));
-        }
-        messageRepository.save( new Message(conversation.getId(), chatMessage.getSender(), chatMessage.getMessage(),
-                new Date()));
+  @Override
+  public void sendMessageTo(ChatMessage chatMessage) {
+    messageProducer.sendMessageToRecipient(chatMessage);
+    Conversation conversation =
+        conversationRepository.findConversationBySenderAndRecipient(
+            chatMessage.getSender(), chatMessage.getRecipient());
+    if (conversation == null) {
+      conversation =
+          conversationRepository.save(
+              new Conversation(chatMessage.getSender(), chatMessage.getRecipient()));
     }
+    messageRepository.save(
+        new Message(
+            conversation.getId(), chatMessage.getSender(), chatMessage.getMessage(), new Date()));
+  }
 }

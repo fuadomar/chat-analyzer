@@ -7,11 +7,8 @@ import tone.analyzer.domain.entity.Message;
 
 import java.util.List;
 
-/**
- * Created by user on 4/11/2017.
- */
+/** Created by user on 4/11/2017. */
 public interface MessageRepository extends MongoRepository<Message, String> {
 
-
-    List<Message> findAllByConversationId(String conversationId);
+  List<Message> findAllByConversationId(String conversationId);
 }
