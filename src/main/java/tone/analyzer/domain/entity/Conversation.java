@@ -3,8 +3,6 @@ package tone.analyzer.domain.entity;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * Created by user on 4/11/2017.
  */
@@ -15,9 +13,17 @@ public class Conversation {
     @Id
     private String id;
 
-    private String initiator;
+    private String sender;
 
     private String recipient;
+
+    public Conversation() {
+    }
+
+    public Conversation(String initiator, String recipient) {
+        this.sender = initiator;
+        this.recipient = recipient;
+    }
 
     public String getId() {
         return id;
@@ -27,12 +33,12 @@ public class Conversation {
         this.id = id;
     }
 
-    public String getInitiator() {
-        return initiator;
+    public String getSender() {
+        return sender;
     }
 
-    public void setInitiator(String initiator) {
-        this.initiator = initiator;
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 
     public String getRecipient() {

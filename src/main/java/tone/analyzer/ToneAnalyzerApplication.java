@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootApplication
+@EnableSwagger2
 public class ToneAnalyzerApplication {
 
   private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerApplication.class);

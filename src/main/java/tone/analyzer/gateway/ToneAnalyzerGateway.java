@@ -2,6 +2,8 @@ package tone.analyzer.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.service.ToneAnalyzerService;
 
 /**
@@ -14,7 +16,7 @@ public class ToneAnalyzerGateway {
     @Autowired
     private ToneAnalyzerService toneAnalyzerService;
 
-    public void analyzerMessageTone() {
-
+    public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
+        return toneAnalyzerService.analyzerConversationalTone(chatMessage);
     }
 }

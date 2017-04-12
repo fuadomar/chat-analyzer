@@ -13,7 +13,7 @@ public interface ConversationRepository extends MongoRepository<Conversation, St
 
     @Query(
             value =
-                    "{$or: [ { $and: [{'initiator' : ?0}, {'recipient' : ?1}  ] },  { $and: [{'initiator' : ?1}, {'recipient' : ?0}  ] } ]}"
+                    "{ $or: [ { $and: [ {'sender' : ?0}, {'recipient' : ?1}  ] },  { $and: [ {'sender' : ?1}, {'recipient' : ?0}  ] } ]}"
     )
-    Conversation findConversationByInitiatorAndRecipient(String initiator, String recipient);
+    Conversation findConversationBySenderAndRecipient(String sender1, String recipient);
 }

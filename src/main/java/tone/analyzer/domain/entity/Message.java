@@ -23,7 +23,10 @@ public class Message {
 
     private String conversationId;
 
-    public Message( String conversationId, String sender, String content, Date timeCreated) {
+    public Message() {
+    }
+
+    public Message(String conversationId, String sender, String content, Date timeCreated) {
         this.content = content;
         this.conversationId = conversationId;
         this.sender = sender;

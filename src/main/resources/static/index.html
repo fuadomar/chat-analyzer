@@ -7,27 +7,52 @@
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
-<div>
-    <h3>Messages:</h3>
-    <ol id="messages"></ol>
+<div id="chat">
+    <input type="text" id="input"/>
+</div>
+<h3>Messages:</h3>
+<ol id="messages"></ol>
 </div>
 
 <script type="text/javascript">
+
+    function guid() {
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        }
+        return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+            s4() + '-' + s4() + s4() + s4();
+    }
+
     $(document).ready(function () {
         var messageList = $("#messages");
         var socket = new SockJS('/stomp');
         var stompClient = Stomp.over(socket);
-        stompClient.connect({}, function (frame) {
+        var uuid = guid();
+
+        stompClient.connect({"user": uuid}, function (frame) {
 
             console.log(socket._transport.url);
             var url = socket._transport.url.split("/");
-            var sessionId = url[url.length - 2];
-            alert(sessionId);
+            //var sessionId = url[url.length - 2];
+            var sessionId = uuid;
 
             stompClient.subscribe("/topic/message" + "-" + sessionId, function (data) {
                 var message = data.body;
                 messageList.append("<li>" + message + "</li>");
             });
+
+            $('#input').keydown(function (e) {
+                if (e.keyCode === 13) {
+                    var msg = $(this).val();
+                    stompClient.send("/app/chat-message/message", {}, JSON.stringify({ 'topic':"message" ,'message': msg,
+                        'recipient': sessionId, 'sender': sessionId }));
+                    $(this).val('');
+                }
+            });
+
         });
     });
 </script>

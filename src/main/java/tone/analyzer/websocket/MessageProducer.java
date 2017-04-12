@@ -16,7 +16,7 @@ public class MessageProducer {
 
   @Autowired private SimpMessagingTemplate template;
 
-  public void sendMessageTo(ChatMessage chatMessage) {
+  public void sendMessageToRecipient(ChatMessage chatMessage) {
     StringBuilder builder = new StringBuilder();
     builder.append("[");
     builder.append(dateFormatter.format(new Date()));
@@ -27,4 +27,19 @@ public class MessageProducer {
         "/topic/message" + "-" + chatMessage.getRecipient(), builder.toString());
     /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
   }
+
+
+  public void sendMessageForLiveUser(ChatMessage chatMessage) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("[");
+    builder.append(dateFormatter.format(new Date()));
+    builder.append("] ");
+    builder.append(chatMessage.getMessage());
+
+    this.template.convertAndSend(
+            "/topic/newUser", chatMessage.getRecipient());
+    /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
+  }
+
+
 }
