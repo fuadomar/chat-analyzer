@@ -15,7 +15,9 @@ public class Conversation {
     @Id
     private String id;
 
-    private List<String> participants;
+    private String initiator;
+
+    private String recipient;
 
     public String getId() {
         return id;
@@ -25,11 +27,19 @@ public class Conversation {
         this.id = id;
     }
 
-    public List<String> getParticipants() {
-        return participants;
+    public String getInitiator() {
+        return initiator;
     }
 
-    public void setParticipants(List<String> participants) {
-        this.participants = participants;
+    public void setInitiator(String initiator) {
+        this.initiator = initiator;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
     }
 }

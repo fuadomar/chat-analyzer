@@ -1,6 +1,7 @@
 package tone.analyzer.domain.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 import tone.analyzer.domain.entity.Conversation;
 
 /**
@@ -10,9 +11,9 @@ public interface ConversationRepository extends MongoRepository<Conversation, St
 
 
 
- /*   @Query(
+    @Query(
             value =
-                    "{ $and: [{'user.ban' : false}, {'user.is_active' :true}, {'user.is_deleted' :false}, {'user.userId': ?0} ,{'profile.is_complete': true} ] }"
+                    "{$or: [ { $and: [{'initiator' : ?0}, {'recipient' : ?1}  ] },  { $and: [{'initiator' : ?1}, {'recipient' : ?0}  ] } ]}"
     )
-    UserDetails findUserByUserIdAndIsActive(Long id);*/
+    Conversation findConversationByInitiatorAndRecipient(String initiator, String recipient);
 }
