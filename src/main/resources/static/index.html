@@ -59,7 +59,7 @@
             var url = socket._transport.url.split("/");
             var sessionId = uuid;
 
-            stompClient.subscribe("/topic/message" + "-" + sessionId, function (data) {
+            stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
                 var payload = JSON.parse(data.body);
 
                 console.log("received message: " + payload.message);
