@@ -30,7 +30,7 @@
 
     function createChatBox(userId) {
 
-        var chatBoxDiv = '<div><div id="chat-' + userId + '">  <h3>Messages:</h3> <ol id="messages"></ol> </div>' + ' <div class="panel-footer"><div class="' + '"input-group">'
+        var chatBoxDiv = '<div id="chat-' + userId + '">  <h3>Messages:</h3> <ol id="messages"></ol>' + ' <div class="panel-footer"><div class="' + '"input-group">'
             + '<input id="+message_' + userId + '" ' + 'class="btn-input" ' + 'type="text" ' + 'class="form-control input-sm chat_input" ' +
             'placeholder="Write your message here..."/>' + ' </div></div></div>';
         console.log(chatBoxDiv);
@@ -57,21 +57,23 @@
 
             console.log(socket._transport.url);
             var url = socket._transport.url.split("/");
-            //var sessionId = url[url.length - 2];
             var sessionId = uuid;
 
             stompClient.subscribe("/topic/message" + "-" + sessionId, function (data) {
-                var message = data.body;
-                console.log("received message: " + message);
+                var payload = JSON.parse(data.body);
 
-                $("<div />", {id: "#chat-" + sessionId})     // create `<div>` with `serialModel` as ID
-                    .append("<li>" + message + "</li>")    // append new `<div>` to it
-                    .appendTo("#container");
+                console.log("received message: " + payload.message);
+
+                $('#container').on('customOnMessageEvent', "#chat-" + payload.sender, function (event, msg) {
+                    $("#chat-" + payload.sender)     // create `<div>` with `serialModel` as ID
+                        .append("<li>" + msg + "</li>")
+
+                    event.stopImmediatePropagation();
+                });
+                $("#chat-" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
             });
 
             stompClient.subscribe("/app/chat.participants", function (data) {
-
-                alert(data.body);
                 var messageArray = JSON.parse(data.body);
                 messageList.html('');
                 //console.log(messageArray)
@@ -83,13 +85,11 @@
             });
 
             stompClient.subscribe("/topic/chat.login", function (message) {
-                alert("login ");
                 messageList.append(createChatBox(JSON.parse(message.body).userName));
             });
 
             stompClient.subscribe("/topic/chat.logout", function (message) {
                 var userName = JSON.parse(message.body).userName;
-                alert("logout");
                 $("#chat-" + userName).remove();
             });
 
