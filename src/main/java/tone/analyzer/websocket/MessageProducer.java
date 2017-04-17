@@ -4,10 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.ChatMessage;
-import tone.analyzer.domain.repository.LoginEvent;
+import tone.analyzer.event.LoginEvent;
 import tone.analyzer.domain.repository.ParticipantRepository;
 
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 
 /** Created by mozammal on 4/11/17. */
 @Component
@@ -23,15 +24,13 @@ public class MessageProducer {
 
     this.template.convertAndSend(
         "/topic/message" + "-" + chatMessage.getRecipient(), chatMessage.getMessage());
-    /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
   }
 
   public void sendMessageForLiveUser(LoginEvent loginevent) {
 
     participantRepository.add(loginevent.getUserName(), loginevent);
-
-    /* this.template.convertAndSend(
-    "/topic/chat.participants", participantRepository.getActiveSessions().values());*/
-    /* this.template.convertAndSendToUser(name, "/queue/position-updates", builder.toString());*/
+    /*Collection<LoginEvent> liveUsers = participantRepository.getActiveSessions().values();
+    this.template.convertAndSend(
+        "/queue/position-updates", liveUsers);*/
   }
 }

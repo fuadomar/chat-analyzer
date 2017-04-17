@@ -1,6 +1,7 @@
 package tone.analyzer.domain.repository;
 
 import org.springframework.stereotype.Component;
+import tone.analyzer.event.LoginEvent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,7 +17,7 @@ public class ParticipantRepository {
   }
 
   public void add(String sessionId, LoginEvent event) {
-    activeSessions.put(sessionId, event);
+    if (activeSessions.get(sessionId) == null) activeSessions.put(sessionId, event);
   }
 
   public LoginEvent getParticipant(String sessionId) {

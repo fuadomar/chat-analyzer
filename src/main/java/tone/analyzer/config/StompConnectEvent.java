@@ -8,7 +8,7 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import tone.analyzer.domain.ChatMessage;
-import tone.analyzer.domain.repository.LoginEvent;
+import tone.analyzer.event.LoginEvent;
 import tone.analyzer.websocket.MessageProducer;
 
 /** Created by mozammal on 4/12/17. */
