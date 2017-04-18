@@ -1,6 +1,6 @@
 function createChatBox(userId) {
 
-    var chatBoxDiv = '<div id="chat-' + userId + '">  <h3>Messages:</h3> <ol id="messages"></ol>' + ' <div class="panel-footer"><div class="' + '"input-group">'
+    var chatBoxDiv = '<div id="chat-' + userId + '">  <h3>' + userId + ' :</h3> <ol id="messages"></ol>' + ' <div class="panel-footer"><div class="' + '"input-group">'
         + '<input id="+message_' + userId + '" ' + 'class="btn-input" ' + 'type="text" ' + 'class="form-control input-sm chat_input" ' +
         'placeholder="Write your message here..."/>' + ' </div></div></div>';
     console.log(chatBoxDiv);
@@ -21,18 +21,20 @@ $(document).ready(function () {
     var messageList = $("#container");
     var socket = new SockJS('/stomp');
     var stompClient = Stomp.over(socket);
-    var uuid = guid();
 
-    stompClient.connect({"user": uuid}, function (frame) {
+    stompClient.connect('', function (frame) {
 
         console.log(socket._transport.url);
         var url = socket._transport.url.split("/");
+        var uuid = frame.headers['user-name'];
+        console.log("uuid " + uuid);
         var sessionId = uuid;
+
 
         stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
             var payload = JSON.parse(data.body);
 
-            console.log("received message: " + payload.message);
+            console.log("received message: " + payload);
 
             $('#container').on('customOnMessageEvent', "#chat-" + payload.sender, function (event, msg) {
                 $("#chat-" + payload.sender)     // create `<div>` with `serialModel` as ID

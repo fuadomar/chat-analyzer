@@ -45,7 +45,8 @@ public class PresenceEventListener {
   @EventListener
   private void handleSessionConnected(SessionConnectEvent event) {
     SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-    String userName = headers.getNativeHeader("user").get(0);
+    /* String userName = headers.getNativeHeader("user").get(0);*/
+    String userName = headers.getUser().getName();
     LoginEvent loginEvent = new LoginEvent(userName);
     messagingTemplate.convertAndSend(loginDestination, loginEvent);
     log.info("logged in user session id: {}", headers.getSessionId());

@@ -22,7 +22,8 @@ public class MessageProducer {
 
   public void sendMessageToRecipient(ChatMessage chatMessage) {
 
-    this.template.convertAndSend("/topic/chat.message" + "-" + chatMessage.getRecipient(), chatMessage);
+    this.template.convertAndSend(
+        "/topic/chat.message" + "-" + chatMessage.getRecipient(), chatMessage);
   }
 
   public void sendMessageForLiveUser(LoginEvent loginevent) {

@@ -20,10 +20,11 @@ public class StompConnectEvent implements ApplicationListener<SessionConnectEven
   @Autowired private MessageProducer messageProducer;
 
   public void onApplicationEvent(SessionConnectEvent event) {
-    StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
+    StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
 
-    String user = sha.getNativeHeader("user").get(0);
-    logger.info("Connect event [sessionId: " + sha.getSessionId() + "; user: " + user + " ]");
+    //  String user = sha.getNativeHeader("user").get(0);
+    String user = headers.getUser().getName();
+    logger.info("Connect event [sessionId: " + headers.getSessionId() + "; user: " + user + " ]");
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setRecipient(user);
     LoginEvent loginEvent = new LoginEvent(user);
