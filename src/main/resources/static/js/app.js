@@ -11,7 +11,7 @@ function createChatList(userId) {
 function createChatBox(userId) {
 
     var chatBox = '<div class="msg_box" style="right:290px"  id="msgbox' + userId + '"><div class="msg_head">' + userId +
-        ' <div class="close">x</div><div class="msg_wrap"><div class="msg_body" id="msg_body' + userId + '">' +
+        ' <div class="close">x</div></div><div class="msg_wrap"><div class="msg_body" id="msg_body' + userId + '">' +
         '<div class="msg_push" id="msg_push' + userId + '"></div>' +
         '</div> <div class="msg_footer">' +
         '<textarea class="msg_input" rows="4" id="msg' + userId + '"></textarea></div> </div></div>';
@@ -104,32 +104,36 @@ $(document).ready(function () {
          });*/
 
 
-        $('.chat_head').click(function () {
-            $('.chat_body').slideToggle('slow');
+        $('#chatbox-container').on('click', '.msg_head', function (e) {
+            e.stopPropagation();
+            $(this).siblings('.msg_wrap').slideToggle('slow');
         });
         $('.chat_body').on('.msg_head', 'click', function () {
 
-            alert("alal");
             $(this).siblings('.msg_wrap').slideToggle('slow');
         });
 
-        $('#chatbox-container').on('click', '.close', function () {
+        $('#chatbox-container').on('click', '.close', function (e) {
             var divId = $(this).parent('.msg_head').parent('.msg_box').attr('id');
-            alert("alal " + divId);
+            e.stopPropagation();
             $('#' + divId).hide();
         });
 
-        $('.chat_body').on('click', '.user', function () {
+        $('.chat_body').on('click', '.user', function (e) {
             var divId = $(this).attr('id');
-            chatBox.append(createChatBox(divId));
-            $('.msg_wrap').show();
-            $('#msgbox' + divId).show();
+            e.stopPropagation();
+            if ($("#msgbox" + divId).length <= 0) {
+                chatBox.append(createChatBox(divId));
+            }
+            else {
+                $('#msgbox' + divId).show();
+            }
         });
 
         $('#chatbox-container').on('keypress', 'textarea',
             function (e) {
                 if (e.keyCode == 13) {
-                    // e.preventDefault();
+                    e.preventDefault();
                     var msg = $(this).val();
                     var recipientId = $(this).attr('id').substring(3);
                     $(this).val('');
