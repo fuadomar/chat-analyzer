@@ -3,7 +3,7 @@ function createChatList(userId) {
         + '<input id="+message_' + userId + '" ' + 'class="btn-input" ' + 'type="text" ' + 'class="form-control input-sm chat_input" ' +
         'placeholder="Write your message here..."/>' + ' </div></div></div>';
 
-    chatListDiv = ' <div class="user" id="' + userId + '">' + userId + '</div>';
+    chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
 
     console.log(chatListDiv);
     return chatListDiv;
@@ -85,6 +85,7 @@ $(document).ready(function () {
         stompClient.subscribe("/topic/chat.logout", function (message) {
             var userName = JSON.parse(message.body).userName;
             $("#msgbox" + userName).remove();
+            $("#user" + userName).remove();
         });
 
         /*    $('#container').on('keydown', '.btn-input', function (e) {
@@ -114,13 +115,13 @@ $(document).ready(function () {
         });
 
         $('#chatbox-container').on('click', '.close', function (e) {
-            var divId = $(this).parent('.msg_head').parent('.msg_box').attr('id');
+            var divId = $(this).parent().parent().attr('id');
             e.stopPropagation();
             $('#' + divId).hide();
         });
 
         $('.chat_body').on('click', '.user', function (e) {
-            var divId = $(this).attr('id');
+            var divId = $(this).attr('id').substring(4);
             e.stopPropagation();
             if ($("#msgbox" + divId).length <= 0) {
                 chatBox.append(createChatBox(divId));
