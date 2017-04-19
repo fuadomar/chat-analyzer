@@ -9,6 +9,8 @@ import org.springframework.validation.Validator;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.User;
 
+import java.util.regex.Pattern;
+
 @Component
 public class UserValidator implements Validator {
 
@@ -25,15 +27,20 @@ public class UserValidator implements Validator {
 
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
     if (user.getEmail().length() < 3 || user.getEmail().length() > 32) {
-      errors.rejectValue("email", "Size.userForm.username");
+      errors.rejectValue("email", "Size.UserForm.email");
     }
+    String regex = "([0-9|a-z|A-Z|\\_|\\$|\\.|\\s])+";
+    boolean matches = Pattern.matches(regex, user.getEmail());
+
     if (userService.findByEmail(user.getEmail()) != null) {
-      errors.rejectValue("email", "Duplicate.userForm.username");
+      errors.rejectValue("email", "Duplicate.UserForm.email");
+    } else if (!matches) {
+      errors.rejectValue("email", "Null.UserForm.email");
     }
 
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");
     if (user.getPassword().length() < 8 || user.getPassword().length() > 32) {
-      errors.rejectValue("password", "Size.userForm.password");
+      errors.rejectValue("password", "Size.UserForm.password");
     }
   }
 }
