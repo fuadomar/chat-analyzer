@@ -1,11 +1,24 @@
-function createChatBox(userId) {
-
-    var chatBoxDiv = '<div id="chat-' + userId + '">  <h3>' + userId + ' :</h3> <ol id="messages"></ol>' + ' <div class="panel-footer"><div class="' + '"input-group">'
+function createChatList(userId) {
+    var chatListDiv = '<div id="chat-' + userId + '">  <h3>' + userId + ' :</h3> <ol id="messages"></ol>' + ' <div class="panel-footer"><div class="' + '"input-group">'
         + '<input id="+message_' + userId + '" ' + 'class="btn-input" ' + 'type="text" ' + 'class="form-control input-sm chat_input" ' +
         'placeholder="Write your message here..."/>' + ' </div></div></div>';
-    console.log(chatBoxDiv);
-    return chatBoxDiv;
+
+    chatListDiv = ' <div class="user" id="' + userId + '">' + userId + '</div>';
+
+    console.log(chatListDiv);
+    return chatListDiv;
 }
+function createChatBox(userId) {
+
+    var chatBox = '<div class="msg_box" style="right:290px"  id="msgbox' + userId + '"><div class="msg_head">' + userId +
+        ' <div class="close">x</div><div class="msg_wrap"><div class="msg_body" id="msg_body' + userId + '">' +
+        '<div class="msg_push" id="msg_push' + userId + '"></div>' +
+        '</div> <div class="msg_footer">' +
+        '<textarea class="msg_input" rows="4" id="msg' + userId + '"></textarea></div> </div></div>';
+    return chatBox;
+}
+
+
 function guid() {
     function s4() {
         return Math.floor((1 + Math.random()) * 0x10000)
@@ -18,7 +31,9 @@ function guid() {
 }
 
 $(document).ready(function () {
-    var messageList = $("#container");
+
+    var chatList = $(".chat_body");
+    var chatBox = $("#chatbox-container");
     var socket = new SockJS('/stomp');
     var stompClient = Stomp.over(socket);
 
@@ -30,52 +45,104 @@ $(document).ready(function () {
         console.log("uuid " + uuid);
         var sessionId = uuid;
 
-
         stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
+
             var payload = JSON.parse(data.body);
-
             console.log("received message: " + payload);
+            if ($("#msg_push" + payload.sender).length <= 0) {
+                chatBox.append(createChatBox(payload.sender));
+                $('.msg_wrap').show();
+                $('#msgbox' + payload.sender).show();
+            }
+            $('#chatbox-container').on('customOnMessageEvent', "#msg_push" + payload.sender, function (event, msg) {
 
-            $('#container').on('customOnMessageEvent', "#chat-" + payload.sender, function (event, msg) {
-                $("#chat-" + payload.sender)     // create `<div>` with `serialModel` as ID
-                    .append("<li>" + msg + "</li>")
-
+                msg = payload.sender + ": " + msg;
+                if (msg != '')
+                    $('<div class="msg_a">' + msg + '</div>').insertBefore('#msg_push' + payload.sender);
+                $('#msg_body' + payload.sender).scrollTop($('#msg_body' + payload.sender)[0].scrollHeight);
                 event.stopImmediatePropagation();
             });
-            $("#chat-" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
+            $("#msg_push" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
         });
 
         stompClient.subscribe("/app/chat.participants", function (data) {
             var messageArray = JSON.parse(data.body);
-            messageList.html('');
+            chatList.html('');
             //console.log(messageArray)
             for (var i = 0; i < messageArray.length; i++) {
                 if (sessionId == messageArray[i].userName)
                     continue;
-                messageList.append(createChatBox(messageArray[i].userName));
+                chatList.append(createChatList(messageArray[i].userName));
+                //chatBox.append(createChatBox(messageArray[i].userName));
             }
         });
 
         stompClient.subscribe("/topic/chat.login", function (message) {
-            messageList.append(createChatBox(JSON.parse(message.body).userName));
+            chatList.append(createChatList(JSON.parse(message.body).userName));
+            //chatList.append(createChatBox(JSON.parse(message.body).userName));
         });
 
         stompClient.subscribe("/topic/chat.logout", function (message) {
             var userName = JSON.parse(message.body).userName;
-            $("#chat-" + userName).remove();
+            $("#msgbox" + userName).remove();
         });
 
-        $('#container').on('keydown', '.btn-input', function (e) {
-            if (e.which === 13) {
-                var msg = $(this).val();
-                var recipientId = $(this).attr('id').split("_")[1];
-                console.log("sending message: " + msg)
-                stompClient.send("/app/chat-message/message", {}, JSON.stringify({
-                    'topic': "message", 'message': msg,
-                    'recipient': recipientId, 'sender': sessionId
-                }));
-                $(this).val('');
-            }
+        /*    $('#container').on('keydown', '.btn-input', function (e) {
+         if (e.which === 13) {
+         var msg = $(this).val();
+         var recipientId = $(this).attr('id').split("_")[1];
+         msgForSender = sessionId + ": " + msg;
+         console.log("sending message: " + msg);
+         $("#chat-" + recipientId)     // create `<div>` with `serialModel` as ID
+         .append("<li>" + msgForSender + "</li>")
+         stompClient.send("/app/chat-message/message", {}, JSON.stringify({
+         'topic': "message", 'message': msg,
+         'recipient': recipientId, 'sender': sessionId
+         }));
+         $(this).val('');
+         }
+         });*/
+
+
+        $('.chat_head').click(function () {
+            $('.chat_body').slideToggle('slow');
         });
+        $('.chat_body').on('.msg_head', 'click', function () {
+
+            alert("alal");
+            $(this).siblings('.msg_wrap').slideToggle('slow');
+        });
+
+        $('#chatbox-container').on('click', '.close', function () {
+            var divId = $(this).parent('.msg_head').parent('.msg_box').attr('id');
+            alert("alal " + divId);
+            $('#' + divId).hide();
+        });
+
+        $('.chat_body').on('click', '.user', function () {
+            var divId = $(this).attr('id');
+            chatBox.append(createChatBox(divId));
+            $('.msg_wrap').show();
+            $('#msgbox' + divId).show();
+        });
+
+        $('#chatbox-container').on('keypress', 'textarea',
+            function (e) {
+                if (e.keyCode == 13) {
+                    // e.preventDefault();
+                    var msg = $(this).val();
+                    var recipientId = $(this).attr('id').substring(3);
+                    $(this).val('');
+                    stompClient.send("/app/chat-message/message", {}, JSON.stringify({
+                        'topic': "message", 'message': msg,
+                        'recipient': recipientId, 'sender': sessionId
+                    }));
+
+                    if (msg != '')
+                        $('<div class="msg_b">' + sessionId + ": " + msg + '</div>').insertBefore('#msg_push' + recipientId);
+                    $('#msg_body' + recipientId).scrollTop($('#msg_body' + recipientId)[0].scrollHeight);
+                }
+            });
     });
+
 });
