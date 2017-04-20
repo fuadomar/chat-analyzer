@@ -3,7 +3,6 @@ package tone.analyzer.web;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,8 +28,6 @@ public class UserController {
 
   @Autowired private UserValidator userValidator;
 
-  @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
-
   @RequestMapping(value = "/registration", method = RequestMethod.GET)
   public String registration(Model model) {
     model.addAttribute("userForm", new User());
@@ -54,12 +51,11 @@ public class UserController {
     }
     String plainTextPassword = userForm.getPassword();
     userService.save(userForm);
-    securityService.autologin(userForm.getEmail(), plainTextPassword, request, response);
+    securityService.autoLogin(userForm.getName(), plainTextPassword, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    User user = userService.findByEmail(auth.getName());
-    redirectAttributes.addFlashAttribute("userName", user.getEmail());
+    User user = userService.findByName(auth.getName());
+    redirectAttributes.addFlashAttribute("userName", user.getName());
     return "redirect:/chat";
-    //return "redirect:/home";
   }
 
   @RequestMapping(value = "/login", method = RequestMethod.GET)

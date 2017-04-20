@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 public interface SecurityService {
   String findLoggedInUsername();
 
-  void autologin(
+  void autoLogin(
       String username, String password, HttpServletRequest request, HttpServletResponse response);
 }

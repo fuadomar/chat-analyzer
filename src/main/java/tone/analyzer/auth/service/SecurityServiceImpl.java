@@ -37,7 +37,7 @@ public class SecurityServiceImpl implements SecurityService {
   }
 
   @Override
-  public void autologin(
+  public void autoLogin(
       String username, String password, HttpServletRequest request, HttpServletResponse response) {
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();

@@ -25,17 +25,17 @@ public class UserValidator implements Validator {
   public void validate(Object o, Errors errors) {
     User user = (User) o;
 
-    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "email", "NotEmpty");
-    if (user.getEmail().length() < 3 || user.getEmail().length() > 32) {
-      errors.rejectValue("email", "Size.UserForm.email");
+    ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty");
+    if (user.getName().length() < 3 || user.getName().length() > 32) {
+      errors.rejectValue("name", "Size.UserForm.name");
     }
-    String regex = "([0-9|a-z|A-Z|\\_|\\$|\\.|\\s])+";
-    boolean matches = Pattern.matches(regex, user.getEmail());
+    String regex = "([0-9|a-z|A-Z|\\_\\.])+";
+    boolean matches = Pattern.matches(regex, user.getName());
 
-    if (userService.findByEmail(user.getEmail()) != null) {
-      errors.rejectValue("email", "Duplicate.UserForm.email");
+    if (userService.findByName(user.getName()) != null) {
+      errors.rejectValue("name", "Duplicate.UserForm.name");
     } else if (!matches) {
-      errors.rejectValue("email", "Null.UserForm.email");
+      errors.rejectValue("name", "Null.UserForm.name");
     }
 
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "password", "NotEmpty");

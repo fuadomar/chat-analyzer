@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import tone.analyzer.domain.entity.User;
 import tone.analyzer.domain.repository.UserRepository;
 
@@ -20,11 +19,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByEmail(username);
+    User user = userRepository.findByName(username);
     if (user == null) throw new UsernameNotFoundException("User not found");
 
     List<GrantedAuthority> role = new ArrayList<>();
     return new org.springframework.security.core.userdetails.User(
-        user.getEmail(), user.getPassword(), role);
+        user.getName(), user.getPassword(), role);
   }
 }

@@ -6,5 +6,5 @@ import tone.analyzer.domain.entity.User;
 public interface UserService {
   void save(User user);
 
-  User findByEmail(String username);
+  User findByName(String username);
 }

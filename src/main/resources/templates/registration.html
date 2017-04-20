@@ -22,9 +22,9 @@
                 <h2>Registration Form</h2>
                 <div class="form-group">
                     <div class="col-sm-9">
-                        <input type="text" th:field="*{email}" placeholder="UserName"
+                        <input type="text" th:field="*{name}" placeholder="UserName"
                                class="form-control"/> <label
-                            th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                            th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
                             class="validation-message"></label>
                     </div>
                 </div>
@@ -44,8 +44,6 @@
                 </div>
 
                 <span th:utext="${successMessage}"></span>
-
-
             </form>
         </div>
     </div>

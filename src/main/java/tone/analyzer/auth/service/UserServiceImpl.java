@@ -6,8 +6,6 @@ import org.springframework.stereotype.Service;
 import tone.analyzer.domain.entity.User;
 import tone.analyzer.domain.repository.UserRepository;
 
-import java.util.HashSet;
-
 /** Created by mozammal on 4/18/17. */
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,7 +20,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User findByEmail(String username) {
-    return userRepository.findByEmail(username);
+  public User findByName(String username) {
+    return userRepository.findByName(username);
   }
 }
