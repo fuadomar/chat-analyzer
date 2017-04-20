@@ -14,11 +14,11 @@ public class ToneAnalyzerController {
 
   @RequestMapping(value = "/tone-analyzer", method = RequestMethod.GET)
   public ToneAnalyzerFeedBackDTO analyzerConversationalTone(
-      @RequestParam("userId1") String userId1, @RequestParam("userId2") String userId2) {
+      @RequestParam("firstUser") String firstUser, @RequestParam("secondUser") String secondUser) {
 
     ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(userId1);
-    chatMessage.setRecipient(userId2);
+    chatMessage.setSender(firstUser);
+    chatMessage.setRecipient(secondUser);
     return toneAnalyzerGateway.analyzerConversationalTone(chatMessage);
   }
 }

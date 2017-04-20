@@ -1,8 +1,12 @@
 package tone.analyzer.domain.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.List;
 
 /** Created by mozammal on 4/18/17. */
+@Document
 public class User {
 
   @Id private String id;
@@ -10,6 +14,8 @@ public class User {
   private String name;
 
   private String password;
+
+  private List<Role> role;
 
   public User() {}
 
@@ -40,5 +46,13 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public List<Role> getRole() {
+    return role;
+  }
+
+  public void setRole(List<Role> role) {
+    this.role = role;
   }
 }

@@ -14,10 +14,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.User;
+import tone.analyzer.service.AdminService;
 import tone.analyzer.validator.UserValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /** Created by mozammal on 4/18/17. */
 @Controller
@@ -27,6 +29,8 @@ public class UserController {
   @Autowired private SecurityService securityService;
 
   @Autowired private UserValidator userValidator;
+
+  @Autowired private AdminService adminService;
 
   @RequestMapping(value = "/registration", method = RequestMethod.GET)
   public String registration(Model model) {
@@ -73,5 +77,16 @@ public class UserController {
   public String chat(Model model) {
 
     return "chat";
+  }
+
+  @RequestMapping(
+    value = {"/admin"},
+    method = RequestMethod.GET
+  )
+  public String admin(Model model) {
+
+    List<User> userList = adminService.fetchAllUsers();
+    model.addAttribute("userList", userList);
+    return "admin";
   }
 }
