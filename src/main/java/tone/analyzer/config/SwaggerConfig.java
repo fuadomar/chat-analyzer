@@ -37,7 +37,7 @@ public class SwaggerConfig {
   private ApiInfo metadata() {
     return new ApiInfoBuilder()
         .title("Biyeta rest API")
-        .description("REST API of Biyeta")
+        .description("REST API of Tone Analyzer")
         .version("1.0")
         .contact("mozamaml@example.com")
         .build();

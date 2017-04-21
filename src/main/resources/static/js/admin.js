@@ -3,7 +3,6 @@ $(document).ready(function () {
     $("#button-analyze").click(function () {
         var firstUser = $("#first-user option:selected").text().trim();
         var secondUser = $("#second-user option:selected").text().trim();
-        alert(firstUser + " " + secondUser);
         $.get({
             type: 'get',
             url: '/tone-analyzer',

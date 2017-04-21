@@ -2,32 +2,41 @@ package tone.analyzer.domain.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/** Created by mozammal on 4/20/17. */
+/**
+ * Created by mozammal on 4/20/17.
+ */
 @Document
 public class Role {
 
-  private String id;
+    private String id;
 
-  private String role;
+    private String name;
 
-  public String getId() {
-    return id;
-  }
+    public Role() {
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public Role(String name) {
+        this.name = name;
+    }
 
-  public String getRole() {
-    return role;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setRole(String role) {
-    this.role = role;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  @Override
-  public String toString() {
-    return "Role{" + "id='" + id + '\'' + ", role='" + role + '\'' + '}';
-  }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Role{" + "id='" + id + '\'' + ", name='" + name + '\'' + '}';
+    }
 }

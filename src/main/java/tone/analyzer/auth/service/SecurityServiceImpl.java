@@ -42,7 +42,7 @@ public class SecurityServiceImpl implements SecurityService {
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
     Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-        new UsernamePasswordAuthenticationToken(userDetails, password);
+        new UsernamePasswordAuthenticationToken(userDetails, password, authorities);
 
     // generate session if one doesn't exist
     request.getSession();
