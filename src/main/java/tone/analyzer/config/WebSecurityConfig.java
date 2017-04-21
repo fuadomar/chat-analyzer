@@ -26,51 +26,48 @@ import java.io.IOException;
 
 import static org.springframework.data.mongodb.core.aggregation.BooleanOperators.And.and;
 
-/**
- * Created by mozammal on 4/18/17.
- */
+/** Created by mozammal on 4/18/17. */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+  @Autowired private UserDetailsService userDetailsService;
 
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+  private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests()
-                .antMatchers("/resources*", "/registration")
-                .permitAll()
-                .antMatchers("/admin/**")
-                .hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .csrf()
-                .disable()
-                .formLogin()
-                .loginPage("/login")
-                .successHandler(
-                        new AuthenticationSuccessHandler() {
-                            @Override
-                            public void onAuthenticationSuccess(
-                                    HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    Authentication authentication)
-                                    throws IOException, ServletException {
-                                redirectStrategy.sendRedirect(request, response, "/chat");
-                            }
-                        })
-                .permitAll()
+    http.authorizeRequests()
+        .antMatchers("/resources*", "/registration")
+        .permitAll()
+        .antMatchers("/admin/**")
+        .hasRole("ADMIN")
+        .anyRequest()
+        .authenticated()
+        .and()
+        .csrf()
+        .disable()
+        .formLogin()
+        .loginPage("/login")
+        .successHandler(
+            new AuthenticationSuccessHandler() {
+              @Override
+              public void onAuthenticationSuccess(
+                  HttpServletRequest request,
+                  HttpServletResponse response,
+                  Authentication authentication)
+                  throws IOException, ServletException {
+                redirectStrategy.sendRedirect(request, response, "/chat");
+              }
+            })
+        .permitAll()
         /* .
         failureHandler(new AuthenticationFailureHandler() {
             @Override
@@ -79,19 +76,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 httpServletResponse.sendRedirect("/login?error");
             }
         })*/
-                .usernameParameter("name")
-                .passwordParameter("password")
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .and()
-                .authorizeRequests()
-                .antMatchers("/js*", "/lib*", "/images*", "/css*", "/chat.html", "/", "/admin.html")
-                .permitAll()
-                .anyRequest()
-                .authenticated();
+        .usernameParameter("name")
+        .passwordParameter("password")
+        .and()
+        .logout()
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutSuccessUrl("/login")
+        .permitAll()
+        .and()
+        .authorizeRequests()
+        .antMatchers("/js*", "/lib*", "/images*", "/css*", "/chat.html", "/", "/admin.html")
+        .permitAll()
+        .anyRequest()
+        .authenticated();
 
     /*     http
     .csrf().disable()
@@ -106,17 +103,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     .and()
     .authorizeRequests()
     .antMatchers("/js*/
-        /** ", "/lib */
-        /** ", "/images */
-        /** ", "/css */
-        /**
-         * ", "/chat.html", "/").permitAll() .antMatchers("/websocket").hasRole("ADMIN")
-         * .anyRequest().authenticated();
-         */
-    }
+    /** ", "/lib */
+    /** ", "/images */
+    /** ", "/css */
+    /**
+     * ", "/chat.html", "/").permitAll() .antMatchers("/websocket").hasRole("ADMIN")
+     * .anyRequest().authenticated();
+     */
+  }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+  }
 }
