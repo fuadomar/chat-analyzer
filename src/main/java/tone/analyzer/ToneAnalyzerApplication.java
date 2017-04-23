@@ -12,6 +12,9 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import tone.analyzer.domain.entity.Role;
 import tone.analyzer.domain.entity.User;
@@ -21,10 +24,13 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-@EnableOAuth2Sso
+@EnableOAuth2Client
 @SpringBootApplication
 @EnableSwagger2
 public class ToneAnalyzerApplication {
@@ -89,5 +95,17 @@ public class ToneAnalyzerApplication {
         userRepository.save(admin);
       }
     };
+  }
+}
+
+@RestController
+class PrincipalRestController {
+  private static final Logger log = LoggerFactory.getLogger(PrincipalRestController.class);
+  @RequestMapping({ "/user", "/me" })
+  Map<String, String> user(Principal principal) {
+    Map<String, String> map = new LinkedHashMap<>();
+    map.put("name", principal.getName());
+    log.info("redirect from google: "+principal.getName());
+    return map;
   }
 }
