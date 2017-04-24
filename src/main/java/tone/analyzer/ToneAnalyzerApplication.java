@@ -115,7 +115,7 @@ class PrincipalRestController {
       Map<String, String> details = new LinkedHashMap<>();
       details = (Map<String, String>) authentication.getDetails();
       log.info("details = " + details); // id, email, name, link etc
-      String displayName = details.get("displayName").replaceAll("\\s+","");
+      String displayName = details.get("displayName").replaceAll("\\s+", "");
     }
 
     return map;
