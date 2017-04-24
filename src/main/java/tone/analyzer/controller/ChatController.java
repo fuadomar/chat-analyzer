@@ -22,9 +22,7 @@ public class ChatController {
   @Autowired private ChatGateway chatGateway;
 
   @Autowired private ParticipantRepository participantRepository;
-  /* @RequestMapping(
-    value = "/chat-message/{topic}"
-  )*/
+
   @MessageMapping("/chat-message/message")
   public String sendChatMessageToDestination(ChatMessage chatMessage) {
     chatGateway.sendMessageTo(chatMessage);

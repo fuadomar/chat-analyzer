@@ -7,7 +7,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import tone.analyzer.auth.service.UserService;
-import tone.analyzer.domain.entity.User;
+import tone.analyzer.domain.entity.Account;
 
 import java.util.regex.Pattern;
 
@@ -18,12 +18,12 @@ public class UserValidator implements Validator {
 
   @Override
   public boolean supports(Class<?> aClass) {
-    return User.class.equals(aClass);
+    return Account.class.equals(aClass);
   }
 
   @Override
   public void validate(Object o, Errors errors) {
-    User user = (User) o;
+    Account user = (Account) o;
 
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty");
     if (user.getName().length() < 3 || user.getName().length() > 32) {

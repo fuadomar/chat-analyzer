@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Role;
-import tone.analyzer.domain.entity.User;
-import tone.analyzer.domain.repository.UserRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,7 @@ import java.util.Map;
 @EnableSwagger2
 public class ToneAnalyzerApplication {
 
-  @Autowired private UserRepository userRepository;
+  @Autowired private AccountRepository userRepository;
 
   @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -84,10 +84,10 @@ public class ToneAnalyzerApplication {
   @Bean
   CommandLineRunner sendMessage() {
     return args -> {
-      User admin = userRepository.findByName("admin");
+      Account admin = userRepository.findByName("admin");
       if (admin == null) {
         String encodedPassword = bCryptPasswordEncoder.encode(plainTextPassword);
-        admin = new User(adminName, encodedPassword);
+        admin = new Account(adminName, encodedPassword);
         List<Role> roleList = new ArrayList<>();
         roleList.add(new Role("ROLE_ADMIN"));
         roleList.add(new Role("ROLE_USER"));
@@ -101,11 +101,23 @@ public class ToneAnalyzerApplication {
 @RestController
 class PrincipalRestController {
   private static final Logger log = LoggerFactory.getLogger(PrincipalRestController.class);
-  @RequestMapping({ "/user", "/me" })
+
+  @RequestMapping({"/user", "/me"})
   Map<String, String> user(Principal principal) {
     Map<String, String> map = new LinkedHashMap<>();
     map.put("name", principal.getName());
-    log.info("redirect from google: "+principal.getName());
+    log.info("redirect from google: " + principal.getName());
+
+    if (principal != null) {
+      OAuth2Authentication oAuth2Authentication = (OAuth2Authentication) principal;
+      org.springframework.security.core.Authentication authentication =
+          oAuth2Authentication.getUserAuthentication();
+      Map<String, String> details = new LinkedHashMap<>();
+      details = (Map<String, String>) authentication.getDetails();
+      log.info("details = " + details); // id, email, name, link etc
+      String displayName = details.get("displayName").replaceAll("\\s+","");
+    }
+
     return map;
   }
 }

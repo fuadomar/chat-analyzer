@@ -13,7 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
-import tone.analyzer.domain.entity.User;
+import tone.analyzer.domain.entity.Account;
 import tone.analyzer.service.AdminService;
 import tone.analyzer.validator.UserValidator;
 
@@ -34,14 +34,14 @@ public class UserController {
 
   @RequestMapping(value = "/registration", method = RequestMethod.GET)
   public String registration(Model model) {
-    model.addAttribute("userForm", new User());
+    model.addAttribute("userForm", new Account());
 
     return "registration";
   }
 
   @RequestMapping(value = "/registration", method = RequestMethod.POST)
   public String registration(
-      @ModelAttribute("userForm") User userForm,
+      @ModelAttribute("userForm") Account userForm,
       BindingResult bindingResult,
       Model model,
       HttpServletRequest request,
@@ -57,7 +57,7 @@ public class UserController {
     userService.save(userForm);
     securityService.autoLogin(userForm.getName(), plainTextPassword, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    User user = userService.findByName(auth.getName());
+    Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute("userName", user.getName());
     return "redirect:/chat";
   }
@@ -85,7 +85,7 @@ public class UserController {
   )
   public String admin(Model model) {
 
-    List<User> userList = adminService.fetchAllUsers();
+    List<Account> userList = adminService.fetchAllUsers();
     model.addAttribute("userList", userList);
     return "admin";
   }

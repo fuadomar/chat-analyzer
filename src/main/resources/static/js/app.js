@@ -42,6 +42,7 @@ $(document).ready(function () {
         console.log(socket._transport.url);
         var url = socket._transport.url.split("/");
         var uuid = frame.headers['user-name'];
+        console.log(frame);
         console.log("uuid " + uuid);
         var sessionId = uuid;
 
@@ -78,6 +79,7 @@ $(document).ready(function () {
         });
 
         stompClient.subscribe("/topic/chat.login", function (message) {
+
             chatList.append(createChatList(JSON.parse(message.body).userName));
             //chatList.append(createChatBox(JSON.parse(message.body).userName));
         });

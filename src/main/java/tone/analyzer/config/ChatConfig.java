@@ -1,5 +1,6 @@
 package tone.analyzer.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Description;
@@ -10,32 +11,19 @@ import tone.analyzer.event.PresenceEventListener;
 @Configuration
 public class ChatConfig {
 
-  public static class Destinations {
-    private Destinations() {}
+  @Value("${app.user.login}")
+  private String LOGIN;
 
-    private static final String LOGIN = "/topic/chat.login";
-    private static final String LOGOUT = "/topic/chat.logout";
-  }
+  @Value("${app.user.logout}")
+  private String LOGOUT;
 
-  private static final int MAX_PROFANITY_LEVEL = 5;
-
-  /*
-   * @Bean
-   *
-   * @Description("Application event multicaster to process events asynchonously"
-   * ) public ApplicationEventMulticaster applicationEventMulticaster() {
-   * SimpleApplicationEventMulticaster multicaster = new
-   * SimpleApplicationEventMulticaster();
-   * multicaster.setTaskExecutor(Executors.newFixedThreadPool(10)); return
-   * multicaster; }
-   */
   @Bean
   @Description("Tracks user presence (join / leave) and broacasts it to all connected users")
   public PresenceEventListener presenceEventListener(SimpMessagingTemplate messagingTemplate) {
     PresenceEventListener presence =
         new PresenceEventListener(messagingTemplate, participantRepository());
-    presence.setLoginDestination(Destinations.LOGIN);
-    presence.setLogoutDestination(Destinations.LOGOUT);
+    presence.setLoginDestination(LOGIN);
+    presence.setLogoutDestination(LOGOUT);
     return presence;
   }
 

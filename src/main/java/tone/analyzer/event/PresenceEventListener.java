@@ -1,5 +1,7 @@
 package tone.analyzer.event;
 
+import java.security.Principal;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -9,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
@@ -46,7 +50,18 @@ public class PresenceEventListener {
   private void handleSessionConnected(SessionConnectEvent event) {
     SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
     /* String userName = headers.getNativeHeader("user").get(0);*/
+
     String userName = headers.getUser().getName();
+    Principal authentication = headers.getUser();
+
+    if (authentication instanceof OAuth2Authentication) {
+      OAuth2Authentication userPrincipal = (OAuth2Authentication) authentication;
+      org.springframework.security.core.Authentication authentication1 =
+          userPrincipal.getUserAuthentication();
+      Map<String, String> details = new LinkedHashMap<>();
+      details = (Map<String, String>) authentication1.getDetails();
+      userName = details.get("displayName").replaceAll("\\s+", "");
+    }
     LoginEvent loginEvent = new LoginEvent(userName);
     messagingTemplate.convertAndSend(loginDestination, loginEvent);
     log.info("logged in user session id: {}", headers.getSessionId());

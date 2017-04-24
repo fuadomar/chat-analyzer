@@ -1,5 +1,7 @@
 package tone.analyzer.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
@@ -27,14 +29,16 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.*
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CompositeFilter;
+import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.repository.AccountRepository;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
@@ -44,179 +48,218 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by mozammal on 4/18/17.
- */
+/** Created by mozammal on 4/18/17. */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableOAuth2Client
 @EnableAuthorizationServer
 @Order(6)
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements AuthorizationServerConfigurer {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter
+    implements AuthorizationServerConfigurer {
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+  @Autowired private UserDetailsService userDetailsService;
 
-    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
+  private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
-    private final OAuth2ClientContext oauth2ClientContext;
+  private final OAuth2ClientContext oauth2ClientContext;
 
-    private final ClientDetailsService clientDetailsService;
+  private final ClientDetailsService clientDetailsService;
 
-    @Autowired
-    public WebSecurityConfig(
-            OAuth2ClientContext oauth2ClientContext,
-            ClientDetailsService clientDetailsService) {
-        super();
-        this.oauth2ClientContext = oauth2ClientContext;
-        this.clientDetailsService = clientDetailsService;
-    }
+  @Autowired private AccountRepository userRepository;
+  /*  @Autowired
+  private MySimpleUrlAuthenticationSuccessHandler mySimpleUrlAuthenticationSuccessHandler;*/
 
+  @Autowired
+  public WebSecurityConfig(
+      OAuth2ClientContext oauth2ClientContext, ClientDetailsService clientDetailsService) {
+    super();
+    this.oauth2ClientContext = oauth2ClientContext;
+    this.clientDetailsService = clientDetailsService;
+  }
 
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+  @Bean
+  public BCryptPasswordEncoder bCryptPasswordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
 
+  @Override
+  public void configure(
+      AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer)
+      throws Exception {
+    String test = "Tetsing ";
+  }
+
+  @Configuration
+  @EnableResourceServer
+  protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer) throws Exception {
-
+    public void configure(HttpSecurity http) throws Exception {
+      http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
+      http.antMatcher("/user").authorizeRequests().anyRequest().authenticated();
+      // @formatter:off
+      //http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
+      // @formatter:on
     }
+  }
 
-    @Configuration
-    @EnableResourceServer
-    protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
-        @Override
-        public void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
-            http.antMatcher("/user").authorizeRequests().anyRequest().authenticated();
-            // @formatter:off
-            //http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
-            // @formatter:on
-        }
-    }
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    /*   http.antMatcher("*/
+    /** ").authorizeRequests() .antMatchers("/", "/login**", "/webjars */
+    /**
+     * ").permitAll().anyRequest() .authenticated().and().exceptionHandling()
+     * .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).and().logout()
+     * .logoutSuccessUrl("/").permitAll().and().csrf()
+     * .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+     * .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+     */
+    http.authorizeRequests()
+        .antMatchers("/login**", "/resources*", "/registration")
+        .permitAll()
+        .antMatchers("/admin**")
+        .hasRole("ADMIN")
+        .anyRequest()
+        .authenticated()
+        .and()
+        .csrf()
+        .disable()
+        .formLogin()
+        .loginPage("/login")
+        .defaultSuccessUrl("/user")
+        .successHandler(
+            new AuthenticationSuccessHandler() {
+              @Override
+              public void onAuthenticationSuccess(
+                  HttpServletRequest request,
+                  HttpServletResponse response,
+                  Authentication authentication)
+                  throws IOException, ServletException {
+                redirectStrategy.sendRedirect(request, response, "/chat");
+              }
+            })
+        .permitAll()
+        .usernameParameter("name")
+        .passwordParameter("password")
+        .and()
+        .logout()
+        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+        .logoutSuccessUrl("/login")
+        .and()
+        .csrf()
+        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+        .and()
+        .authorizeRequests()
+        .antMatchers("/js*", "/lib*", "/images*", "/css*", "/chat.html", "/", "/admin.html")
+        .permitAll()
+        .anyRequest()
+        .authenticated()
+        .and()
+        .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+  }
 
+  @Bean
+  FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
+    FilterRegistrationBean registration = new FilterRegistrationBean();
+    registration.setFilter(filter);
+    registration.setOrder(-100);
+    return registration;
+  }
 
-     /*   http.antMatcher("*//**").authorizeRequests()
-                .antMatchers("/", "/login**", "/webjars*//**").permitAll().anyRequest()
-                .authenticated().and().exceptionHandling()
-                .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).and().logout()
-                .logoutSuccessUrl("/").permitAll().and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);*/
+  @Bean
+  @ConfigurationProperties("google")
+  ClientResources google() {
+    return new ClientResources();
+  }
 
-        http.authorizeRequests()
-                .antMatchers( "/login**","/resources*", "/registration")
-                .permitAll()
-                .antMatchers("/admin*")
-                .hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .csrf()
-                .disable()
-                .formLogin()
-                .loginPage("/login")
-                .successHandler(
-                        new AuthenticationSuccessHandler() {
-                            @Override
-                            public void onAuthenticationSuccess(
-                                    HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    Authentication authentication)
-                                    throws IOException, ServletException {
-                                redirectStrategy.sendRedirect(request, response, "/chat");
-                            }
-                        })
-                .permitAll()
-                .usernameParameter("name")
-                .passwordParameter("password")
-                .and()
-                .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .and().csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-                .authorizeRequests()
-                .antMatchers("/js*", "/lib*", "/images*", "/css*", "/chat.html", "/", "/admin.html")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
-                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-    }
+  private Filter ssoFilter() {
+    CompositeFilter filter = new CompositeFilter();
+    List<Filter> filters = new ArrayList<>();
+    filters.add(ssoFilter(google(), "/login/google"));
+    filter.setFilters(filters);
+    return filter;
+  }
 
-    @Bean
-    FilterRegistrationBean oauth2ClientFilterRegistration(
-            OAuth2ClientContextFilter filter) {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
-        registration.setFilter(filter);
-        registration.setOrder(-100);
-        return registration;
-    }
+  private Filter ssoFilter(ClientResources client, String path) {
+    OAuth2ClientAuthenticationProcessingFilter oAuth2ClientAuthenticationFilter =
+        new OAuth2ClientAuthenticationProcessingFilter(path);
+    OAuth2RestTemplate oAuth2RestTemplate =
+        new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+    oAuth2ClientAuthenticationFilter.setRestTemplate(oAuth2RestTemplate);
+    UserInfoTokenServices tokenServices =
+        new UserInfoTokenServices(
+            client.getResource().getUserInfoUri(), client.getClient().getClientId());
+    tokenServices.setRestTemplate(oAuth2RestTemplate);
+    oAuth2ClientAuthenticationFilter.setTokenServices(tokenServices);
+    oAuth2ClientAuthenticationFilter.setAuthenticationSuccessHandler(
+        new AuthenticationSuccessHandler() {
+          private final Logger log = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
 
-    @Bean
-    @ConfigurationProperties("google")
-    ClientResources google() {
-        return new ClientResources();
-    }
+          @Override
+          public void onAuthenticationSuccess(
+              HttpServletRequest httpServletRequest,
+              HttpServletResponse httpServletResponse,
+              Authentication authentication)
+              throws IOException, ServletException {
 
-    private Filter ssoFilter() {
-        CompositeFilter filter = new CompositeFilter();
-        List<Filter> filters = Arrays.asList(
-                ssoFilter(google(), "/login/google"));
-        filter.setFilters(filters);
-        return filter;
-    }
+            OAuth2Authentication userPrincipal = (OAuth2Authentication) authentication;
+            org.springframework.security.core.Authentication authentication1 =
+                userPrincipal.getUserAuthentication();
 
-    private Filter ssoFilter(ClientResources client, String path) {
+            Map<String, String> details = new LinkedHashMap<>();
+            details = (Map<String, String>) authentication1.getDetails();
+            String displayName = details.get("displayName").replaceAll("\\s+", "");
+            if (authentication.isAuthenticated()) {
+              Account account = userRepository.findByName(displayName);
+              if (account == null) userRepository.save(new Account(displayName, ""));
+              redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, "/chat");
+            }
+          }
+        });
+    return oAuth2ClientAuthenticationFilter;
+  }
 
-        OAuth2ClientAuthenticationProcessingFilter filter = new OAuth2ClientAuthenticationProcessingFilter(
-                path);
+  /* private Filter ssoFilter(ClientResources client, String path) {
 
-        OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(),
-                oauth2ClientContext);
-        filter.setRestTemplate(template);
-        filter.setTokenServices(new UserInfoTokenServices(client.getResource()
-                .getUserInfoUri(), client.getClient().getClientId()));
-        return filter;
-    }
+    OAuth2ClientAuthenticationProcessingFilter filter =
+        new OAuth2ClientAuthenticationProcessingFilter(path);
 
-    @Override
-    public void configure(AuthorizationServerSecurityConfigurer security)
-            throws Exception {
-    }
+    OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
+    filter.setRestTemplate(template);
+    filter.setTokenServices(
+        new UserInfoTokenServices(
+            client.getResource().getUserInfoUri(), client.getClient().getClientId()));
+    return filter;
+  }*/
 
-    @Override
-    public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.withClientDetails(this.clientDetailsService);
-    }
+  @Override
+  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {}
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-    }
+  @Override
+  public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+    clients.withClientDetails(this.clientDetailsService);
+  }
+
+  @Autowired
+  public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+  }
 }
-
 
 class ClientResources {
 
-    @NestedConfigurationProperty
-    private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
+  @NestedConfigurationProperty
+  private AuthorizationCodeResourceDetails client = new AuthorizationCodeResourceDetails();
 
-    @NestedConfigurationProperty
-    private ResourceServerProperties resource = new ResourceServerProperties();
+  @NestedConfigurationProperty
+  private ResourceServerProperties resource = new ResourceServerProperties();
 
-    public AuthorizationCodeResourceDetails getClient() {
-        return client;
-    }
+  public AuthorizationCodeResourceDetails getClient() {
+    return client;
+  }
 
-    public ResourceServerProperties getResource() {
-        return resource;
-    }
+  public ResourceServerProperties getResource() {
+    return resource;
+  }
 }
-

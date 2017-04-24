@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Role;
-import tone.analyzer.domain.entity.User;
-import tone.analyzer.domain.repository.UserRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,13 @@ import java.util.List;
 /** Created by mozammal on 4/18/17. */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-  @Autowired private UserRepository userRepository;
+  @Autowired private AccountRepository userRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    User user = userRepository.findByName(username);
-    if (user == null) throw new UsernameNotFoundException("User not found");
+    Account user = userRepository.findByName(username);
+    if (user == null) throw new UsernameNotFoundException("Account not found");
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
     for (Role role : user.getRole()) {

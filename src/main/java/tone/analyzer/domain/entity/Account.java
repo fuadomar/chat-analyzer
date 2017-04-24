@@ -1,25 +1,27 @@
 package tone.analyzer.domain.entity;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
 /** Created by mozammal on 4/18/17. */
 @Document
-public class User {
+public class Account {
 
   @Id private String id;
 
+  @Indexed(unique = true)
   private String name;
 
   private String password;
 
   private List<Role> role;
 
-  public User() {}
+  public Account() {}
 
-  public User(String name, String password) {
+  public Account(String name, String password) {
     this.name = name;
     this.password = password;
   }
