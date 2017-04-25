@@ -116,9 +116,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
      * .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
      */
     http.authorizeRequests()
-        .antMatchers("/login**", "/resources*", "/registration")
+        .antMatchers("/login/**", "/resources/**", "/registration/**")
         .permitAll()
-        .antMatchers("/admin**")
+        .antMatchers("/admin/**")
         .hasRole("ADMIN")
         .anyRequest()
         .authenticated()
@@ -151,7 +151,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         .and()
         .authorizeRequests()
-        .antMatchers("/js*", "/lib*", "/images*", "/css*", "/chat.html", "/", "/admin.html")
+        .antMatchers(
+            "/js**", "/lib*", "/images**", "/css**", "/chat.html", "/", "/admin.html", "/review")
         .permitAll()
         .anyRequest()
         .authenticated()

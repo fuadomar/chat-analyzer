@@ -3,7 +3,10 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
     <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -33,9 +36,11 @@
                 th:text="Login"></button>
     </form>
 </div>
-
 <div>
-    login with google: <a href="/login/google">click here</a>
+
+    login with google: <a href="/login/google"> google</a>
+    <!-- <img src="../static/images/images.png" th:src="@{/images/images.png}"/>-->
 </div>
+<!--<button type="button" class="btn-google-plus"><i class="fa fa-google-plus left"></i> Google +</button>-->
 </body>
 </html>

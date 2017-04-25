@@ -107,6 +107,36 @@ $(document).ready(function () {
          });*/
 
 
+        $('#review-button').click(function () {
+            var review = $('textarea#review').val();
+            alert(review)
+            if (review != '') {
+
+                var token = $("meta[name='_csrf']").attr("content");
+                var header = $("meta[name='_csrf_header']").attr("content");
+                $(document).ajaxSend(function (e, xhr, options) {
+                    xhr.setRequestHeader(header, token);
+                });
+
+                /*   $.post("/review", {user: sessionId, review: review})
+                 .done(function (data) {
+                 $('textarea#review').val('');
+                 });*/
+
+                $.ajax({
+                    type: "POST",
+                    url: "/review",
+                    data: {user: sessionId, review: review},
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (msg) {
+                        console.log(msg);
+                    }
+                });
+
+
+            }
+        });
         $('#chatbox-container').on('click', '.msg_head', function (e) {
             e.stopPropagation();
             $(this).siblings('.msg_wrap').slideToggle('slow');

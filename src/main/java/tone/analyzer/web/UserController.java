@@ -14,6 +14,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.entity.Review;
+import tone.analyzer.domain.repository.ReviewRepository;
+import tone.analyzer.review.service.ReviewService;
 import tone.analyzer.service.AdminService;
 import tone.analyzer.validator.UserValidator;
 
@@ -32,6 +35,22 @@ public class UserController {
 
   @Autowired private AdminService adminService;
 
+  @Autowired private ReviewService reviewService;
+
+  /*@RequestMapping(value = "/review", method = RequestMethod.GET)
+  public String review(Model model) {
+    model.addAttribute("reviewForm", new Review());
+    return "review";
+  }
+
+  @RequestMapping(value = "/review", method = RequestMethod.POST)
+  public String storeReview(
+      @ModelAttribute("reviewForm") Review reviewForm, BindingResult bindingResult, Model model) {
+
+    reviewService.saveReview(reviewForm);
+    return "review";
+  }*/
+
   @RequestMapping(value = "/registration", method = RequestMethod.GET)
   public String registration(Model model) {
     model.addAttribute("userForm", new Account());
@@ -47,8 +66,8 @@ public class UserController {
       HttpServletRequest request,
       HttpServletResponse response,
       RedirectAttributes redirectAttributes) {
-    userValidator.validate(userForm, bindingResult);
 
+    userValidator.validate(userForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
       return "registration";
