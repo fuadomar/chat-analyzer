@@ -122,13 +122,15 @@ $(document).ready(function () {
                  .done(function (data) {
                  $('textarea#review').val('');
                  });*/
-
+                var jsonStr = '{" user": "'+sessionId+'" , "review": "'+review+' "}';
                 $.ajax({
                     type: "POST",
                     url: "/review",
-                    data: {user: sessionId, review: review},
+                    data: jsonStr,
                     contentType: "application/json",
                     dataType: "json",
+                    processData:false,
+                    cache: false,
                     success: function (msg) {
                         console.log(msg);
                     }

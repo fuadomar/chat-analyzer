@@ -15,6 +15,11 @@ public class Review {
 
   public Review() {}
 
+  public Review(String user, String review) {
+    this.user = user;
+    this.review = review;
+  }
+
   public String getReview() {
     return review;
   }
