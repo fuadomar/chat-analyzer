@@ -25,7 +25,8 @@ public class ReviewController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = "application/json")
-  public String sendChatMessageToDestination(@RequestBody Review review, HttpServletResponse response) {
+  public String sendChatMessageToDestination(
+      @RequestBody Review review, HttpServletResponse response) {
     reviewGateway.saveReview(review);
     return "Ok";
   }
