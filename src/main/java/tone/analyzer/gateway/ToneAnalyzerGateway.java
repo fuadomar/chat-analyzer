@@ -13,6 +13,17 @@ public class ToneAnalyzerGateway {
   @Autowired private ToneAnalyzerService toneAnalyzerService;
 
   public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
-    return toneAnalyzerService.analyzerConversationalTone(chatMessage);
+
+    return toneAnalyzerService.analyzerConversationalToneBetweenTwoUser(chatMessage);
+  }
+
+  public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(ChatMessage chatMessage) {
+
+    return toneAnalyzerService.analyzerIndividualConversationalTone(chatMessage);
+  }
+
+  public ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage) {
+
+    return toneAnalyzerService.analyzeReviewTone(chatMessage);
   }
 }

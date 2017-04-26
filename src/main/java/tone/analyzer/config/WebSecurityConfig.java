@@ -67,8 +67,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   private final ClientDetailsService clientDetailsService;
 
   @Autowired private AccountRepository userRepository;
-  /*  @Autowired
-  private MySimpleUrlAuthenticationSuccessHandler mySimpleUrlAuthenticationSuccessHandler;*/
 
   @Autowired
   public WebSecurityConfig(
@@ -86,40 +84,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   @Override
   public void configure(
       AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer)
-      throws Exception {
-    String test = "Tetsing ";
-  }
+      throws Exception {}
 
   @Configuration
   @EnableResourceServer
   protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
-      http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
-      http.antMatcher("/user").authorizeRequests().anyRequest().authenticated();
-      // @formatter:off
-      //http.antMatcher("/me").authorizeRequests().anyRequest().authenticated();
-      // @formatter:on
+      http.antMatcher("/chat").authorizeRequests().anyRequest().authenticated();
     }
   }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    /*   http.antMatcher("*/
-    /** ").authorizeRequests() .antMatchers("/", "/login**", "/webjars */
-    /**
-     * ").permitAll().anyRequest() .authenticated().and().exceptionHandling()
-     * .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")).and().logout()
-     * .logoutSuccessUrl("/").permitAll().and().csrf()
-     * .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
-     * .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-     */
     http.authorizeRequests()
         .antMatchers("/login/**", "/resources/**", "/registration/**")
         .permitAll()
         .antMatchers("/admin/**")
         .hasRole("ADMIN")
+        .antMatchers("/chat/**")
+        .hasAnyRole("USER", "ADMIN")
         .anyRequest()
         .authenticated()
         .and()
@@ -151,9 +136,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
         .and()
         .authorizeRequests()
-        .antMatchers(
-            "/js**", "/lib*", "/images**", "/css**", "/chat.html", "/", "/admin.html", "/review")
-        .permitAll()
         .anyRequest()
         .authenticated()
         .and()
@@ -220,19 +202,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         });
     return oAuth2ClientAuthenticationFilter;
   }
-
-  /* private Filter ssoFilter(ClientResources client, String path) {
-
-    OAuth2ClientAuthenticationProcessingFilter filter =
-        new OAuth2ClientAuthenticationProcessingFilter(path);
-
-    OAuth2RestTemplate template = new OAuth2RestTemplate(client.getClient(), oauth2ClientContext);
-    filter.setRestTemplate(template);
-    filter.setTokenServices(
-        new UserInfoTokenServices(
-            client.getResource().getUserInfoUri(), client.getClient().getClientId()));
-    return filter;
-  }*/
 
   @Override
   public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {}

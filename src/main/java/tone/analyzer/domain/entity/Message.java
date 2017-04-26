@@ -15,7 +15,7 @@ public class Message {
 
   private String content;
 
-  private Date timeCreated;
+  private Date createdTime;
 
   private String conversationId;
 
@@ -25,7 +25,7 @@ public class Message {
     this.content = content;
     this.conversationId = conversationId;
     this.sender = sender;
-    this.timeCreated = timeCreated;
+    this.createdTime = timeCreated;
   }
 
   public String getContent() {
@@ -52,11 +52,11 @@ public class Message {
     this.sender = sender;
   }
 
-  public Date getTimeCreated() {
-    return timeCreated;
+  public Date getCreatedTime() {
+    return createdTime;
   }
 
-  public void setTimeCreated(Date timeCreated) {
-    this.timeCreated = timeCreated;
+  public void setCreatedTime(Date createdTime) {
+    this.createdTime = createdTime;
   }
 }

@@ -15,6 +15,7 @@ import tone.analyzer.domain.entity.Conversation;
 import tone.analyzer.domain.entity.Message;
 import tone.analyzer.domain.repository.ConversationRepository;
 import tone.analyzer.domain.repository.MessageRepository;
+import tone.analyzer.utility.ToneAnalyzerUtility;
 
 import java.util.List;
 
@@ -34,14 +35,12 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
 
   @Autowired private MessageRepository messageRepository;
 
+  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
+
   @Override
-  public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
-    /*
-    ToneAnalysis tone = service.getTone(input, null).execute();
+  public ToneAnalyzerFeedBackDTO analyzerConversationalToneBetweenTwoUser(ChatMessage chatMessage) {
 
-    JsonObject json = parser.parse(tone.toString()).getAsJsonObject();*/
-
-    ToneAnalyzer toneAnalyzer = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_05_19);
+    /* ToneAnalyzer toneAnalyzer = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_05_19);
     toneAnalyzer.setUsernameAndPassword(userName, password);
     Conversation conversation =
         conversationRepository.findConversationBySenderAndRecipient(
@@ -61,7 +60,17 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
         log.info("{} {} ", toneScore.getName(), toneScore.getScore());
         toneAnalyzerFeedBackDTO.put(toneScore.getName(), toneScore.getScore());
       }
-    }
-    return toneAnalyzerFeedBackDTO;
+    }*/
+    return toneAnalyzerUtility.analyzeToneBetweenToUserByIBMWatson(chatMessage);
+  }
+
+  @Override
+  public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(ChatMessage chatMessage) {
+    return toneAnalyzerUtility.analyzeIndividualToneByIBMWatson(chatMessage);
+  }
+
+  @Override
+  public ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage) {
+    return toneAnalyzerUtility.analyzeReviewToneByIBMWatson(chatMessage);
   }
 }

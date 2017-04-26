@@ -11,21 +11,21 @@ public class Review {
 
   private String user;
 
-  private String review;
+  private String content;
 
   public Review() {}
 
   public Review(String user, String review) {
     this.user = user;
-    this.review = review;
+    this.content = review;
   }
 
-  public String getReview() {
-    return review;
+  public String getContent() {
+    return content;
   }
 
-  public void setReview(String review) {
-    this.review = review;
+  public void setContent(String content) {
+    this.content = content;
   }
 
   public String getUser() {

@@ -122,23 +122,26 @@ $(document).ready(function () {
                  .done(function (data) {
                  $('textarea#review').val('');
                  });*/
-                var jsonStr = '{" user": "'+sessionId+'" , "review": "'+review+' "}';
+                var jsonStr = '{ "user": "' + sessionId + '" , "content": "' + review + ' "}';
                 $.ajax({
-                    type: "POST",
-                    url: "/review",
+                    type: 'POST',
+                    url: '/review',
                     data: jsonStr,
-                    contentType: "application/json",
-                    dataType: "json",
-                    processData:false,
+                    contentType: 'application/json; charset=utf-8',
+                    processData: false,
                     cache: false,
-                    success: function (msg) {
-                        console.log(msg);
+                    success: function (data, textStatus, xhr) {
+                        alert(xhr.status + " " + "success");
+                        $('textarea#review').val('');
+                    },
+                    error: function (data, textStatus, xhr) {
+                        alert(data.responseText + " error");
                     }
                 });
-
-
             }
         });
+
+
         $('#chatbox-container').on('click', '.msg_head', function (e) {
             e.stopPropagation();
             $(this).siblings('.msg_wrap').slideToggle('slow');

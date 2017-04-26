@@ -6,5 +6,9 @@ import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 /** Created by mozammal on 4/11/17. */
 public interface ToneAnalyzerService {
 
-  public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage);
+  public ToneAnalyzerFeedBackDTO analyzerConversationalToneBetweenTwoUser(ChatMessage chatMessage);
+
+  public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(ChatMessage chatMessage);
+
+  ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage);
 }

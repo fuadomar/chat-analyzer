@@ -1,33 +1,102 @@
 $(document).ready(function () {
 
+    function getNormalizedData(data) {
+        var series = []
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                if (data[key] < 0.5)
+                    continue
+                console.log(key + " -> " + data[key]);
+                var arr = []
+                arr.push(key);
+                arr.push(data[key]);
+                series.push(arr)
+            }
+        }
+        return series;
+    }
+
+    /*   $("#button-analyze").click(function () {
+     var sender = $("#sender option:selected").text().trim();
+     var recipient = $("#recipient option:selected").text().trim();
+     $.get({
+     type: 'get',
+     url: '/tone-analyzer-between-users',
+     dataType: 'json',
+     data: 'sender=' + sender + '&recipient=' + recipient,
+     success: function (data) {
+     console.log(data);
+     var series = getNormalizedData(data);
+     console.log(series);
+     drawPieChart(series)
+     }
+     });
+     });*/
+
+
     $("#button-analyze").click(function () {
-        var firstUser = $("#first-user option:selected").text().trim();
-        var secondUser = $("#second-user option:selected").text().trim();
+        var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
-            url: '/tone-analyzer',
+            url: '/tone-analyzer-individual',
             dataType: 'json',
-            data: 'firstUser=' + firstUser + '&secondUser=' + secondUser,
+            data: 'sender=' + sender,
             success: function (data) {
                 console.log(data);
-                var series = []
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        console.log(key + " -> " + 100 * data[key]);
-                        var arr = []
-                        arr.push(key);
-                        arr.push(100.0 * data[key]);
-                        series.push(arr)
-                    }
-                }
+                var series = getNormalizedData(data);
                 console.log(series);
-                drawGraph(series)
+                drawDonut(series)
+            }
+        });
+    });
+
+    $("#button-analyze-review").click(function () {
+        var reviewer = $("#sender option:selected").text().trim();
+        $.get({
+            type: 'get',
+            url: '/review-analyzer',
+            dataType: 'json',
+            data: 'reviewer=' + reviewer,
+            success: function (data) {
+                console.log(data);
+                var series = getNormalizedData(data);
+                console.log(series);
+                drawDonut(series)
             }
         });
     });
 
 
-    function drawGraph(dataPoint) {
+    function drawDonut(dataPoint) {
+
+        Highcharts.chart('graph', {
+            chart: {
+                type: 'pie',
+                options3d: {
+                    enabled: true,
+                    alpha: 45
+                }
+            },
+            title: {
+                text: 'Tone Analyzer'
+            },
+            subtitle: {
+                text: '3D donut'
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: 100,
+                    depth: 45
+                }
+            },
+            series: [{
+                name: 'Tone',
+                data: dataPoint
+            }]
+        });
+    }
+
+    function drawPieChart(dataPoint) {
 
         Highcharts.chart('graph', {
             chart: {

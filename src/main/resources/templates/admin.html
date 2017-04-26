@@ -15,16 +15,17 @@
 <body>
 
 <div class="container">
-    <select class="form-control" id="first-user">
+    <select class="form-control" id="sender">
         <option th:value="${user.name}" th:each="user : ${userList}">
             <p th:text="${user.name}"/></option>
     </select>
 
-    <select class="form-control" id="second-user">
+    <!--<select class="form-control" id="recipient">
         <option th:value="${user.name}" th:each="user : ${userList}">
             <p th:text="${user.name}"/></option>
-    </select>
-    <button type="button" class="btn btn-default" id="button-analyze">Analyze</button>
+    </select>-->
+    <button type="button" class="btn btn-default" id="button-analyze">Analyze Chat Tone</button>
+    <button type="button" class="btn btn-default" id="button-analyze-review">Analyze Review Tone</button>
 </div>
 
 <script type="text/javascript" th:src="@{/js/admin.js}"></script>
