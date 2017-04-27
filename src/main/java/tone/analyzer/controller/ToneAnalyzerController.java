@@ -1,8 +1,9 @@
 package tone.analyzer.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.gateway.ToneAnalyzerGateway;
 
@@ -12,6 +13,7 @@ public class ToneAnalyzerController {
 
   @Autowired private ToneAnalyzerGateway toneAnalyzerGateway;
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @RequestMapping(value = "/tone-analyzer-between-users", method = RequestMethod.GET)
   public ToneAnalyzerFeedBackDTO analyzerConversationalTone(
       @RequestParam("sender") String sender, @RequestParam("recipient") String recipient) {
@@ -22,6 +24,7 @@ public class ToneAnalyzerController {
     return toneAnalyzerGateway.analyzerConversationalTone(chatMessage);
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @RequestMapping(value = "/tone-analyzer-individual", method = RequestMethod.GET)
   public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(
       @RequestParam("sender") String sender) {
@@ -31,6 +34,7 @@ public class ToneAnalyzerController {
     return toneAnalyzerGateway.analyzerIndividualConversationalTone(chatMessage);
   }
 
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @RequestMapping(value = "/review-analyzer", method = RequestMethod.GET)
   public ToneAnalyzerFeedBackDTO analyzeReviewTone(@RequestParam("reviewer") String reviewer) {
 

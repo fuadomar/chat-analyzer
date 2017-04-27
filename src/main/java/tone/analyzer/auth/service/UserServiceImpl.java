@@ -13,6 +13,7 @@ import java.util.List;
 /** Created by mozammal on 4/18/17. */
 @Service
 public class UserServiceImpl implements UserService {
+
   @Autowired private AccountRepository userRepository;
 
   @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;

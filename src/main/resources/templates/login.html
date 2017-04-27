@@ -36,11 +36,13 @@
                 th:text="Login"></button>
     </form>
 </div>
-<div>
-
-    login with google: <a href="/login/google"> google</a>
-    <!-- <img src="../static/images/images.png" th:src="@{/images/images.png}"/>-->
+<div class="row">
+    <div class="col-md-2 col-md-offset-5">
+        <br/>
+        <a href="/login/google"> <img th:height="50" th:width="180" src="../static/images/images.png"
+                                      th:src="@{/images/images.png}"/></a>
+    </div>
 </div>
-<!--<button type="button" class="btn-google-plus"><i class="fa fa-google-plus left"></i> Google +</button>-->
+
 </body>
 </html>

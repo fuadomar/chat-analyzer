@@ -22,7 +22,7 @@ public class Account {
   public Account() {}
 
   public Account(String name, String password) {
-    this.name = name;
+    this.name = name.toLowerCase();
     this.password = password;
   }
 
@@ -39,7 +39,7 @@ public class Account {
   }
 
   public void setName(String name) {
-    this.name = name;
+    this.name = name.toLowerCase();
   }
 
   public String getPassword() {

@@ -21,11 +21,11 @@ public class Message {
 
   public Message() {}
 
-  public Message(String conversationId, String sender, String content, Date timeCreated) {
+  public Message(String conversationId, String sender, String content, Date createdTime) {
     this.content = content;
     this.conversationId = conversationId;
     this.sender = sender;
-    this.createdTime = timeCreated;
+    this.createdTime = createdTime;
   }
 
   public String getContent() {

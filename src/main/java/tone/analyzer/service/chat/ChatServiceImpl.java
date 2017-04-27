@@ -1,13 +1,13 @@
-package tone.analyzer.service;
+package tone.analyzer.service.chat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.entity.Conversation;
 import tone.analyzer.domain.entity.Message;
 import tone.analyzer.domain.repository.ConversationRepository;
 import tone.analyzer.domain.repository.MessageRepository;
-import tone.analyzer.websocket.MessageProducer;
+import tone.analyzer.websocket.ChatMessageProducer;
 
 import java.util.Date;
 
@@ -15,7 +15,7 @@ import java.util.Date;
 @Component
 public class ChatServiceImpl implements ChatService {
 
-  @Autowired private MessageProducer messageProducer;
+  @Autowired private ChatMessageProducer messageProducer;
 
   @Autowired private ConversationRepository conversationRepository;
 

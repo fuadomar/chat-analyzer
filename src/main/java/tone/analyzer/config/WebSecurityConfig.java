@@ -14,9 +14,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2ClientContext;
@@ -121,7 +124,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                   HttpServletResponse response,
                   Authentication authentication)
                   throws IOException, ServletException {
-                redirectStrategy.sendRedirect(request, response, "/chat");
+
+                Collection<? extends GrantedAuthority> authorities =
+                    authentication.getAuthorities();
+                boolean isAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+                boolean isUser = authorities.contains(new SimpleGrantedAuthority("ROLE_USER"));
+                if (isAdmin) redirectStrategy.sendRedirect(request, response, "/admin");
+                else if (isUser) redirectStrategy.sendRedirect(request, response, "/chat");
               }
             })
         .permitAll()
@@ -140,6 +149,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .authenticated()
         .and()
         .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+  }
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    web.ignoring().antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
   }
 
   @Bean
@@ -192,7 +206,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
             Map<String, String> details = new LinkedHashMap<>();
             details = (Map<String, String>) authentication1.getDetails();
-            String displayName = details.get("displayName").replaceAll("\\s+", "");
+            String displayName =
+                details.get("displayName").replaceAll("\\s+", "").toLowerCase()
+                    + userPrincipal.getName();
             if (authentication.isAuthenticated()) {
               Account account = userRepository.findByName(displayName);
               if (account == null) userRepository.save(new Account(displayName, ""));

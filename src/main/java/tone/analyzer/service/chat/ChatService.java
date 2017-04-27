@@ -1,6 +1,6 @@
-package tone.analyzer.service;
+package tone.analyzer.service.chat;
 
-import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.model.ChatMessage;
 
 /** Created by mozammal on 4/11/17. */
 public interface ChatService {

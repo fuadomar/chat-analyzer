@@ -1,6 +1,6 @@
-package tone.analyzer.service;
+package tone.analyzer.service.tone.recognizer;
 
-import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 
 /** Created by mozammal on 4/11/17. */

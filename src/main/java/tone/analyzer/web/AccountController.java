@@ -1,6 +1,7 @@
 package tone.analyzer.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -14,11 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.Account;
-import tone.analyzer.domain.entity.Review;
-import tone.analyzer.domain.repository.ReviewRepository;
-import tone.analyzer.review.service.ReviewService;
-import tone.analyzer.service.AdminService;
-import tone.analyzer.validator.UserValidator;
+import tone.analyzer.service.admin.AdminService;
+import tone.analyzer.validator.AccountValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -26,55 +24,50 @@ import java.util.List;
 
 /** Created by mozammal on 4/18/17. */
 @Controller
-public class UserController {
+public class AccountController {
+
+  public static final String ERROR_ATTRIBUTED = "error";
+
+  public static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
+      "Your username and password is invalid.";
+
+  public static final String MESSAGE_ATTRIBUTED = "message";
+
+  public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
+      "You have been logged out successfully.";
+
   @Autowired private UserService userService;
 
   @Autowired private SecurityService securityService;
 
-  @Autowired private UserValidator userValidator;
+  @Autowired private AccountValidator userValidator;
 
   @Autowired private AdminService adminService;
 
-  @Autowired private ReviewService reviewService;
-
-  /*@RequestMapping(value = "/review", method = RequestMethod.GET)
-  public String review(Model model) {
-    model.addAttribute("reviewForm", new Review());
-    return "review";
-  }
-
-  @RequestMapping(value = "/review", method = RequestMethod.POST)
-  public String storeReview(
-      @ModelAttribute("reviewForm") Review reviewForm, BindingResult bindingResult, Model model) {
-
-    reviewService.saveReview(reviewForm);
-    return "review";
-  }*/
-
   @RequestMapping(value = "/registration", method = RequestMethod.GET)
   public String registration(Model model) {
-    model.addAttribute("userForm", new Account());
+    model.addAttribute("accountForm", new Account());
 
     return "registration";
   }
 
   @RequestMapping(value = "/registration", method = RequestMethod.POST)
   public String registration(
-      @ModelAttribute("userForm") Account userForm,
+      @ModelAttribute("accountForm") Account accountForm,
       BindingResult bindingResult,
       Model model,
       HttpServletRequest request,
       HttpServletResponse response,
       RedirectAttributes redirectAttributes) {
 
-    userValidator.validate(userForm, bindingResult);
+    userValidator.validate(accountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
       return "registration";
     }
-    String plainTextPassword = userForm.getPassword();
-    userService.save(userForm);
-    securityService.autoLogin(userForm.getName(), plainTextPassword, request, response);
+    String plainTextPassword = accountForm.getPassword();
+    userService.save(accountForm);
+    securityService.autoLogin(accountForm.getName(), plainTextPassword, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute("userName", user.getName());
@@ -84,11 +77,12 @@ public class UserController {
   @RequestMapping(value = "/login", method = RequestMethod.GET)
   public String login(Model model, String error, String logout) {
 
-    if (error != null) model.addAttribute("error", "Your username and password is invalid.");
-    if (logout != null) model.addAttribute("message", "You have been logged out successfully.");
+    if (error != null) model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
+    if (logout != null) model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
     return "login";
   }
 
+  @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
     value = {"/", "/chat"},
     method = RequestMethod.GET
@@ -98,10 +92,8 @@ public class UserController {
     return "chat";
   }
 
-  @RequestMapping(
-    value = {"/admin"},
-    method = RequestMethod.GET
-  )
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/admin", method = RequestMethod.GET)
   public String admin(Model model) {
 
     List<Account> userList = adminService.fetchAllUsers();

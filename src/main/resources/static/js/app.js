@@ -18,18 +18,6 @@ function createChatBox(userId) {
     return chatBox;
 }
 
-
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-
 $(document).ready(function () {
 
     var chatList = $(".chat_body");
@@ -74,14 +62,12 @@ $(document).ready(function () {
                 if (sessionId == messageArray[i].userName)
                     continue;
                 chatList.append(createChatList(messageArray[i].userName));
-                //chatBox.append(createChatBox(messageArray[i].userName));
             }
         });
 
         stompClient.subscribe("/topic/chat.login", function (message) {
 
             chatList.append(createChatList(JSON.parse(message.body).userName));
-            //chatList.append(createChatBox(JSON.parse(message.body).userName));
         });
 
         stompClient.subscribe("/topic/chat.logout", function (message) {
@@ -90,26 +76,8 @@ $(document).ready(function () {
             $("#user" + userName).remove();
         });
 
-        /*    $('#container').on('keydown', '.btn-input', function (e) {
-         if (e.which === 13) {
-         var msg = $(this).val();
-         var recipientId = $(this).attr('id').split("_")[1];
-         msgForSender = sessionId + ": " + msg;
-         console.log("sending message: " + msg);
-         $("#chat-" + recipientId)     // create `<div>` with `serialModel` as ID
-         .append("<li>" + msgForSender + "</li>")
-         stompClient.send("/app/chat-message/message", {}, JSON.stringify({
-         'topic': "message", 'message': msg,
-         'recipient': recipientId, 'sender': sessionId
-         }));
-         $(this).val('');
-         }
-         });*/
-
-
         $('#review-button').click(function () {
             var review = $('textarea#review').val();
-            alert(review)
             if (review != '') {
 
                 var token = $("meta[name='_csrf']").attr("content");
@@ -118,10 +86,6 @@ $(document).ready(function () {
                     xhr.setRequestHeader(header, token);
                 });
 
-                /*   $.post("/review", {user: sessionId, review: review})
-                 .done(function (data) {
-                 $('textarea#review').val('');
-                 });*/
                 var jsonStr = '{ "user": "' + sessionId + '" , "content": "' + review + ' "}';
                 $.ajax({
                     type: 'POST',
@@ -131,23 +95,22 @@ $(document).ready(function () {
                     processData: false,
                     cache: false,
                     success: function (data, textStatus, xhr) {
-                        alert(xhr.status + " " + "success");
                         $('textarea#review').val('');
                     },
                     error: function (data, textStatus, xhr) {
-                        alert(data.responseText + " error");
                     }
                 });
             }
         });
 
 
+        $('.chat_box').on('click', '.chat_head', function (e) {
+            e.stopPropagation();
+            $(this).siblings('.chat_body').slideToggle('slow');
+        });
+
         $('#chatbox-container').on('click', '.msg_head', function (e) {
             e.stopPropagation();
-            $(this).siblings('.msg_wrap').slideToggle('slow');
-        });
-        $('.chat_body').on('.msg_head', 'click', function () {
-
             $(this).siblings('.msg_wrap').slideToggle('slow');
         });
 

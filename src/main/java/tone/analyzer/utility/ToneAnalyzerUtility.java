@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.domain.entity.Conversation;
 import tone.analyzer.domain.entity.FlaggedMessage;
@@ -27,7 +27,9 @@ import java.util.List;
 @Component
 public class ToneAnalyzerUtility {
 
-  /*  Anger 0.159056
+  /* attributes returned from watson
+
+  Anger 0.159056
   Disgust 0.143912
   Fear 0.405248
   Joy 0.047352
@@ -42,6 +44,8 @@ public class ToneAnalyzerUtility {
   Emotional Range 0.851521*/
 
   private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerUtility.class);
+
+  public static final double ACCEPTED_WEIGHTED_THRESHOLD = 0.5;
 
   @Value("${watson.user.name}")
   private String userName;
@@ -59,7 +63,7 @@ public class ToneAnalyzerUtility {
 
   public ToneAnalyzerFeedBackDTO analyzeToneBetweenToUserByIBMWatson(ChatMessage chatMessage) {
 
-    ToneAnalyzer toneAnalyzer = getIBMToneAnalyzer();
+    /*ToneAnalyzer toneAnalyzer = getIBMToneAnalyzer();
     Conversation conversation =
         conversationRepository.findConversationBySenderAndRecipient(
             chatMessage.getSender(), chatMessage.getRecipient());
@@ -79,13 +83,8 @@ public class ToneAnalyzerUtility {
         toneAnalyzerFeedBackDTO.put(toneScore.getName(), toneScore.getScore());
       }
     }
-    return toneAnalyzerFeedBackDTO;
-  }
-
-  private ToneAnalyzer getIBMToneAnalyzer() {
-    ToneAnalyzer toneAnalyzer = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_05_19);
-    toneAnalyzer.setUsernameAndPassword(userName, password);
-    return toneAnalyzer;
+    return toneAnalyzerFeedBackDTO;*/
+    return null;
   }
 
   public ToneAnalyzerFeedBackDTO analyzeIndividualToneByIBMWatson(ChatMessage chatMessage) {
@@ -102,26 +101,54 @@ public class ToneAnalyzerUtility {
     String msg = "";
     for (Message message : messageList) msg = msg + message.getContent() + "\n";
 
-    log.info("text: {}", msg);
+    log.debug("text: {}", msg);
     List<String> likelyToneInMessage = new ArrayList<>();
     List<Double> likelyToneScore = new ArrayList<>();
+    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO =
+        getToneAnalyzerFeedBackDTO(toneAnalyzer, msg, likelyToneInMessage, likelyToneScore);
+    if (!likelyToneInMessage.isEmpty()) {
+      FlaggedMessage flaggedMessage =
+          createFlaggedMessage(chatMessage, msg, likelyToneInMessage, likelyToneScore);
+      flaggedMessageRepository.save(flaggedMessage);
+    }
+    return toneAnalyzerFeedBackDTO;
+  }
+
+  public ToneAnalyzerFeedBackDTO analyzeReviewToneByIBMWatson(ChatMessage chatMessage) {
+
+    ToneAnalyzer toneAnalyzer = getIBMToneAnalyzer();
+    List<Review> reviews = reviewRepository.findByUser(chatMessage.getSender());
+    if (reviews == null) return null;
+    String reviewedContent = "";
+    for (Review review : reviews) reviewedContent = reviewedContent + review.getContent() + "\n";
+
+    log.debug("text: {}", reviewedContent);
+    List<String> likelyToneInMessage = new ArrayList<>();
+    List<Double> likelyToneScore = new ArrayList<>();
+    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO =
+        getToneAnalyzerFeedBackDTO(
+            toneAnalyzer, reviewedContent, likelyToneInMessage, likelyToneScore);
+
+    return toneAnalyzerFeedBackDTO;
+  }
+
+  private ToneAnalyzerFeedBackDTO getToneAnalyzerFeedBackDTO(
+      ToneAnalyzer toneAnalyzer,
+      String msg,
+      List<String> likelyToneInMessage,
+      List<Double> likelyToneScore) {
     ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO = new ToneAnalyzerFeedBackDTO();
     ToneAnalysis tone = toneAnalyzer.getTone(msg, null).execute();
 
     for (ToneCategory toneCategory : tone.getDocumentTone().getTones()) {
       for (ToneScore toneScore : toneCategory.getTones()) {
-        log.info("{} {} ", toneScore.getName(), toneScore.getScore());
-        if (toneScore.getScore() >= 0.5) {
+        log.debug("{} {} ", toneScore.getName(), toneScore.getScore());
+        if (toneScore.getScore() >= ACCEPTED_WEIGHTED_THRESHOLD) {
           toneAnalyzerFeedBackDTO.put(toneScore.getName(), toneScore.getScore());
           likelyToneInMessage.add(toneScore.getName());
           likelyToneScore.add(toneScore.getScore());
         }
       }
-    }
-    if (!likelyToneInMessage.isEmpty()) {
-      FlaggedMessage flaggedMessage =
-          createFlaggedMessage(chatMessage, msg, likelyToneInMessage, likelyToneScore);
-      flaggedMessageRepository.save(flaggedMessage);
     }
     return toneAnalyzerFeedBackDTO;
   }
@@ -139,24 +166,9 @@ public class ToneAnalyzerUtility {
     return flaggedMessage;
   }
 
-  public ToneAnalyzerFeedBackDTO analyzeReviewToneByIBMWatson(ChatMessage chatMessage) {
-
-    ToneAnalyzer toneAnalyzer = getIBMToneAnalyzer();
-    List<Review> reviews = reviewRepository.findByUser(chatMessage.getSender());
-    if (reviews == null) return null;
-    String reviewedContent = "";
-    for (Review review : reviews) reviewedContent = reviewedContent + review.getContent() + "\n";
-
-    log.info("text: {}", reviewedContent);
-    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO = new ToneAnalyzerFeedBackDTO();
-    ToneAnalysis tone = toneAnalyzer.getTone(reviewedContent, null).execute();
-
-    for (ToneCategory toneCategory : tone.getDocumentTone().getTones()) {
-      for (ToneScore toneScore : toneCategory.getTones()) {
-        log.info("{} {} ", toneScore.getName(), toneScore.getScore());
-        toneAnalyzerFeedBackDTO.put(toneScore.getName(), toneScore.getScore());
-      }
-    }
-    return toneAnalyzerFeedBackDTO;
+  private ToneAnalyzer getIBMToneAnalyzer() {
+    ToneAnalyzer toneAnalyzer = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_05_19);
+    toneAnalyzer.setUsernameAndPassword(userName, password);
+    return toneAnalyzer;
   }
 }

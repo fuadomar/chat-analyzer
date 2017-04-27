@@ -7,9 +7,9 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
-import tone.analyzer.domain.ChatMessage;
+import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.event.LoginEvent;
-import tone.analyzer.websocket.MessageProducer;
+import tone.analyzer.websocket.ChatMessageProducer;
 
 /** Created by mozammal on 4/12/17. */
 @Component
@@ -17,14 +17,13 @@ public class StompConnectEvent implements ApplicationListener<SessionConnectEven
 
   private final Log logger = LogFactory.getLog(StompConnectEvent.class);
 
-  @Autowired private MessageProducer messageProducer;
+  @Autowired private ChatMessageProducer messageProducer;
 
   public void onApplicationEvent(SessionConnectEvent event) {
     StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
 
-    //  String user = sha.getNativeHeader("user").get(0);
     String user = headers.getUser().getName();
-    logger.info("Connect event [sessionId: " + headers.getSessionId() + "; user: " + user + " ]");
+    logger.debug("Connect event [sessionId: " + headers.getSessionId() + "; user: " + user + " ]");
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setRecipient(user);
     LoginEvent loginEvent = new LoginEvent(user);

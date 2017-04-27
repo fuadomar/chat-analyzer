@@ -49,19 +49,7 @@ public class PresenceEventListener {
   @EventListener
   private void handleSessionConnected(SessionConnectEvent event) {
     SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-    /* String userName = headers.getNativeHeader("user").get(0);*/
-
     String userName = headers.getUser().getName();
-    Principal authentication = headers.getUser();
-
-    if (authentication instanceof OAuth2Authentication) {
-      OAuth2Authentication userPrincipal = (OAuth2Authentication) authentication;
-      org.springframework.security.core.Authentication authentication1 =
-          userPrincipal.getUserAuthentication();
-      Map<String, String> details = new LinkedHashMap<>();
-      details = (Map<String, String>) authentication1.getDetails();
-      userName = details.get("displayName").replaceAll("\\s+", "");
-    }
     LoginEvent loginEvent = new LoginEvent(userName);
     messagingTemplate.convertAndSend(loginDestination, loginEvent);
     log.info("logged in user session id: {}", headers.getSessionId());

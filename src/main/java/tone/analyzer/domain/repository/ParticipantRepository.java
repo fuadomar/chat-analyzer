@@ -1,5 +1,8 @@
 package tone.analyzer.domain.repository;
 
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
 import tone.analyzer.event.LoginEvent;
 
@@ -8,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /** Created by mozammal on 4/12/17. */
 @Component
+@Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ParticipantRepository {
 
   private Map<String, LoginEvent> activeSessions;

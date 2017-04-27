@@ -1,4 +1,4 @@
-package tone.analyzer.review.service;
+package tone.analyzer.service.review;
 
 import tone.analyzer.domain.entity.Review;
 

@@ -6,6 +6,7 @@ import java.util.Date;
 public class LoginEvent {
 
   private String userName;
+
   private Date time;
 
   public LoginEvent(String username) {

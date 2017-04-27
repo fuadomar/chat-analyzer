@@ -15,9 +15,9 @@ public class Review {
 
   public Review() {}
 
-  public Review(String user, String review) {
+  public Review(String user, String content) {
     this.user = user;
-    this.content = review;
+    this.content = content;
   }
 
   public String getContent() {

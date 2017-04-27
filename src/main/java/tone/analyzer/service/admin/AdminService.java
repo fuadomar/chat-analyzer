@@ -1,4 +1,4 @@
-package tone.analyzer.service;
+package tone.analyzer.service.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
