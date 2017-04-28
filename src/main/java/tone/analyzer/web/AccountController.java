@@ -40,18 +40,18 @@ public class AccountController {
 
   @Autowired private SecurityService securityService;
 
-  @Autowired private AccountValidator userValidator;
+  @Autowired private AccountValidator accountValidator;
 
   @Autowired private AdminService adminService;
 
-  @RequestMapping(value = "/registration", method = RequestMethod.GET)
+  @RequestMapping(value = "/user-registration", method = RequestMethod.GET)
   public String registration(Model model) {
     model.addAttribute("accountForm", new Account());
 
     return "registration";
   }
 
-  @RequestMapping(value = "/registration", method = RequestMethod.POST)
+  @RequestMapping(value = "/user-registration", method = RequestMethod.POST)
   public String registration(
       @ModelAttribute("accountForm") Account accountForm,
       BindingResult bindingResult,
@@ -60,7 +60,7 @@ public class AccountController {
       HttpServletResponse response,
       RedirectAttributes redirectAttributes) {
 
-    userValidator.validate(accountForm, bindingResult);
+    accountValidator.validate(accountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
       return "registration";
@@ -84,7 +84,7 @@ public class AccountController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
-    value = {"/", "/chat"},
+    value = {"/", "/live-chat"},
     method = RequestMethod.GET
   )
   public String chat(Model model) {

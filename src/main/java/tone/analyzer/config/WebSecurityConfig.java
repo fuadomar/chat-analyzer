@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,6 +36,7 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -60,6 +62,21 @@ import java.util.*;
 @Order(6)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     implements AuthorizationServerConfigurer {
+
+  public static final String LIVE_CHAT_URI = "/live-chat";
+  public static final String LOGIN_GOOGLE_URI = "/login/google";
+  public static final String DISPLAY_NAME = "displayName";
+  public static final String LOGIN_URI = "/login";
+  public static final String LOGOUT_URI = "/logout";
+  public static final String ADMIN_URI = "/admin";
+  public static final String RESOURCES_URI = "/resources/**";
+  public static final String REGISTRATION_URI = "/user-registration/**";
+  public static final String ADMIN_ROLE_NAME = "ADMIN";
+  public static final String USER_ROLE_NAME = "USER";
+  public static final String ROLE_ADMIN = "ROLE_ADMIN";
+  public static final String ROLE_USER = "ROLE_USER";
+  public static final String NAME = "name";
+  public static final String PASSWORD = "password";
 
   @Autowired private UserDetailsService userDetailsService;
 
@@ -94,7 +111,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
-      http.antMatcher("/chat").authorizeRequests().anyRequest().authenticated();
+      http.antMatcher("/live-chat").authorizeRequests().anyRequest().authenticated();
     }
   }
 
@@ -102,20 +119,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   protected void configure(HttpSecurity http) throws Exception {
 
     http.authorizeRequests()
-        .antMatchers("/login/**", "/resources/**", "/registration/**")
+        .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI)
         .permitAll()
         .antMatchers("/admin/**")
-        .hasRole("ADMIN")
-        .antMatchers("/chat/**")
-        .hasAnyRole("USER", "ADMIN")
+        .hasRole(ADMIN_ROLE_NAME)
+        .antMatchers("/live-chat/**")
+        .hasAnyRole(USER_ROLE_NAME, ADMIN_ROLE_NAME)
         .anyRequest()
         .authenticated()
         .and()
         .csrf()
         .disable()
         .formLogin()
-        .loginPage("/login")
-        .defaultSuccessUrl("/user")
+        .loginPage(LOGIN_URI)
+        .defaultSuccessUrl(LIVE_CHAT_URI)
         .successHandler(
             new AuthenticationSuccessHandler() {
               @Override
@@ -127,19 +144,30 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
                 Collection<? extends GrantedAuthority> authorities =
                     authentication.getAuthorities();
-                boolean isAdmin = authorities.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
-                boolean isUser = authorities.contains(new SimpleGrantedAuthority("ROLE_USER"));
-                if (isAdmin) redirectStrategy.sendRedirect(request, response, "/admin");
-                else if (isUser) redirectStrategy.sendRedirect(request, response, "/chat");
+                boolean isAdmin = authorities.contains(new SimpleGrantedAuthority(ROLE_ADMIN));
+                boolean isUser = authorities.contains(new SimpleGrantedAuthority(ROLE_USER));
+                if (isAdmin) redirectStrategy.sendRedirect(request, response, ADMIN_URI);
+                else if (isUser) redirectStrategy.sendRedirect(request, response, LIVE_CHAT_URI);
+              }
+            })
+        .failureHandler(
+            new AuthenticationFailureHandler() {
+              @Override
+              public void onAuthenticationFailure(
+                  HttpServletRequest httpServletRequest,
+                  HttpServletResponse httpServletResponse,
+                  AuthenticationException e)
+                  throws IOException, ServletException {
+                redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LOGIN_URI);
               }
             })
         .permitAll()
-        .usernameParameter("name")
-        .passwordParameter("password")
+        .usernameParameter(NAME)
+        .passwordParameter(PASSWORD)
         .and()
         .logout()
-        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-        .logoutSuccessUrl("/login")
+        .logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_URI))
+        .logoutSuccessUrl(LOGIN_URI)
         .and()
         .csrf()
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -173,7 +201,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   private Filter ssoFilter() {
     CompositeFilter filter = new CompositeFilter();
     List<Filter> filters = new ArrayList<>();
-    filters.add(ssoFilter(google(), "/login/google"));
+    filters.add(ssoFilter(google(), LOGIN_GOOGLE_URI));
     filter.setFilters(filters);
     return filter;
   }
@@ -207,13 +235,24 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             Map<String, String> details = new LinkedHashMap<>();
             details = (Map<String, String>) authentication1.getDetails();
             String displayName =
-                details.get("displayName").replaceAll("\\s+", "").toLowerCase()
+                details.get(DISPLAY_NAME).replaceAll("\\s+", "").toLowerCase()
                     + userPrincipal.getName();
             if (authentication.isAuthenticated()) {
               Account account = userRepository.findByName(displayName);
               if (account == null) userRepository.save(new Account(displayName, ""));
-              redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, "/chat");
+              redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LIVE_CHAT_URI);
             }
+          }
+        });
+    oAuth2ClientAuthenticationFilter.setAuthenticationFailureHandler(
+        new AuthenticationFailureHandler() {
+          @Override
+          public void onAuthenticationFailure(
+              HttpServletRequest httpServletRequest,
+              HttpServletResponse httpServletResponse,
+              AuthenticationException e)
+              throws IOException, ServletException {
+            redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LOGIN_URI);
           }
         });
     return oAuth2ClientAuthenticationFilter;
