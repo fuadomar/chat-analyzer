@@ -36,12 +36,14 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CompositeFilter;
+import org.springframework.web.filter.CorsFilter;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.repository.AccountRepository;
 
@@ -87,6 +89,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   private final ClientDetailsService clientDetailsService;
 
   @Autowired private AccountRepository userRepository;
+
+  @Autowired private CorFilter corFilter;
 
   @Autowired
   public WebSecurityConfig(
@@ -178,7 +182,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .anyRequest()
         .authenticated()
         .and()
-        .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+        .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
+        .addFilterBefore(corFilter, ChannelProcessingFilter.class);
   }
 
   @Override

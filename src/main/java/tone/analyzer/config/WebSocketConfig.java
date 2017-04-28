@@ -1,5 +1,6 @@
 package tone.analyzer.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -17,21 +18,27 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
+import javax.inject.Inject;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /** Created by mozammal on 4/11/17. */
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
+  @Value("${tagit.origin}")
+  private String allowOrigin;
+
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-    registry.addEndpoint("/stomp").
-            setAllowedOrigins("*").
-            withSockJS().setClientLibraryUrl("//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js");
+    registry.addEndpoint("/stomp").setAllowedOrigins(allowOrigin).withSockJS()
+    /*.setClientLibraryUrl("//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js")*/ ;
   }
 
   @Override
