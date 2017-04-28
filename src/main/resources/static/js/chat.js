@@ -22,7 +22,7 @@ $(document).ready(function () {
 
     var chatList = $(".chat_body");
     var chatBox = $("#chatbox-container");
-    var socket = new SockJS('/stomp');
+    var socket = new SockJS("http://192.168.4.12:8080/stomp");
     var stompClient = Stomp.over(socket);
 
     stompClient.connect('', function (frame) {

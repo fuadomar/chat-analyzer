@@ -71,7 +71,7 @@ public class AccountController {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute("userName", user.getName());
-    return "redirect:/chat";
+    return "redirect:/live-chat";
   }
 
   @RequestMapping(value = "/login", method = RequestMethod.GET)
