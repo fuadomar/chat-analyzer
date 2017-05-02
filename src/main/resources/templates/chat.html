@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="facivon.ico">
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
@@ -55,6 +56,7 @@
             type="Submit">Logout
     </button>
 </form>
+
 <script type="text/javascript" th:src="@{/js/chat.js}"></script>
 </body>
 </html>
