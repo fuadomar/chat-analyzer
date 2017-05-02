@@ -31,14 +31,10 @@ import java.util.Objects;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-  @Value("${tagit.origin}")
-  private String allowOrigin;
-
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-    registry.addEndpoint("/stomp").setAllowedOrigins(allowOrigin).withSockJS()
-    /*.setClientLibraryUrl("//cdn.jsdelivr.net/sockjs/1.0.0/sockjs.min.js")*/ ;
+    registry.addEndpoint("/stomp").withSockJS();
   }
 
   @Override

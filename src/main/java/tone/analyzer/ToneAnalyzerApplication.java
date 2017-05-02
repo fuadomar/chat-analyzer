@@ -33,6 +33,7 @@ public class ToneAnalyzerApplication {
   public static final String ROLE_USER = "ROLE_USER";
 
   public static final String SEARCH_BY_ADMIN = "admin";
+  public static final String ROLE_ACTUATOR = "ROLE_ACTUATOR";
 
   @Autowired private AccountRepository accountRepository;
 
@@ -60,6 +61,7 @@ public class ToneAnalyzerApplication {
         List<Role> roleList = new ArrayList<>();
         roleList.add(new Role(ROLE_ADMIN));
         roleList.add(new Role(ROLE_USER));
+        roleList.add(new Role(ROLE_ACTUATOR));
         admin.setRole(roleList);
         accountRepository.save(admin);
       }

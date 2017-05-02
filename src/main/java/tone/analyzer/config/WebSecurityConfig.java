@@ -79,6 +79,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   public static final String ROLE_USER = "ROLE_USER";
   public static final String NAME = "name";
   public static final String PASSWORD = "password";
+  public static final String ACTUATOR_ROLE_NAME = "ACTUATOR";
 
   @Autowired private UserDetailsService userDetailsService;
 
@@ -125,10 +126,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     http.authorizeRequests()
         .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI)
         .permitAll()
-        .antMatchers("/admin/**")
+        .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
         .hasRole(ADMIN_ROLE_NAME)
         .antMatchers("/live-chat/**")
-        .hasAnyRole(USER_ROLE_NAME, ADMIN_ROLE_NAME)
+        .hasAnyRole(USER_ROLE_NAME, ADMIN_ROLE_NAME, ACTUATOR_ROLE_NAME)
         .anyRequest()
         .authenticated()
         .and()
