@@ -23,7 +23,7 @@ $(document).ready(function () {
     var chatList = $(".chat_body");
     var chatBox = $("#chatbox-container");
     var host = location.protocol + '//' + location.host;
-    var socket = new SockJS(host+"/stomp");
+    var socket = new SockJS(host + "/stomp");
     var stompClient = Stomp.over(socket);
 
     stompClient.connect('', function (frame) {

@@ -90,8 +90,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   @Autowired private AccountRepository userRepository;
 
-  @Autowired private CorFilter corFilter;
-
   @Autowired
   public WebSecurityConfig(
       OAuth2ClientContext oauth2ClientContext, ClientDetailsService clientDetailsService) {
@@ -182,8 +180,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .anyRequest()
         .authenticated()
         .and()
-        .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class)
-        .addFilterBefore(corFilter, ChannelProcessingFilter.class);
+        .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+    // .addFilterBefore(corFilter, ChannelProcessingFilter.class);
   }
 
   @Override

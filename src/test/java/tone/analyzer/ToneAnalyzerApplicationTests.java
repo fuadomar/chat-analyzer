@@ -35,7 +35,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 public class ToneAnalyzerApplicationTests {
 
   public static final String REGISTRATION_VIEW_NAME = "registration";
+
   public static final String USER_REGISTRATION_URI = "/user-registration";
+
   @Autowired private WebApplicationContext context;
 
   @Autowired org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
