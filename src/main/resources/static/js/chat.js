@@ -24,6 +24,7 @@ $(document).ready(function () {
     var chatBox = $("#chatbox-container");
     var host = location.protocol + '//' + location.host;
     console.log("host: " + host);
+
     var socket = new SockJS(host + "/stomp");
     var stompClient = Stomp.over(socket);
 

@@ -63,13 +63,13 @@ public class ToneAnalyzerApplicationTests {
   public void contextLoads() {}
 
   @Test
-  public void testRedirectUnauthorizedUser() throws Exception {
+  public void testShouldRedirectUnauthorizedUser() throws Exception {
     this.mockMvc.perform(get("/")).andExpect(status().is3xxRedirection());
   }
 
   @Test
   @WithMockUser(username = "test", roles = "USER")
-  public void testShouldReturnChat() throws Exception {
+  public void testShouldReturnChatView() throws Exception {
 
     this.mockMvc
         .perform(get("/live-chat"))
@@ -78,7 +78,7 @@ public class ToneAnalyzerApplicationTests {
   }
 
   @Test
-  public void testShouldReturnRegistration() throws Exception {
+  public void testShouldReturnRegistrationView() throws Exception {
 
     this.mockMvc
         .perform(get(USER_REGISTRATION_URI))
@@ -88,7 +88,7 @@ public class ToneAnalyzerApplicationTests {
   }
 
   @Test
-  public void shouldReturnRegistrationIfUserNameLengthLessThanThreshold() throws Exception {
+  public void testShouldReturnRegistrationIfUserNameLengthLessThanThreshold() throws Exception {
 
     RequestBuilder requestBuilder = getPostRequestBuilder("te", "121212121212");
     this.mvc.perform(requestBuilder).andExpect(view().name(REGISTRATION_VIEW_NAME));
