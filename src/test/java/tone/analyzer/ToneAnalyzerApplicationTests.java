@@ -107,6 +107,6 @@ public class ToneAnalyzerApplicationTests {
     this.mvc
         .perform(requestBuilder)
         .andExpect(status().is3xxRedirection())
-        .andExpect(view().name("redirect:/chat"));
+        .andExpect(view().name("redirect:/live-chat"));
   }
 }
