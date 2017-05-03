@@ -123,8 +123,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   protected void configure(HttpSecurity http) throws Exception {
 
     http.headers().frameOptions().sameOrigin();
-    http.sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
     http.authorizeRequests()
         .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI)

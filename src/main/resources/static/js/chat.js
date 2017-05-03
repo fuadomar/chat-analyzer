@@ -69,7 +69,7 @@ $(document).ready(function () {
 
         stompClient.subscribe("/topic/chat.login", function (message) {
 
-            if (sessionId !==JSON.parse(message.body).userName)
+            if (sessionId !== JSON.parse(message.body).userName)
                 chatList.append(createChatList(JSON.parse(message.body).userName));
         });
 
