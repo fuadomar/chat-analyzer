@@ -163,7 +163,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                   HttpServletResponse httpServletResponse,
                   AuthenticationException e)
                   throws IOException, ServletException {
-                redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LOGIN_URI);
+                redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LOGIN_URI+"?error");
               }
             })
         .permitAll()

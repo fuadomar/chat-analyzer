@@ -16,24 +16,6 @@ $(document).ready(function () {
         return series;
     }
 
-    /*   $("#button-analyze").click(function () {
-     var sender = $("#sender option:selected").text().trim();
-     var recipient = $("#recipient option:selected").text().trim();
-     $.get({
-     type: 'get',
-     url: '/tone-analyzer-between-users',
-     dataType: 'json',
-     data: 'sender=' + sender + '&recipient=' + recipient,
-     success: function (data) {
-     console.log(data);
-     var series = getNormalizedData(data);
-     console.log(series);
-     drawPieChart(series)
-     }
-     });
-     });*/
-
-
     $("#button-analyze").click(function () {
         var sender = $("#sender option:selected").text().trim();
         $.get({
