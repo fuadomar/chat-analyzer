@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
@@ -122,6 +123,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   protected void configure(HttpSecurity http) throws Exception {
 
     http.headers().frameOptions().sameOrigin();
+    http.sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
     http.authorizeRequests()
         .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI)

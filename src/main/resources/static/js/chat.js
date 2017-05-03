@@ -60,9 +60,8 @@ $(document).ready(function () {
         stompClient.subscribe("/app/chat.participants", function (data) {
             var messageArray = JSON.parse(data.body);
             chatList.html('');
-            //console.log(messageArray)
             for (var i = 0; i < messageArray.length; i++) {
-                if (sessionId == messageArray[i].userName)
+                if (sessionId === messageArray[i].userName)
                     continue;
                 chatList.append(createChatList(messageArray[i].userName));
             }
@@ -70,7 +69,8 @@ $(document).ready(function () {
 
         stompClient.subscribe("/topic/chat.login", function (message) {
 
-            chatList.append(createChatList(JSON.parse(message.body).userName));
+            if (sessionId !==JSON.parse(message.body).userName)
+                chatList.append(createChatList(JSON.parse(message.body).userName));
         });
 
         stompClient.subscribe("/topic/chat.logout", function (message) {
