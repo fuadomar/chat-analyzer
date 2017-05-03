@@ -77,10 +77,8 @@ public class AccountController {
   @RequestMapping(value = "/login", method = RequestMethod.GET)
   public String login(Model model, String error, String logout) {
 
-    if (error != null)
-      model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
-    if (logout != null)
-      model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
+    if (error != null) model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
+    if (logout != null) model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
     return "login";
   }
 
