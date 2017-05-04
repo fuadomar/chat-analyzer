@@ -5,7 +5,6 @@
 <head>
 
     <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
 
     <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
@@ -16,10 +15,6 @@
 
 <form th:action="@{/user-registration}" method="get">
     <button class="btn btn-md btn-warning btn-block" type="Submit">Go To Registration Page</button>
-</form>
-
-<form th:action="@{/admin-login}" method="get">
-    <button class="btn btn-md btn-warning btn-block" type="Submit">Go To Admin Page</button>
 </form>
 
 <div class="container">
@@ -39,15 +34,7 @@
         <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit"
                 th:text="Login"></button>
     </form>
-    <!--    <label> <input type="checkbox" name="remember-me" id="remember-me"/>Remember Me</label>-->
-</div>
-<div class="row">
-    <div class="col-md-2 col-md-offset-5">
-        <br/>
-        <a href="/login/google"> <img th:height="50" th:width="180" src="../static/images/images.png"
-                                      th:src="@{/images/images.png}"/></a>
-    </div>
-</div>
 
+</div>
 </body>
 </html>

@@ -79,33 +79,32 @@ $(document).ready(function () {
             $("#user" + userName).remove();
         });
 
-        $('#review-button').click(function () {
-            var review = $('textarea#review').val();
-            if (review != '') {
+        /*$('#review-button').click(function () {
+         var review = $('textarea#review').val();
+         if (review != '') {
 
-                var token = $("meta[name='_csrf']").attr("content");
-                var header = $("meta[name='_csrf_header']").attr("content");
-                $(document).ajaxSend(function (e, xhr, options) {
-                    xhr.setRequestHeader(header, token);
-                });
+         var token = $("meta[name='_csrf']").attr("content");
+         var header = $("meta[name='_csrf_header']").attr("content");
+         $(document).ajaxSend(function (e, xhr, options) {
+         xhr.setRequestHeader(header, token);
+         });
 
-                var jsonStr = '{ "user": "' + sessionId + '" , "content": "' + review + ' "}';
-                $.ajax({
-                    type: 'POST',
-                    url: '/review',
-                    data: jsonStr,
-                    contentType: 'application/json; charset=utf-8',
-                    processData: false,
-                    cache: false,
-                    success: function (data, textStatus, xhr) {
-                        $('textarea#review').val('');
-                    },
-                    error: function (data, textStatus, xhr) {
-                    }
-                });
-            }
-        });
-
+         var jsonStr = '{ "user": "' + sessionId + '" , "content": "' + review + ' "}';
+         $.ajax({
+         type: 'POST',
+         url: '/review',
+         data: jsonStr,
+         contentType: 'application/json; charset=utf-8',
+         processData: false,
+         cache: false,
+         success: function (data, textStatus, xhr) {
+         $('textarea#review').val('');
+         },
+         error: function (data, textStatus, xhr) {
+         }
+         });
+         }
+         });*/
 
         $('.chat_box').on('click', '.chat_head', function (e) {
             e.stopPropagation();

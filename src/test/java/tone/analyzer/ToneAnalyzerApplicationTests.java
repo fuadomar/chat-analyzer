@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Import(WebSecurityConfig.class)
 public class ToneAnalyzerApplicationTests {
 
-  public static final String REGISTRATION_VIEW_NAME = "registration";
+  public static final String REGISTRATION_VIEW_NAME = "users-registration";
 
   public static final String USER_REGISTRATION_URI = "/user-registration";
 

@@ -20,11 +20,17 @@
         <option th:value="${user.name}" th:each="user : ${userList}">
             <p th:text="${user.name}"/></option>
     </select>
-    <button type="button" class="btn btn-default" id="button-analyze">Analyze Chat Tone</button>
-    <button type="button" class="btn btn-default" id="button-analyze-review">Analyze Review Tone</button>
+    <button type="button" class="btn btn-default" id="button-analyze-tone">Analyze Chat Tone</button>
 </div>
 
 <script type="text/javascript" th:src="@{/js/admin.js}"></script>
 </body>
 <div id="graph" style="height: 400px"></div>
+
+<form th:action="@{/logout}" method="get">
+    <button class="btn btn-md btn-danger btn-block" name="registration"
+            type="Submit">Logout
+    </button>
+</form>
+</body>
 </html>

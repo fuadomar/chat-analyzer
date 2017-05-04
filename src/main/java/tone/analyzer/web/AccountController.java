@@ -44,11 +44,18 @@ public class AccountController {
 
   @Autowired private AdminService adminService;
 
+  @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
+  public String adminPanel(Model model) {
+    model.addAttribute("accountForm", new Account());
+
+    return "admin-login";
+  }
+
   @RequestMapping(value = "/user-registration", method = RequestMethod.GET)
   public String registration(Model model) {
     model.addAttribute("accountForm", new Account());
 
-    return "registration";
+    return "users-registration";
   }
 
   @RequestMapping(value = "/user-registration", method = RequestMethod.POST)
@@ -63,7 +70,7 @@ public class AccountController {
     accountValidator.validate(accountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
-      return "registration";
+      return "users-registration";
     }
     String plainTextPassword = accountForm.getPassword();
     userService.save(accountForm);
@@ -98,6 +105,6 @@ public class AccountController {
 
     List<Account> userList = adminService.fetchAllUsers();
     model.addAttribute("userList", userList);
-    return "admin";
+    return "admin-panel";
   }
 }

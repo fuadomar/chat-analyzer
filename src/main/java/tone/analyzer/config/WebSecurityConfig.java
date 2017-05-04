@@ -37,16 +37,18 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 import org.springframework.web.filter.CompositeFilter;
 import org.springframework.web.filter.CorsFilter;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.service.token.TokenService;
 
 import javax.servlet.Filter;
 import javax.servlet.ServletException;
@@ -81,6 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   public static final String NAME = "name";
   public static final String PASSWORD = "password";
   public static final String ACTUATOR_ROLE_NAME = "ACTUATOR";
+  public static final String ADMIN_PANEL_URI = "/admin-login/**";
 
   @Autowired private UserDetailsService userDetailsService;
 
@@ -91,6 +94,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   private final ClientDetailsService clientDetailsService;
 
   @Autowired private AccountRepository userRepository;
+
+  @Autowired TokenService persistentTokenRepository;
 
   @Autowired
   public WebSecurityConfig(
@@ -126,7 +131,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
     http.authorizeRequests()
-        .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI)
+        .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI, ADMIN_PANEL_URI)
         .permitAll()
         .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
         .hasRole(ADMIN_ROLE_NAME)
@@ -173,9 +178,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .usernameParameter(NAME)
         .passwordParameter(PASSWORD)
         .and()
+        .requestCache()
+        .requestCache(new NullRequestCache())
+        .and()
+        .rememberMe()
+        .rememberMeParameter("remember-me")
+        .userDetailsService(userDetailsService)
+        //.rememberMeCookieName("remember-me")
+        .tokenRepository(persistentTokenRepository)
+        .tokenValiditySeconds(86400)
+        .and()
         .logout()
         .logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_URI))
         .logoutSuccessUrl(LOGIN_URI)
+        .deleteCookies("remember-me")
         .and()
         .csrf()
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -185,7 +201,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .authenticated()
         .and()
         .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
-    // .addFilterBefore(corFilter, ChannelProcessingFilter.class);
   }
 
   @Override

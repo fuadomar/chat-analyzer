@@ -1,6 +1,7 @@
 package tone.analyzer.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -30,6 +31,11 @@ import java.util.Objects;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+
+  /* @Bean
+  public WebSocketHandshakeInterceptor myInterceptor() {
+    return new WebSocketHandshakeInterceptor();
+  }*/
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {

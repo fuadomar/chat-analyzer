@@ -16,7 +16,8 @@ $(document).ready(function () {
         return series;
     }
 
-    $("#button-analyze").click(function () {
+    $("#button-analyze-tone").click(function () {
+        $("#graph").empty();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
@@ -31,23 +32,6 @@ $(document).ready(function () {
             }
         });
     });
-
-    $("#button-analyze-review").click(function () {
-        var reviewer = $("#sender option:selected").text().trim();
-        $.get({
-            type: 'get',
-            url: '/review-analyzer',
-            dataType: 'json',
-            data: 'reviewer=' + reviewer,
-            success: function (data) {
-                console.log(data);
-                var series = getNormalizedData(data);
-                console.log(series);
-                drawDonut(series)
-            }
-        });
-    });
-
 
     function drawDonut(dataPoint) {
 
