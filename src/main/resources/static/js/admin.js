@@ -8,7 +8,7 @@ $(document).ready(function () {
                     continue
                 console.log(key + " -> " + data[key]);
                 var arr = [];
-                var number = data[key]*100.0;
+                var number = data[key];
                 console.log(number);
                 arr.push(key);
                 arr.push(parseFloat(number.toFixed(2)));
@@ -57,47 +57,8 @@ $(document).ready(function () {
                     depth: 45
                 }
             },
-            tooltip: {
-                valueSuffix: '%'
-            },
             series: [{
                 name: 'Tone',
-                data: dataPoint
-            }]
-        });
-    }
-
-    function drawPieChart(dataPoint) {
-
-        Highcharts.chart('graph', {
-            chart: {
-                type: 'pie',
-                options3d: {
-                    enabled: true,
-                    alpha: 55,
-                    beta: 0
-                }
-            },
-            title: {
-                text: 'Tone Analyzer'
-            },
-            tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    depth: 45,
-                    dataLabels: {
-                        enabled: true,
-                        format: '{point.name}'
-                    }
-                }
-            },
-            series: [{
-                type: 'pie',
-                name: 'Browser share',
                 data: dataPoint
             }]
         });
