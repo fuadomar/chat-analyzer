@@ -7,9 +7,11 @@ $(document).ready(function () {
                 if (data[key] < 0.5)
                     continue
                 console.log(key + " -> " + data[key]);
-                var arr = []
+                var arr = [];
+                var number = data[key]*100.0;
+                console.log(number);
                 arr.push(key);
-                arr.push(data[key]);
+                arr.push(parseFloat(number.toFixed(2)));
                 series.push(arr)
             }
         }
@@ -54,6 +56,9 @@ $(document).ready(function () {
                     innerSize: 100,
                     depth: 45
                 }
+            },
+            tooltip: {
+                valueSuffix: '%'
             },
             series: [{
                 name: 'Tone',
