@@ -36,6 +36,28 @@ public class AccountController {
   public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
       "You have been logged out successfully.";
 
+  public static final String ADMIN_LOGIN_VIEW = "admin-login";
+
+  public static final String USERS_REGISTRATION_VIEW = "users-registration";
+
+  public static final String LOGIN_VIEW = "login";
+
+  public static final String CHAT_VIEW = "chat";
+
+  public static final String ADMIN_PANEL_VIEW = "admin-panel";
+
+  public static final String USER_NAME = "userName";
+
+  public static final String USER_LIST = "userList";
+
+  public static final String USER_REGISTRATION_URI = "/user-registration";
+
+  public static final String LIVE_CHAT_URI = "/live-chat";
+
+  public static final String ROOT_URI = "/";
+
+  public static final String ACCOUNT_FORM = "accountForm";
+
   @Autowired private UserService userService;
 
   @Autowired private SecurityService securityService;
@@ -46,19 +68,19 @@ public class AccountController {
 
   @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
   public String adminPanel(Model model) {
-    model.addAttribute("accountForm", new Account());
+    model.addAttribute(ACCOUNT_FORM, new Account());
 
-    return "admin-login";
+    return ADMIN_LOGIN_VIEW;
   }
 
-  @RequestMapping(value = "/user-registration", method = RequestMethod.GET)
+  @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.GET)
   public String registration(Model model) {
-    model.addAttribute("accountForm", new Account());
+    model.addAttribute(ACCOUNT_FORM, new Account());
 
-    return "users-registration";
+    return USERS_REGISTRATION_VIEW;
   }
 
-  @RequestMapping(value = "/user-registration", method = RequestMethod.POST)
+  @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.POST)
   public String registration(
       @ModelAttribute("accountForm") Account accountForm,
       BindingResult bindingResult,
@@ -70,14 +92,14 @@ public class AccountController {
     accountValidator.validate(accountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
-      return "users-registration";
+      return USERS_REGISTRATION_VIEW;
     }
     String plainTextPassword = accountForm.getPassword();
     userService.save(accountForm);
     securityService.autoLogin(accountForm.getName(), plainTextPassword, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account user = userService.findByName(auth.getName());
-    redirectAttributes.addFlashAttribute("userName", user.getName());
+    redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
     return "redirect:/live-chat";
   }
 
@@ -86,17 +108,17 @@ public class AccountController {
 
     if (error != null) model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
     if (logout != null) model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
-    return "login";
+    return LOGIN_VIEW;
   }
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
-    value = {"/", "/live-chat"},
+    value = {ROOT_URI, LIVE_CHAT_URI},
     method = RequestMethod.GET
   )
   public String chat(Model model) {
 
-    return "chat";
+    return CHAT_VIEW;
   }
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -104,7 +126,7 @@ public class AccountController {
   public String admin(Model model) {
 
     List<Account> userList = adminService.fetchAllUsers();
-    model.addAttribute("userList", userList);
-    return "admin-panel";
+    model.addAttribute(USER_LIST, userList);
+    return ADMIN_PANEL_VIEW;
   }
 }

@@ -69,21 +69,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     implements AuthorizationServerConfigurer {
 
   public static final String LIVE_CHAT_URI = "/live-chat";
+
   public static final String LOGIN_GOOGLE_URI = "/login/google";
+
   public static final String DISPLAY_NAME = "displayName";
+
   public static final String LOGIN_URI = "/login";
+
   public static final String LOGOUT_URI = "/logout";
+
   public static final String ADMIN_URI = "/admin";
+
   public static final String RESOURCES_URI = "/resources/**";
+
   public static final String REGISTRATION_URI = "/user-registration/**";
+
   public static final String ADMIN_ROLE_NAME = "ADMIN";
+
   public static final String USER_ROLE_NAME = "USER";
+
   public static final String ROLE_ADMIN = "ROLE_ADMIN";
+
   public static final String ROLE_USER = "ROLE_USER";
+
   public static final String NAME = "name";
+
   public static final String PASSWORD = "password";
+
   public static final String ACTUATOR_ROLE_NAME = "ACTUATOR";
+
   public static final String ADMIN_PANEL_URI = "/admin-login/**";
+
+  public static final String REMEMBER_ME = "remember-me";
 
   @Autowired private UserDetailsService userDetailsService;
 
@@ -178,20 +195,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .usernameParameter(NAME)
         .passwordParameter(PASSWORD)
         .and()
-        .requestCache()
-        .requestCache(new NullRequestCache())
-        .and()
         .rememberMe()
-        .rememberMeParameter("remember-me")
+        .rememberMeParameter(REMEMBER_ME)
         .userDetailsService(userDetailsService)
-        //.rememberMeCookieName("remember-me")
         .tokenRepository(persistentTokenRepository)
-        .tokenValiditySeconds(86400)
+        .tokenValiditySeconds(864000)
         .and()
         .logout()
         .logoutRequestMatcher(new AntPathRequestMatcher(LOGOUT_URI))
+        .deleteCookies(REMEMBER_ME)
         .logoutSuccessUrl(LOGIN_URI)
-        .deleteCookies("remember-me")
         .and()
         .csrf()
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
