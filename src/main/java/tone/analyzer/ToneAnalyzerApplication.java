@@ -33,6 +33,7 @@ public class ToneAnalyzerApplication {
   public static final String ROLE_USER = "ROLE_USER";
 
   public static final String SEARCH_BY_ADMIN = "admin";
+
   public static final String ROLE_ACTUATOR = "ROLE_ACTUATOR";
 
   @Autowired private AccountRepository accountRepository;

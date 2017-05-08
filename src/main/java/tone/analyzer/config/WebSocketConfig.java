@@ -32,11 +32,6 @@ import java.util.Objects;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
 
-  /* @Bean
-  public WebSocketHandshakeInterceptor myInterceptor() {
-    return new WebSocketHandshakeInterceptor();
-  }*/
-
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
 
