@@ -1,5 +1,6 @@
 package tone.analyzer.service.tone.recognizer;
 
+import io.indico.api.utils.IndicoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
-import tone.analyzer.domain.repository.ConversationRepository;
-import tone.analyzer.domain.repository.MessageRepository;
 import tone.analyzer.utility.ToneAnalyzerUtility;
+
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 /** Created by mozammal on 4/11/17. */
 @Component
@@ -28,7 +30,7 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   @Override
   public ToneAnalyzerFeedBackDTO analyzerConversationalToneBetweenTwoUser(ChatMessage chatMessage) {
 
-    return toneAnalyzerUtility.analyzeToneBetweenToUserByIBMWatson(chatMessage);
+    return toneAnalyzerUtility.analyzeToneBetweenTwoUserByIBMWatson(chatMessage);
   }
 
   @Override
@@ -41,5 +43,11 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   public ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage) {
 
     return toneAnalyzerUtility.analyzeReviewToneByIBMWatson(chatMessage);
+  }
+
+  @Override
+  public String analyzeIndividualContext(ChatMessage chatMessage)
+      throws IOException, IndicoException, URISyntaxException {
+    return toneAnalyzerUtility.analyzeIndividualContext(chatMessage);
   }
 }

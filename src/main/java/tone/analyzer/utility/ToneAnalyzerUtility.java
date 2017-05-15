@@ -4,6 +4,12 @@ import com.ibm.watson.developer_cloud.tone_analyzer.v3.ToneAnalyzer;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneAnalysis;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneCategory;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneScore;
+import io.indico.api.utils.IndicoException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +26,9 @@ import tone.analyzer.domain.repository.FlaggedMessageRepository;
 import tone.analyzer.domain.repository.MessageRepository;
 import tone.analyzer.domain.repository.ReviewRepository;
 
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,15 +52,33 @@ public class ToneAnalyzerUtility {
   Agreeableness 0.205669
   Emotional Range 0.851521*/
 
+  /**
+   * supported aspects domain
+   *
+   * <p>"hotels" "restaurants" "cars" "airlines" *
+   */
   private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerUtility.class);
 
-  public static final double ACCEPTED_WEIGHTED_THRESHOLD = 0.5;
+  private final String X_AYLIEN_TEXT_API_APPLICATION_ID = "X-AYLIEN-TextAPI-Application-ID";
+
+  private final String X_AYLIEN_TEXT_API_APPLICATION_KEY = "X-AYLIEN-TextAPI-Application-Key";
+
+  private double ACCEPTED_WEIGHTED_THRESHOLD = 0.5;
+
+  @Value("${aylien.application.id}")
+  private String aylieaApplicationId;
+
+  @Value("${aylien.application.key}")
+  private String aylienApplicationKey;
 
   @Value("${watson.user.name}")
   private String userName;
 
   @Value("${watson.user.password}")
   private String password;
+
+  @Value("${indico.api.key}")
+  private String indicoApiKey;
 
   @Autowired private ConversationRepository conversationRepository;
 
@@ -61,7 +88,7 @@ public class ToneAnalyzerUtility {
 
   @Autowired private ReviewRepository reviewRepository;
 
-  public ToneAnalyzerFeedBackDTO analyzeToneBetweenToUserByIBMWatson(ChatMessage chatMessage) {
+  public ToneAnalyzerFeedBackDTO analyzeToneBetweenTwoUserByIBMWatson(ChatMessage chatMessage) {
 
     /*ToneAnalyzer toneAnalyzer = getIBMToneAnalyzer();
     Conversation conversation =
@@ -90,16 +117,8 @@ public class ToneAnalyzerUtility {
   public ToneAnalyzerFeedBackDTO analyzeIndividualToneByIBMWatson(ChatMessage chatMessage) {
 
     ToneAnalyzer toneAnalyzer = getIBMToneAnalyzer();
-    List<Conversation> conversationList =
-        conversationRepository.findBySender(chatMessage.getSender());
-    if (conversationList == null || conversationList.size() == 0) return null;
-    List<Message> messageList = new ArrayList<>();
-
-    for (Conversation conversation : conversationList) {
-      messageList.addAll(messageRepository.findAllByConversationId(conversation.getId()));
-    }
-    String msg = "";
-    for (Message message : messageList) msg = msg + message.getContent() + "\n";
+    String msg = getAllConversationsByUser(chatMessage);
+    if (msg == null) return null;
 
     log.debug("text: {}", msg);
     List<String> likelyToneInMessage = new ArrayList<>();
@@ -112,6 +131,20 @@ public class ToneAnalyzerUtility {
       flaggedMessageRepository.save(flaggedMessage);
     }
     return toneAnalyzerFeedBackDTO;
+  }
+
+  private String getAllConversationsByUser(ChatMessage chatMessage) {
+    List<Conversation> conversationList =
+        conversationRepository.findBySender(chatMessage.getSender());
+    if (conversationList == null || conversationList.size() == 0) return null;
+    List<Message> messageList = new ArrayList<>();
+
+    for (Conversation conversation : conversationList) {
+      messageList.addAll(messageRepository.findAllByConversationId(conversation.getId()));
+    }
+    String msg = "";
+    for (Message message : messageList) msg = msg + message.getContent() + "\n";
+    return msg;
   }
 
   public ToneAnalyzerFeedBackDTO analyzeReviewToneByIBMWatson(ChatMessage chatMessage) {
@@ -170,5 +203,49 @@ public class ToneAnalyzerUtility {
     ToneAnalyzer toneAnalyzer = new ToneAnalyzer(ToneAnalyzer.VERSION_DATE_2016_05_19);
     toneAnalyzer.setUsernameAndPassword(userName, password);
     return toneAnalyzer;
+  }
+
+  // not functional yet
+  public String analyzeIndividualContext(ChatMessage chatMessage)
+      throws IOException, IndicoException, URISyntaxException {
+
+    /* HashMap<String, Object> params = new HashMap<>();
+    params.put("threshold", 0.1);
+    Indico indico = new Indico(indicoApiKey);
+    String msg = getAllConversationsByUser(chatMessage);
+    IndicoResult single = indico.textTags.predict(msg, params);
+    Map<TextTag, Double> result = single.getTextTags();*/
+
+    String msg = getAllConversationsByUser(chatMessage);
+    final HttpClient httpClient = HttpClientBuilder.create().build();
+    URI uri = buildUriBuilder(msg);
+    HttpGet httpGet = new HttpGet(uri);
+    httpGet.setHeader(X_AYLIEN_TEXT_API_APPLICATION_ID, aylieaApplicationId);
+    httpGet.setHeader(X_AYLIEN_TEXT_API_APPLICATION_KEY, aylienApplicationKey);
+    HttpResponse rawResponse = httpClient.execute(httpGet);
+    StringBuffer result = retrieveAylienApiResponse(rawResponse);
+    log.info("output: " + result);
+    return result.toString();
+  }
+
+  private URI buildUriBuilder(String msg) throws URISyntaxException {
+    return new URIBuilder()
+        .setScheme("https")
+        .setHost("api.aylien.com")
+        .setPath("/api/v1/absa/restaurants")
+        .addParameter("text", msg)
+        .build();
+  }
+
+  private StringBuffer retrieveAylienApiResponse(HttpResponse rawResponse) throws IOException {
+    BufferedReader rd =
+        new BufferedReader(new InputStreamReader(rawResponse.getEntity().getContent()));
+
+    StringBuffer result = new StringBuffer();
+    String line = "";
+    while ((line = rd.readLine()) != null) {
+      result.append(line);
+    }
+    return result;
   }
 }

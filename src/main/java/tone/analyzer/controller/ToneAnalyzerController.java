@@ -1,5 +1,6 @@
 package tone.analyzer.controller;
 
+import io.indico.api.utils.IndicoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -7,11 +8,24 @@ import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.gateway.ToneAnalyzerGateway;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 /** Created by mozammal on 4/11/17. */
 @RestController
 public class ToneAnalyzerController {
 
   @Autowired private ToneAnalyzerGateway toneAnalyzerGateway;
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/context-analyzer-individual", method = RequestMethod.GET)
+  public String analyzeIndividualContext(@RequestParam("sender") String sender)
+      throws IOException, IndicoException, URISyntaxException {
+
+    ChatMessage chatMessage = new ChatMessage();
+    chatMessage.setSender(sender);
+    return toneAnalyzerGateway.analyzeIndividualContext(chatMessage);
+  }
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @RequestMapping(value = "/tone-analyzer-between-users", method = RequestMethod.GET)

@@ -189,6 +189,19 @@
             <version>1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.indico/indico -->
+        <dependency>
+            <groupId>io.indico</groupId>
+            <artifactId>indico</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aylien.textapi</groupId>
+            <artifactId>client</artifactId>
+            <version>0.6.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
