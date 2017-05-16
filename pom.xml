@@ -26,6 +26,16 @@
         <selenium.version>3.4.0</selenium.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>http://repo1.maven.org/maven2</url>
+        </repository>
+    </repositories>
     <pluginRepositories>
         <pluginRepository>
             <name>oss.sonatype.org</name>
@@ -192,8 +202,8 @@
         <!-- https://mvnrepository.com/artifact/io.indico/indico -->
         <dependency>
             <groupId>io.indico</groupId>
-            <artifactId>indico</artifactId>
-            <version>3.1.0</version>
+            <artifactId>io.indico</artifactId>
+            <version>3.15.0</version>
         </dependency>
 
         <dependency>

@@ -4,19 +4,19 @@ import com.ibm.watson.developer_cloud.tone_analyzer.v3.ToneAnalyzer;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneAnalysis;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneCategory;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneScore;
+import io.indico.Indico;
+import io.indico.api.results.IndicoResult;
+import io.indico.api.text.TextTag;
 import io.indico.api.utils.IndicoException;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import tone.analyzer.domain.DTO.*;
 import tone.analyzer.domain.model.ChatMessage;
-import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.domain.entity.Conversation;
 import tone.analyzer.domain.entity.FlaggedMessage;
 import tone.analyzer.domain.entity.Message;
@@ -29,8 +29,7 @@ import tone.analyzer.domain.repository.ReviewRepository;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /** Created by mozammal on 4/26/17. */
 @Component
@@ -205,18 +204,27 @@ public class ToneAnalyzerUtility {
     return toneAnalyzer;
   }
 
-  // not functional yet
-  public String analyzeIndividualContext(ChatMessage chatMessage)
+  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException {
 
-    /* HashMap<String, Object> params = new HashMap<>();
+    HashMap<String, Object> params = new HashMap<>();
     params.put("threshold", 0.1);
     Indico indico = new Indico(indicoApiKey);
     String msg = getAllConversationsByUser(chatMessage);
     IndicoResult single = indico.textTags.predict(msg, params);
-    Map<TextTag, Double> result = single.getTextTags();*/
+    Map<TextTag, Double> textTagMap = single.getTextTags();
+    TextTagDTO textTagDTO = new TextTagDTO();
 
-    String msg = getAllConversationsByUser(chatMessage);
+    for (Map.Entry<TextTag, Double> entry : textTagMap.entrySet()) {
+      TextTag key = entry.getKey();
+      Double value = entry.getValue();
+      String keyName = key.name();
+      textTagDTO.put(keyName, value);
+    }
+    log.info("message: {}", msg);
+    log.info("textTag: " + textTagMap);
+    return textTagDTO;
+    /*msg = getAllConversationsByUser(chatMessage);
     final HttpClient httpClient = HttpClientBuilder.create().build();
     URI uri = buildUriBuilder(msg);
     HttpGet httpGet = new HttpGet(uri);
@@ -225,7 +233,75 @@ public class ToneAnalyzerUtility {
     HttpResponse rawResponse = httpClient.execute(httpGet);
     StringBuffer result = retrieveAylienApiResponse(rawResponse);
     log.info("output: " + result);
-    return result.toString();
+    return result.toString();*/
+  }
+
+  public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
+      throws IOException, IndicoException, URISyntaxException {
+
+    HashMap<String, Object> params = new HashMap<>();
+    params.put("threshold", 0.1);
+    Indico indico = new Indico(indicoApiKey);
+    String msg = getAllConversationsByUser(chatMessage);
+    IndicoResult single = indico.organizations.predict(msg, params);
+    List<Map<String, Object>> organizationsList = single.getOrganizations();
+    OrganizationsDTO organizationsDTO = new OrganizationsDTO();
+    constructNormalizedDTOFromIndicoResponse(organizationsList, organizationsDTO);
+    log.info("organizations: {}", organizationsList);
+
+    return organizationsDTO;
+  }
+
+  public PlacesDTO analyzeStatedPlaces(ChatMessage chatMessage)
+      throws IOException, IndicoException, URISyntaxException {
+
+    HashMap<String, Object> params = new HashMap<>();
+    params.put("threshold", 0.1);
+    Indico indico = new Indico(indicoApiKey);
+    String msg = getAllConversationsByUser(chatMessage);
+    IndicoResult single = indico.places.predict(msg, params);
+    List<Map<String, Object>> placesList = single.getPlaces();
+    PlacesDTO organizationsDTO = new PlacesDTO();
+    constructNormalizedDTOFromIndicoResponse(placesList, organizationsDTO);
+    log.info("places: {}", placesList);
+    return organizationsDTO;
+  }
+
+  public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
+      throws IndicoException, IOException {
+
+    HashMap<String, Object> params = new HashMap<>();
+    params.put("threshold", 0.1);
+    Indico indico = new Indico(indicoApiKey);
+    String msg = getAllConversationsByUser(chatMessage);
+    IndicoResult single = indico.people.predict(msg, params);
+    List<Map<String, Object>> peopleList = single.getPeople();
+    PeopleDTO peopleDTO = new PeopleDTO();
+    constructNormalizedDTOFromIndicoResponse(peopleList, peopleDTO);
+    log.info("people: {}", peopleList);
+    return peopleDTO;
+  }
+
+  private void constructNormalizedDTOFromIndicoResponse(
+      List<Map<String, Object>> mapList, LinkedHashMap<String, Double> linkedDTO) {
+    String locationName = "";
+    Double probability = 0.0;
+    for (Map<String, Object> element : mapList) {
+      for (Map.Entry<String, Object> entry : element.entrySet()) {
+
+        String key = entry.getKey();
+        if (key.equalsIgnoreCase("position")) {
+          linkedDTO.put(locationName, probability);
+          continue;
+        }
+        Object value = entry.getValue();
+        if (key.equalsIgnoreCase("text")) {
+          locationName = (String) value;
+        } else {
+          probability = Double.parseDouble(value + "");
+        }
+      }
+    }
   }
 
   private URI buildUriBuilder(String msg) throws URISyntaxException {

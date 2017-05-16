@@ -3,8 +3,8 @@ package tone.analyzer.gateway;
 import io.indico.api.utils.IndicoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import tone.analyzer.domain.DTO.*;
 import tone.analyzer.domain.model.ChatMessage;
-import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.service.tone.recognizer.ToneAnalyzerService;
 
 import java.io.IOException;
@@ -31,8 +31,23 @@ public class ToneAnalyzerGateway {
     return toneAnalyzerService.analyzeReviewTone(chatMessage);
   }
 
-  public String analyzeIndividualContext(ChatMessage chatMessage)
+  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException {
     return toneAnalyzerService.analyzeIndividualContext(chatMessage);
+  }
+
+  public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
+      throws IndicoException, IOException, URISyntaxException {
+    return toneAnalyzerService.analyzeStatedOrganizationsTone(chatMessage);
+  }
+
+  public PlacesDTO analyzeStatedPlacesTone(ChatMessage chatMessage)
+      throws IndicoException, IOException, URISyntaxException {
+    return toneAnalyzerService.analyzeStatedPlacesTone(chatMessage);
+  }
+
+  public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
+      throws IOException, IndicoException {
+    return toneAnalyzerService.analyzeStatedPeopleTone(chatMessage);
   }
 }

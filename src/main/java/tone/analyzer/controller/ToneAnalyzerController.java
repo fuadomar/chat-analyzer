@@ -4,8 +4,8 @@ import io.indico.api.utils.IndicoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import tone.analyzer.domain.DTO.*;
 import tone.analyzer.domain.model.ChatMessage;
-import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.gateway.ToneAnalyzerGateway;
 
 import java.io.IOException;
@@ -18,8 +18,38 @@ public class ToneAnalyzerController {
   @Autowired private ToneAnalyzerGateway toneAnalyzerGateway;
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/tone-analyzer-people-individual", method = RequestMethod.GET)
+  public PeopleDTO analyzeStatedPeopleTone(@RequestParam("sender") String sender)
+      throws IOException, IndicoException, URISyntaxException {
+
+    ChatMessage chatMessage = new ChatMessage();
+    chatMessage.setSender(sender);
+    return toneAnalyzerGateway.analyzeStatedPeopleTone(chatMessage);
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/tone-analyzer-places-individual", method = RequestMethod.GET)
+  public PlacesDTO analyzeStatedPlacesTone(@RequestParam("sender") String sender)
+      throws IOException, IndicoException, URISyntaxException {
+
+    ChatMessage chatMessage = new ChatMessage();
+    chatMessage.setSender(sender);
+    return toneAnalyzerGateway.analyzeStatedPlacesTone(chatMessage);
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/tone-analyzer-organizations-individual", method = RequestMethod.GET)
+  public OrganizationsDTO analyzeStatedOrganizationsTone(@RequestParam("sender") String sender)
+      throws IOException, IndicoException, URISyntaxException {
+
+    ChatMessage chatMessage = new ChatMessage();
+    chatMessage.setSender(sender);
+    return toneAnalyzerGateway.analyzeStatedOrganizationsTone(chatMessage);
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @RequestMapping(value = "/context-analyzer-individual", method = RequestMethod.GET)
-  public String analyzeIndividualContext(@RequestParam("sender") String sender)
+  public TextTagDTO analyzeIndividualContext(@RequestParam("sender") String sender)
       throws IOException, IndicoException, URISyntaxException {
 
     ChatMessage chatMessage = new ChatMessage();

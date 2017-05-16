@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import tone.analyzer.domain.DTO.*;
 import tone.analyzer.domain.model.ChatMessage;
-import tone.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
 import java.io.IOException;
@@ -46,8 +46,26 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   }
 
   @Override
-  public String analyzeIndividualContext(ChatMessage chatMessage)
+  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException {
     return toneAnalyzerUtility.analyzeIndividualContext(chatMessage);
+  }
+
+  @Override
+  public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
+      throws URISyntaxException, IOException, IndicoException {
+    return toneAnalyzerUtility.analyzeStatedOrganizationsTone(chatMessage);
+  }
+
+  @Override
+  public PlacesDTO analyzeStatedPlacesTone(ChatMessage chatMessage)
+      throws URISyntaxException, IOException, IndicoException {
+    return toneAnalyzerUtility.analyzeStatedPlaces(chatMessage);
+  }
+
+  @Override
+  public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
+      throws IOException, IndicoException {
+    return toneAnalyzerUtility.analyzeStatedPeopleTone(chatMessage);
   }
 }

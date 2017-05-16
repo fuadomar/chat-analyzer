@@ -2,11 +2,10 @@ $(document).ready(function () {
 
     function getNormalizedData(data) {
         var series = [];
-        alert(data);
         for (var key in data) {
             if (data.hasOwnProperty(key)) {
-                /* if (data[key] < 0.5)
-                 continue*/
+                if (data[key] < 0.4)
+                    continue
                 console.log(key + " -> " + data[key]);
                 var arr = [];
                 var number = data[key];
@@ -18,6 +17,57 @@ $(document).ready(function () {
         }
         return series;
     }
+
+    $("#button-analyze-tone-people").click(function () {
+        $("#graph").empty();
+        var sender = $("#sender option:selected").text().trim();
+        $.get({
+            type: 'get',
+            url: '/tone-analyzer-people-individual',
+            dataType: 'json',
+            data: 'sender=' + sender,
+            success: function (data) {
+                console.log(data);
+                var series = getNormalizedData(data);
+                console.log(series);
+                drawDonut(series)
+            }
+        });
+    });
+
+    $("#button-analyze-tone-places").click(function () {
+        $("#graph").empty();
+        var sender = $("#sender option:selected").text().trim();
+        $.get({
+            type: 'get',
+            url: '/tone-analyzer-places-individual',
+            dataType: 'json',
+            data: 'sender=' + sender,
+            success: function (data) {
+                console.log(data);
+                var series = getNormalizedData(data);
+                console.log(series);
+                drawDonut(series)
+            }
+        });
+    });
+
+    $("#button-analyze-tone-organizations").click(function () {
+        $("#graph").empty();
+        var sender = $("#sender option:selected").text().trim();
+        $.get({
+            type: 'get',
+            url: '/tone-analyzer-organizations-individual',
+            dataType: 'json',
+            data: 'sender=' + sender,
+            success: function (data) {
+                console.log(data);
+                var series = getNormalizedData(data);
+                console.log(series);
+                drawDonut(series)
+            }
+        });
+    });
 
     $("#button-analyze-tone").click(function () {
         $("#graph").empty();
@@ -45,21 +95,23 @@ $(document).ready(function () {
             dataType: 'json',
             data: 'sender=' + sender,
             success: function (data) {
-                var aspectsArray = data.aspects;
-                var categories = [];
+                /*var aspectsArray = data.aspects;
+                 var categories = [];
 
-                for (var i = 0; i < aspectsArray.length; i++) {
-                    var elementArray = [];
-                    elementArray.push(aspectsArray[i].aspect);
-                    elementArray.push(aspectsArray[i].aspect_confidence);
-                    categories.push(elementArray);
-                    var elementArray = [];
-                    elementArray.push(aspectsArray[i].polarity);
-                    elementArray.push(aspectsArray[i].polarity_confidence);
-                    categories.push(elementArray);
+                 for (var i = 0; i < aspectsArray.length; i++) {
+                 var elementArray = [];
+                 elementArray.push(aspectsArray[i].aspect);
+                 elementArray.push(aspectsArray[i].aspect_confidence);
+                 categories.push(elementArray);
+                 var elementArray = [];
+                 elementArray.push(aspectsArray[i].polarity);
+                 elementArray.push(aspectsArray[i].polarity_confidence);
+                 categories.push(elementArray);
 
-                }
-                drawDonut(categories)
+                 }*/
+                var series = getNormalizedData(data);
+                console.log(series);
+                drawDonut(series)
             }
         });
     });
