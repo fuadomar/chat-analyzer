@@ -9,7 +9,10 @@ import io.indico.api.results.IndicoResult;
 import io.indico.api.text.TextTag;
 import io.indico.api.utils.IndicoException;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -204,7 +207,7 @@ public class ToneAnalyzerUtility {
     return toneAnalyzer;
   }
 
-  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
+  public TextTagDTO analyzeIndividualTextTag(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException {
 
     HashMap<String, Object> params = new HashMap<>();
@@ -224,7 +227,12 @@ public class ToneAnalyzerUtility {
     log.info("message: {}", msg);
     log.info("textTag: " + textTagMap);
     return textTagDTO;
-    /*msg = getAllConversationsByUser(chatMessage);
+  }
+
+  public String analyzeIndividualAspect(ChatMessage chatMessage)
+      throws IOException, IndicoException, URISyntaxException {
+
+    String msg = getAllConversationsByUser(chatMessage);
     final HttpClient httpClient = HttpClientBuilder.create().build();
     URI uri = buildUriBuilder(msg);
     HttpGet httpGet = new HttpGet(uri);
@@ -233,7 +241,7 @@ public class ToneAnalyzerUtility {
     HttpResponse rawResponse = httpClient.execute(httpGet);
     StringBuffer result = retrieveAylienApiResponse(rawResponse);
     log.info("output: " + result);
-    return result.toString();*/
+    return result.toString();
   }
 
   public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)

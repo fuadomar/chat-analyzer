@@ -16,14 +16,18 @@ public interface ToneAnalyzerService {
 
   public ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage);
 
-  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
+  public String analyzeIndividualAspect(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException;
 
-  OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
+  public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
       throws URISyntaxException, IOException, IndicoException;
 
-  PlacesDTO analyzeStatedPlacesTone(ChatMessage chatMessage)
+  public PlacesDTO analyzeStatedPlacesTone(ChatMessage chatMessage)
       throws URISyntaxException, IOException, IndicoException;
 
-  PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage) throws IOException, IndicoException;
+  public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
+      throws IOException, IndicoException;
+
+  public TextTagDTO analyzeIndividualTextTag(ChatMessage chatMessage)
+      throws URISyntaxException, IOException, IndicoException;
 }

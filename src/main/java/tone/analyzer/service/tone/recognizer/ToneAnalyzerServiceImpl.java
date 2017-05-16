@@ -46,9 +46,9 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   }
 
   @Override
-  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
+  public String analyzeIndividualAspect(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException {
-    return toneAnalyzerUtility.analyzeIndividualContext(chatMessage);
+    return toneAnalyzerUtility.analyzeIndividualAspect(chatMessage);
   }
 
   @Override
@@ -67,5 +67,11 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
       throws IOException, IndicoException {
     return toneAnalyzerUtility.analyzeStatedPeopleTone(chatMessage);
+  }
+
+  @Override
+  public TextTagDTO analyzeIndividualTextTag(ChatMessage chatMessage)
+      throws URISyntaxException, IOException, IndicoException {
+    return toneAnalyzerUtility.analyzeIndividualTextTag(chatMessage);
   }
 }

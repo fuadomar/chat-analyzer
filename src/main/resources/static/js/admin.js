@@ -86,12 +86,12 @@ $(document).ready(function () {
         });
     });
 
-    $("#button-analyze-aspect").click(function () {
+    $("#button-analyze-texttag").click(function () {
         $("#graph").empty();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
-            url: '/context-analyzer-individual',
+            url: '/texttag-analyzer-individual',
             dataType: 'json',
             data: 'sender=' + sender,
             success: function (data) {
@@ -116,6 +116,33 @@ $(document).ready(function () {
         });
     });
 
+    $("#button-analyze-aspect").click(function () {
+        $("#graph").empty();
+        var sender = $("#sender option:selected").text().trim();
+        $.get({
+            type: 'get',
+            url: '/aspect-analyzer-individual',
+            dataType: 'json',
+            data: 'sender=' + sender,
+            success: function (data) {
+                var aspectsArray = data.aspects;
+                var categories = [];
+
+                for (var i = 0; i < aspectsArray.length; i++) {
+                    var elementArray = [];
+                    elementArray.push(aspectsArray[i].aspect);
+                    elementArray.push(aspectsArray[i].aspect_confidence);
+                    categories.push(elementArray);
+                    var elementArray = [];
+                    elementArray.push(aspectsArray[i].polarity);
+                    elementArray.push(aspectsArray[i].polarity_confidence);
+                    categories.push(elementArray);
+
+                }
+                drawDonut(categories)
+            }
+        });
+    });
     function drawDonut(dataPoint) {
 
         Highcharts.chart('graph', {

@@ -48,13 +48,23 @@ public class ToneAnalyzerController {
   }
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/context-analyzer-individual", method = RequestMethod.GET)
+  @RequestMapping(value = "/aspect-analyzer-individual", method = RequestMethod.GET)
+  public String analyzeIndividualAspect(@RequestParam("sender") String sender)
+      throws IOException, IndicoException, URISyntaxException {
+
+    ChatMessage chatMessage = new ChatMessage();
+    chatMessage.setSender(sender);
+    return toneAnalyzerGateway.analyzeIndividualAspect(chatMessage);
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/texttag-analyzer-individual", method = RequestMethod.GET)
   public TextTagDTO analyzeIndividualContext(@RequestParam("sender") String sender)
       throws IOException, IndicoException, URISyntaxException {
 
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzeIndividualContext(chatMessage);
+    return toneAnalyzerGateway.analyzeIndividualTextTag(chatMessage);
   }
 
   @PreAuthorize("hasRole('ROLE_ADMIN')")

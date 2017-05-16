@@ -31,9 +31,9 @@ public class ToneAnalyzerGateway {
     return toneAnalyzerService.analyzeReviewTone(chatMessage);
   }
 
-  public TextTagDTO analyzeIndividualContext(ChatMessage chatMessage)
+  public String analyzeIndividualAspect(ChatMessage chatMessage)
       throws IOException, IndicoException, URISyntaxException {
-    return toneAnalyzerService.analyzeIndividualContext(chatMessage);
+    return toneAnalyzerService.analyzeIndividualAspect(chatMessage);
   }
 
   public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
@@ -49,5 +49,11 @@ public class ToneAnalyzerGateway {
   public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
       throws IOException, IndicoException {
     return toneAnalyzerService.analyzeStatedPeopleTone(chatMessage);
+  }
+
+  public TextTagDTO analyzeIndividualTextTag(ChatMessage chatMessage)
+      throws IndicoException, IOException, URISyntaxException {
+
+    return toneAnalyzerService.analyzeIndividualTextTag(chatMessage);
   }
 }
