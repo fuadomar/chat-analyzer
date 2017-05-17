@@ -9,10 +9,14 @@ import io.indico.api.results.IndicoResult;
 import io.indico.api.text.TextTag;
 import io.indico.api.utils.IndicoException;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,12 +239,19 @@ public class ToneAnalyzerUtility {
     String msg = getAllConversationsByUser(chatMessage);
     final HttpClient httpClient = HttpClientBuilder.create().build();
     URI uri = buildUriBuilder(msg);
-    HttpGet httpGet = new HttpGet(uri);
-    httpGet.setHeader(X_AYLIEN_TEXT_API_APPLICATION_ID, aylieaApplicationId);
-    httpGet.setHeader(X_AYLIEN_TEXT_API_APPLICATION_KEY, aylienApplicationKey);
+    List<NameValuePair> nameValuePairList = new ArrayList<>();
+    nameValuePairList.add(new BasicNameValuePair("key","bbb95713e2482ceb77cece62a80b3340"));
+    nameValuePairList.add(new BasicNameValuePair("lang", "en"));
+    nameValuePairList.add(new BasicNameValuePair("txt", msg));
+    HttpPost httpGet = new HttpPost(uri);
+    httpGet.addHeader("content-type", "application/x-www-form-urlencoded");
+    httpGet.setEntity(new UrlEncodedFormEntity(nameValuePairList));
+    //httpGet.setHeader(X_AYLIEN_TEXT_API_APPLICATION_ID, aylieaApplicationId);
+    //httpGet.setHeader(X_AYLIEN_TEXT_API_APPLICATION_KEY, aylienApplicationKey);
     HttpResponse rawResponse = httpClient.execute(httpGet);
     StringBuffer result = retrieveAylienApiResponse(rawResponse);
     log.info("output: " + result);
+
     return result.toString();
   }
 
@@ -313,11 +324,11 @@ public class ToneAnalyzerUtility {
   }
 
   private URI buildUriBuilder(String msg) throws URISyntaxException {
+    //http://api.meaningcloud.com/parser-2.0
     return new URIBuilder()
-        .setScheme("https")
-        .setHost("api.aylien.com")
-        .setPath("/api/v1/absa/restaurants")
-        .addParameter("text", msg)
+        .setScheme("http")
+        .setHost("api.meaningcloud.com")
+        .setPath("/sentiment-2.1")
         .build();
   }
 
