@@ -57,6 +57,7 @@ $(document).ready(function () {
         }
         return categories;
     }
+
     function clearGraphDdiv() {
         $("#graph").empty();
         $("#graph-aspect").empty();
