@@ -57,9 +57,13 @@ $(document).ready(function () {
         }
         return categories;
     }
+    function clearGraphDdiv() {
+        $("#graph").empty();
+        $("#graph-aspect").empty();
+    }
 
     $("#button-analyze-tone-people").click(function () {
-        $("#graph").empty();
+        clearGraphDdiv();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
@@ -76,7 +80,7 @@ $(document).ready(function () {
     });
 
     $("#button-analyze-tone-places").click(function () {
-        $("#graph").empty();
+        clearGraphDdiv();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
@@ -93,7 +97,7 @@ $(document).ready(function () {
     });
 
     $("#button-analyze-tone-organizations").click(function () {
-        $("#graph").empty();
+        clearGraphDdiv();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
@@ -110,7 +114,7 @@ $(document).ready(function () {
     });
 
     $("#button-analyze-tone").click(function () {
-        $("#graph").empty();
+        clearGraphDdiv();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
@@ -127,7 +131,7 @@ $(document).ready(function () {
     });
 
     $("#button-analyze-texttag").click(function () {
-        $("#graph").empty();
+        clearGraphDdiv();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',
@@ -144,7 +148,7 @@ $(document).ready(function () {
     });
 
     $("#button-analyze-aspect").click(function () {
-        $("#graph").empty();
+        clearGraphDdiv();
         var sender = $("#sender option:selected").text().trim();
         $.get({
             type: 'get',

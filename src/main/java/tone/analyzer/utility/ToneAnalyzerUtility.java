@@ -12,7 +12,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -65,6 +64,14 @@ public class ToneAnalyzerUtility {
    */
   private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerUtility.class);
 
+  private static final String LANGUAGE_ENGLISH = "en";
+
+  private static final String KEY_FOR_MEANINGCLOUD = "key";
+
+  private static final String LANG_FOR_MEANINGCLOUD = "lang";
+
+  private static final String TXT_FOR_MEANINGCLOUD = "txt";
+
   private final String X_AYLIEN_TEXT_API_APPLICATION_ID = "X-AYLIEN-TextAPI-Application-ID";
 
   private final String X_AYLIEN_TEXT_API_APPLICATION_KEY = "X-AYLIEN-TextAPI-Application-Key";
@@ -85,6 +92,9 @@ public class ToneAnalyzerUtility {
 
   @Value("${indico.api.key}")
   private String indicoApiKey;
+
+  @Value("${meaningcloud.license.key}")
+  private String meaningcloudLicenceKey;
 
   @Autowired private ConversationRepository conversationRepository;
 
@@ -240,9 +250,9 @@ public class ToneAnalyzerUtility {
     final HttpClient httpClient = HttpClientBuilder.create().build();
     URI uri = buildUriBuilder(msg);
     List<NameValuePair> nameValuePairList = new ArrayList<>();
-    nameValuePairList.add(new BasicNameValuePair("key","bbb95713e2482ceb77cece62a80b3340"));
-    nameValuePairList.add(new BasicNameValuePair("lang", "en"));
-    nameValuePairList.add(new BasicNameValuePair("txt", msg));
+    nameValuePairList.add(new BasicNameValuePair(KEY_FOR_MEANINGCLOUD, meaningcloudLicenceKey));
+    nameValuePairList.add(new BasicNameValuePair(LANG_FOR_MEANINGCLOUD, LANGUAGE_ENGLISH));
+    nameValuePairList.add(new BasicNameValuePair(TXT_FOR_MEANINGCLOUD, msg));
     HttpPost httpGet = new HttpPost(uri);
     httpGet.addHeader("content-type", "application/x-www-form-urlencoded");
     httpGet.setEntity(new UrlEncodedFormEntity(nameValuePairList));
