@@ -80,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   public static final String ADMIN_URI = "/admin";
 
-  public static final String RESOURCES_URI = "/resources/**";
+  public static final String RESOURCES_URI = "/resources/static/**";
 
   public static final String REGISTRATION_URI = "/user-registration/**";
 
@@ -148,7 +148,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
 
     http.authorizeRequests()
-        .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI, ADMIN_PANEL_URI)
+        .antMatchers("/login/**", RESOURCES_URI, REGISTRATION_URI, ADMIN_PANEL_URI, "/invitation-email/**", "/confirmation-email/**","/js/**","/css/**")
         .permitAll()
         .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
         .hasRole(ADMIN_ROLE_NAME)

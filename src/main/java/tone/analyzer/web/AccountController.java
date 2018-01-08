@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.SecurityService;
@@ -21,6 +22,7 @@ import tone.analyzer.validator.AccountValidator;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /** Created by mozammal on 4/18/17. */
 @Controller
@@ -129,4 +131,23 @@ public class AccountController {
     model.addAttribute(USER_LIST, userList);
     return ADMIN_PANEL_VIEW;
   }
+
+  @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
+  public ModelAndView confirmationUserByEmail(ModelAndView modelAndView, @RequestParam("token") String token) {
+
+    modelAndView.addObject("confirmationToken", token);
+    modelAndView.setViewName("confirm");
+    return modelAndView;
+  }
+
+  // Process confirmation link
+  @RequestMapping(value="/confirmation-email", method = RequestMethod.POST)
+  public ModelAndView processConfirmationForm(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map requestParams, RedirectAttributes redir) {
+
+    modelAndView.setViewName("confirm");
+    modelAndView.addObject("successMessage", "Your password has been set!");
+    return modelAndView;
+  }
+
+
 }

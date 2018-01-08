@@ -6,55 +6,69 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Document
 public class Account {
 
-  @Id private String id;
+    @Id
+    private String id;
 
-  @Indexed(unique = true)
-  private String name;
+    @Indexed(unique = true)
+    private String name;
 
-  private String password;
+    private String password;
 
-  private List<Role> role;
+    private List<Role> role;
 
-  public Account() {}
+    private boolean enabled;
 
-  public Account(String name, String password) {
-    this.name = name.toLowerCase();
-    this.password = password;
-  }
+    public Account() {
+    }
 
-  public String getId() {
-    return id;
-  }
+    public Account(String name, String password) {
+        this.name = name.toLowerCase();
+        this.password = password;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getName() {
-    return name;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setName(String name) {
-    this.name = name.toLowerCase();
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    public void setName(String name) {
+        this.name = name.toLowerCase();
+    }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    public String getPassword() {
+        return password;
+    }
 
-  public List<Role> getRole() {
-    return role;
-  }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-  public void setRole(List<Role> role) {
-    this.role = role;
-  }
+    public List<Role> getRole() {
+        return role;
+    }
+
+    public void setRole(List<Role> role) {
+        this.role = role;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }
