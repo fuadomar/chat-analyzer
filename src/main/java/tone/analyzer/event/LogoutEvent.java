@@ -4,8 +4,11 @@ public class LogoutEvent {
 
   private String userName;
 
-  public LogoutEvent(String username) {
+  private String id;
+
+  public LogoutEvent(String username, String id) {
     this.userName = username;
+    this.id = id;
   }
 
   public String getUserName() {

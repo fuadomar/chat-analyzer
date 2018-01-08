@@ -26,7 +26,7 @@ public class Account {
 
     private boolean enabled;
 
-    Set<String> buddyList;
+    Set<BuddyDetails> buddyList;
 
     public Account() {
     }
@@ -77,11 +77,11 @@ public class Account {
         this.enabled = enabled;
     }
 
-    public Set<String> getBuddyList() {
+    public Set<BuddyDetails> getBuddyList() {
         return buddyList;
     }
 
-    public void setBuddyList(Set<String> buddyList) {
+    public void setBuddyList(Set<BuddyDetails> buddyList) {
         this.buddyList = buddyList;
     }
 }

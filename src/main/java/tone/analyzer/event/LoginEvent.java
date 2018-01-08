@@ -11,25 +11,28 @@ public class LoginEvent {
 
     private Date time;
 
-    private boolean active;
+    private boolean online;
+
+
+    private String id;
 
     public LoginEvent(String username) {
         this.userName = username;
         this.time = new Date();
-        this.active = true;
+        this.online = true;
     }
 
     public LoginEvent(String username, boolean active) {
         this.userName = username;
         this.time = new Date();
-        this.active = active;
+        this.online = active;
     }
 
     @Override
     public int hashCode() {
         int result = userName.hashCode();
         result = 31 * result + (time != null ? time.hashCode() : 0);
-        result = 31 * result + (active ? 1 : 0);
+        result = 31 * result + (online ? 1 : 0);
         return result;
     }
 
@@ -57,11 +60,19 @@ public class LoginEvent {
         this.time = time;
     }
 
-    public boolean isActive() {
-        return active;
+    public boolean isOnline() {
+        return online;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setOnline(boolean online) {
+        this.online = online;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

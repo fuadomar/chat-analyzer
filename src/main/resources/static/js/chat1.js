@@ -1,15 +1,10 @@
-function createChatList(user) {
+function createChatList(userId) {
+    var chatListDiv = '<div id="chat-' + userId + '">  <h3>' + userId + ' :</h3> <ol id="messages"></ol>' + ' <div class="panel-footer"><div class="' + '"input-group">'
+        + '<input id="+message_' + userId + '" ' + 'class="btn-input" ' + 'type="text" ' + 'class="form-control input-sm chat_input" ' +
+        'placeholder="Write your message here..."/>' + ' </div></div></div>';
 
-    var chatListDiv = '<li class="contact" id="'+user.id+'"> <div class="wrap">';
+    chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
 
-    if (user.online === true) {
-        chatListDiv = chatListDiv + '<span class="contact-status online"/>';
-    }
-    else {
-        chatListDiv = chatListDiv + '<span class="contact-status"/>';
-    }
-    chatListDiv = chatListDiv + '<div class="meta"><p class="name" id="'+user.id+'">' + user.userName+ '</p> <p class="preview">You just got LITT up, Mike.</p> </div> </div> </li>';
-    //chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
     console.log(chatListDiv);
     return chatListDiv;
 }
@@ -27,7 +22,7 @@ function createChatBox(userId) {
 
 $(document).ready(function () {
 
-    var chatList = $("#contacts-uli");
+    var chatList = $(".chat_body");
     var chatBox = $("#chatbox-container");
     var host = location.protocol + '//' + location.host;
     console.log("host: " + host);
@@ -44,41 +39,40 @@ $(document).ready(function () {
         console.log("uuid " + uuid);
         var sessionId = uuid;
 
-        /* stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
+        stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
 
-         var payload = JSON.parse(data.body);
-         console.log("received message: " + payload);
-         if ($("#msg_push" + payload.sender).length <= 0) {
-         chatBox.append(createChatBox(payload.sender));
-         $('.msg_wrap').show();
-         $('#msgbox' + payload.sender).show();
-         }
-         $('#chatbox-container').on('customOnMessageEvent', "#msg_push" + payload.sender, function (event, msg) {
+            var payload = JSON.parse(data.body);
+            console.log("received message: " + payload);
+            if ($("#msg_push" + payload.sender).length <= 0) {
+                chatBox.append(createChatBox(payload.sender));
+                $('.msg_wrap').show();
+                $('#msgbox' + payload.sender).show();
+            }
+            $('#chatbox-container').on('customOnMessageEvent', "#msg_push" + payload.sender, function (event, msg) {
 
-         msg = payload.sender + ": " + msg;
-         if (msg != '')
-         $('<div class="msg_a">' + msg + '</div>').insertBefore('#msg_push' + payload.sender);
-         $('#msg_body' + payload.sender).scrollTop($('#msg_body' + payload.sender)[0].scrollHeight);
-         event.stopImmediatePropagation();
-         });
-         $("#msg_push" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
-         });*/
+                msg = payload.sender + ": " + msg;
+                if (msg != '')
+                    $('<div class="msg_a">' + msg + '</div>').insertBefore('#msg_push' + payload.sender);
+                $('#msg_body' + payload.sender).scrollTop($('#msg_body' + payload.sender)[0].scrollHeight);
+                event.stopImmediatePropagation();
+            });
+            $("#msg_push" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
+        });
 
-        stompClient.subscribe("/app/chat.participants/" + uuid, function (data) {
+        stompClient.subscribe("/app/chat.participants/"+uuid, function (data) {
             var messageArray = JSON.parse(data.body);
-            //chatList.html('');
+            chatList.html('');
             for (var i = 0; i < messageArray.length; i++) {
                 if (sessionId === messageArray[i].userName)
                     continue;
-                chatList.append(createChatList(messageArray[i]));
+                chatList.append(createChatList(messageArray[i].userName));
             }
         });
 
-        stompClient.subscribe("/topic/chat.login"+"-"+sessionId, function (message) {
+        stompClient.subscribe("/topic/chat.login", function (message) {
+
             if (sessionId !== JSON.parse(message.body).userName)
-                //chatList.append(createChatList(JSON.parse(message.body)));
-                 var spanDiv = '#'+JSON.parse(message.body).id+" "+'span'
-                 $(spanDiv).attr('class','contact-status online')
+                chatList.append(createChatList(JSON.parse(message.body).userName));
         });
 
         stompClient.subscribe("/topic/chat.logout", function (message) {

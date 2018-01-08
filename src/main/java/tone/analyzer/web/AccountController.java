@@ -17,16 +17,17 @@ import tone.analyzer.auth.service.IEmailInvitationService;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.entity.EmailInvitation;
+import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.ParticipantRepository;
+import tone.analyzer.event.LoginEvent;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.validator.AccountValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by mozammal on 4/18/17.
@@ -81,6 +82,34 @@ public class AccountController {
     @Autowired
     private IEmailInvitationService emailInvitationService;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Autowired
+    private ParticipantRepository participantRepository;
+
+    public List<LoginEvent> retrieveBuddyList(String userName) {
+        Account userAccount = accountRepository.findByName(userName);
+        List<LoginEvent> buddyListObjects = new ArrayList<>();
+        Set<BuddyDetails> buddyList = userAccount.getBuddyList();
+
+        if (buddyList == null)
+            return buddyListObjects;
+
+        for (BuddyDetails buddy : buddyList) {
+            LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+            loginEvent.setId(buddy.getId());
+            buddyListObjects.add(loginEvent);
+        }
+        List<LoginEvent> activeUser = new ArrayList<>(participantRepository.getActiveSessions().values());
+
+        for (LoginEvent loginEvent : buddyListObjects)
+            if (activeUser.contains(loginEvent)) {
+                loginEvent.setOnline(true);
+            }
+        return buddyListObjects;
+    }
+
     @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
     public String adminPanel(Model model) {
         model.addAttribute(ACCOUNT_FORM, new Account());
@@ -115,6 +144,8 @@ public class AccountController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Account user = userService.findByName(auth.getName());
         redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
+        List<LoginEvent> buddyList = retrieveBuddyList(user.getName());
+        redirectAttributes.addAttribute("buddyList", buddyList);
         return "redirect:/live-chat";
     }
 
@@ -132,7 +163,6 @@ public class AccountController {
             method = RequestMethod.GET
     )
     public String chat(Model model) {
-
         return CHAT_VIEW;
     }
 
@@ -173,19 +203,20 @@ public class AccountController {
 
         String password = (String) requestParams.get("password");
         Account account = new Account(token.getReceiver(), password);
-        Set<String> emailInvitationReceiverBuddyList = account.getBuddyList();
+        Set<BuddyDetails> emailInvitationReceiverBuddyList = account.getBuddyList();
 
         if (emailInvitationReceiverBuddyList == null) {
             emailInvitationReceiverBuddyList = new HashSet<>();
         }
-        emailInvitationReceiverBuddyList.add(token.getSender());
+
         Account userCreatedByEmailInvitation = userService.save(account);
         Account userEmailInvitationSender = userService.findByName(token.getSender());
-        Set<String> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
+        Set<BuddyDetails> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
         if (emailInvitionSenderBuddyList == null) {
             emailInvitionSenderBuddyList = new HashSet<>();
         }
-        emailInvitionSenderBuddyList.add(token.getReceiver());
+        emailInvitationReceiverBuddyList.add(new BuddyDetails(userEmailInvitationSender.getId(), token.getSender()));
+        emailInvitionSenderBuddyList.add(new BuddyDetails(userCreatedByEmailInvitation.getId(), token.getReceiver()));
         userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
         userService.addBudyyToUser(userEmailInvitationSender, userCreatedByEmailInvitation);
 
@@ -195,6 +226,4 @@ public class AccountController {
         redir.addFlashAttribute(USER_NAME, user.getName());
         return "redirect:/live-chat";
     }
-
-
 }

@@ -3,14 +3,12 @@ package tone.analyzer.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.domain.repository.ParticipantRepository;
@@ -58,15 +56,20 @@ public class ChatController {
         log.info("retrieveParticipants method fired");
         Account userAccount = accountRepository.findByName(userName);
         List<LoginEvent> buddyListObjects = new ArrayList<>();
-        Set<String> buddyList = userAccount.getBuddyList();
+        Set<BuddyDetails> buddyList = userAccount.getBuddyList();
 
-        for (String buddy : buddyList)
-            buddyListObjects.add(new LoginEvent(buddy, false));
+        if (buddyList == null)
+            return buddyListObjects;
+        for (BuddyDetails buddy : buddyList) {
+            LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+            loginEvent.setId(buddy.getId());
+            buddyListObjects.add(loginEvent);
+        }
         List<LoginEvent> activeUser = new ArrayList<>(participantRepository.getActiveSessions().values());
 
         for (LoginEvent loginEvent : buddyListObjects)
             if (activeUser.contains(loginEvent)) {
-                loginEvent.setActive(true);
+                loginEvent.setOnline(true);
             }
         return buddyListObjects;
     }
