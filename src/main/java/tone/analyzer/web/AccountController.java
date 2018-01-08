@@ -13,141 +13,188 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import tone.analyzer.auth.service.IEmailInvitationService;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.entity.EmailInvitation;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.validator.AccountValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Controller
 public class AccountController {
 
-  public static final String ERROR_ATTRIBUTED = "error";
+    public static final String ERROR_ATTRIBUTED = "error";
 
-  public static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
-      "Your username and password is invalid.";
+    public static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
+            "Your username and password is invalid.";
 
-  public static final String MESSAGE_ATTRIBUTED = "message";
+    public static final String MESSAGE_ATTRIBUTED = "message";
 
-  public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
-      "You have been logged out successfully.";
+    public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
+            "You have been logged out successfully.";
 
-  public static final String ADMIN_LOGIN_VIEW = "admin-login";
+    public static final String ADMIN_LOGIN_VIEW = "admin-login";
 
-  public static final String USERS_REGISTRATION_VIEW = "users-registration";
+    public static final String USERS_REGISTRATION_VIEW = "users-registration";
 
-  public static final String LOGIN_VIEW = "login";
+    public static final String LOGIN_VIEW = "login";
 
-  public static final String CHAT_VIEW = "chat";
+    public static final String CHAT_VIEW = "chat";
 
-  public static final String ADMIN_PANEL_VIEW = "admin-panel";
+    public static final String ADMIN_PANEL_VIEW = "admin-panel";
 
-  public static final String USER_NAME = "userName";
+    public static final String USER_NAME = "userName";
 
-  public static final String USER_LIST = "userList";
+    public static final String USER_LIST = "userList";
 
-  public static final String USER_REGISTRATION_URI = "/user-registration";
+    public static final String USER_REGISTRATION_URI = "/user-registration";
 
-  public static final String LIVE_CHAT_URI = "/live-chat";
+    public static final String LIVE_CHAT_URI = "/live-chat";
 
-  public static final String ROOT_URI = "/";
+    public static final String ROOT_URI = "/";
 
-  public static final String ACCOUNT_FORM = "accountForm";
+    public static final String ACCOUNT_FORM = "accountForm";
 
-  @Autowired private UserService userService;
+    @Autowired
+    private UserService userService;
 
-  @Autowired private SecurityService securityService;
+    @Autowired
+    private SecurityService securityService;
 
-  @Autowired private AccountValidator accountValidator;
+    @Autowired
+    private AccountValidator accountValidator;
 
-  @Autowired private AdminService adminService;
+    @Autowired
+    private AdminService adminService;
 
-  @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
-  public String adminPanel(Model model) {
-    model.addAttribute(ACCOUNT_FORM, new Account());
+    @Autowired
+    private IEmailInvitationService emailInvitationService;
 
-    return ADMIN_LOGIN_VIEW;
-  }
+    @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
+    public String adminPanel(Model model) {
+        model.addAttribute(ACCOUNT_FORM, new Account());
 
-  @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.GET)
-  public String registration(Model model) {
-    model.addAttribute(ACCOUNT_FORM, new Account());
-
-    return USERS_REGISTRATION_VIEW;
-  }
-
-  @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.POST)
-  public String registration(
-      @ModelAttribute("accountForm") Account accountForm,
-      BindingResult bindingResult,
-      Model model,
-      HttpServletRequest request,
-      HttpServletResponse response,
-      RedirectAttributes redirectAttributes) {
-
-    accountValidator.validate(accountForm, bindingResult);
-    ModelAndView modelAndView = new ModelAndView();
-    if (bindingResult.hasErrors()) {
-      return USERS_REGISTRATION_VIEW;
+        return ADMIN_LOGIN_VIEW;
     }
-    String plainTextPassword = accountForm.getPassword();
-    userService.save(accountForm);
-    securityService.autoLogin(accountForm.getName(), plainTextPassword, request, response);
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Account user = userService.findByName(auth.getName());
-    redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
-    return "redirect:/live-chat";
-  }
 
-  @RequestMapping(value = "/login", method = RequestMethod.GET)
-  public String login(Model model, String error, String logout) {
+    @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.GET)
+    public String registration(Model model) {
+        model.addAttribute(ACCOUNT_FORM, new Account());
 
-    if (error != null) model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
-    if (logout != null) model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
-    return LOGIN_VIEW;
-  }
+        return USERS_REGISTRATION_VIEW;
+    }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(
-    value = {ROOT_URI, LIVE_CHAT_URI},
-    method = RequestMethod.GET
-  )
-  public String chat(Model model) {
+    @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.POST)
+    public String registration(
+            @ModelAttribute("accountForm") Account accountForm,
+            BindingResult bindingResult,
+            Model model,
+            HttpServletRequest request,
+            HttpServletResponse response,
+            RedirectAttributes redirectAttributes) {
 
-    return CHAT_VIEW;
-  }
+        accountValidator.validate(accountForm, bindingResult);
+        ModelAndView modelAndView = new ModelAndView();
+        if (bindingResult.hasErrors()) {
+            return USERS_REGISTRATION_VIEW;
+        }
+        String plainTextPassword = accountForm.getPassword();
+        userService.save(accountForm);
+        securityService.autoLogin(accountForm.getName(), plainTextPassword, request, response);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = userService.findByName(auth.getName());
+        redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
+        return "redirect:/live-chat";
+    }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/admin", method = RequestMethod.GET)
-  public String admin(Model model) {
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(Model model, String error, String logout) {
 
-    List<Account> userList = adminService.fetchAllUsers();
-    model.addAttribute(USER_LIST, userList);
-    return ADMIN_PANEL_VIEW;
-  }
+        if (error != null) model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
+        if (logout != null) model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
+        return LOGIN_VIEW;
+    }
 
-  @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
-  public ModelAndView confirmationUserByEmail(ModelAndView modelAndView, @RequestParam("token") String token) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(
+            value = {ROOT_URI, LIVE_CHAT_URI},
+            method = RequestMethod.GET
+    )
+    public String chat(Model model) {
 
-    modelAndView.addObject("confirmationToken", token);
-    modelAndView.setViewName("confirm");
-    return modelAndView;
-  }
+        return CHAT_VIEW;
+    }
 
-  // Process confirmation link
-  @RequestMapping(value="/confirmation-email", method = RequestMethod.POST)
-  public ModelAndView processConfirmationForm(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map requestParams, RedirectAttributes redir) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String admin(Model model) {
 
-    modelAndView.setViewName("confirm");
-    modelAndView.addObject("successMessage", "Your password has been set!");
-    return modelAndView;
-  }
+        List<Account> userList = adminService.fetchAllUsers();
+        model.addAttribute(USER_LIST, userList);
+        return ADMIN_PANEL_VIEW;
+    }
+
+    @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
+    public ModelAndView confirmationUserByEmail(ModelAndView modelAndView, @RequestParam("token") String token) {
+
+        EmailInvitation emailInvitationServiceByToekn = emailInvitationService.findByToekn(token);
+        modelAndView.addObject("confirmationToken", emailInvitationServiceByToekn.getToken());
+        modelAndView.setViewName("confirm");
+        return modelAndView;
+    }
+
+    // Process confirmation link
+    @RequestMapping(value = "/confirmation-email", method = RequestMethod.POST)
+    public String processConfirmationForm(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map requestParams, HttpServletRequest request,
+                                          HttpServletResponse response, RedirectAttributes redir) {
+
+        // modelAndView.setViewName("confirm");
+        EmailInvitation token = emailInvitationService.findByToekn((String) requestParams.get("token"));
+
+        if (token == null) {
+            bindingResult.reject("password");
+            redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
+            modelAndView.setViewName("redirect:confirm?token=" + requestParams.get("token"));
+            return "redirect:confirm?token=" + requestParams.get("token");
+
+        }
+        // Set new password
+
+        String password = (String) requestParams.get("password");
+        Account account = new Account(token.getReceiver(), password);
+        Set<String> emailInvitationReceiverBuddyList = account.getBuddyList();
+
+        if (emailInvitationReceiverBuddyList == null) {
+            emailInvitationReceiverBuddyList = new HashSet<>();
+        }
+        emailInvitationReceiverBuddyList.add(token.getSender());
+        Account userCreatedByEmailInvitation = userService.save(account);
+        Account userEmailInvitationSender = userService.findByName(token.getSender());
+        Set<String> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
+        if (emailInvitionSenderBuddyList == null) {
+            emailInvitionSenderBuddyList = new HashSet<>();
+        }
+        emailInvitionSenderBuddyList.add(token.getReceiver());
+        userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
+        userService.addBudyyToUser(userEmailInvitationSender, userCreatedByEmailInvitation);
+
+        securityService.autoLogin(account.getName(), password, request, response);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Account user = userService.findByName(auth.getName());
+        redir.addFlashAttribute(USER_NAME, user.getName());
+        return "redirect:/live-chat";
+    }
 
 
 }

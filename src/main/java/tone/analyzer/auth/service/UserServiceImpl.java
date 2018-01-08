@@ -7,8 +7,7 @@ import tone.analyzer.domain.entity.Role;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.repository.AccountRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 /** Created by mozammal on 4/18/17. */
 @Service
@@ -19,17 +18,24 @@ public class UserServiceImpl implements UserService {
   @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Override
-  public void save(Account user) {
+  public Account save(Account user) {
     user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-    List<Role> roleList = new ArrayList<>();
+    user.setEnabled(true);
     Role role = new Role("ROLE_USER");
-    roleList.add(role);
-    user.setRole(roleList);
+    user.setRole(Arrays.asList(role));
     userRepository.save(user);
+    return user;
   }
 
   @Override
   public Account findByName(String username) {
     return userRepository.findByName(username);
+  }
+
+  @Override
+  public void addBudyyToUser(Account emailInvitationSender, Account emailInvitationReceiver) {
+
+    userRepository.save(emailInvitationSender);
+    userRepository.save(emailInvitationReceiver);
   }
 }

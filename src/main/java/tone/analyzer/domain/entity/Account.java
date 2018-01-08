@@ -4,7 +4,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by mozammal on 4/18/17.
@@ -24,12 +26,15 @@ public class Account {
 
     private boolean enabled;
 
+    Set<String> buddyList;
+
     public Account() {
     }
 
     public Account(String name, String password) {
         this.name = name.toLowerCase();
         this.password = password;
+        this.buddyList = new HashSet<>();
     }
 
     public String getId() {
@@ -70,5 +75,13 @@ public class Account {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Set<String> getBuddyList() {
+        return buddyList;
+    }
+
+    public void setBuddyList(Set<String> buddyList) {
+        this.buddyList = buddyList;
     }
 }

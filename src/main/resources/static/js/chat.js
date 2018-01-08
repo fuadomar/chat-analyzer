@@ -8,6 +8,7 @@ function createChatList(userId) {
     console.log(chatListDiv);
     return chatListDiv;
 }
+
 function createChatBox(userId) {
 
     var chatBox = '<div class="msg_box" style="right:290px"  id="msgbox' + userId + '"><div class="msg_head">' + userId +
@@ -57,7 +58,7 @@ $(document).ready(function () {
             $("#msg_push" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
         });
 
-        stompClient.subscribe("/app/chat.participants", function (data) {
+        stompClient.subscribe("/app/chat.participants/"+uuid, function (data) {
             var messageArray = JSON.parse(data.body);
             chatList.html('');
             for (var i = 0; i < messageArray.length; i++) {
