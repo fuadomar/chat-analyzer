@@ -63,44 +63,18 @@ $(document).ready(function () {
         });
 
         stompClient.subscribe("/topic/chat.login" + "-" + sessionId, function (message) {
-            if (sessionId !== JSON.parse(message.body).userName)
             //chatList.append(createChatList(JSON.parse(message.body)));
-                var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
-            $(spanDiv).attr('class', 'contact-status online')
+            var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
+            $(spanDiv).attr('class', 'contact-status online');
         });
 
-        stompClient.subscribe("/topic/chat.logout", function (message) {
-            var userName = JSON.parse(message.body).userName;
-            $("#msgbox" + userName).remove();
-            $("#user" + userName).remove();
+        stompClient.subscribe("/topic/chat.logout" + "-" + sessionId, function (message) {
+
+            console.log(JSON.parse(message.body));
+            var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
+            $(spanDiv).attr('class', 'contact-status');
         });
 
-        /*$('#review-button').click(function () {
-         var review = $('textarea#review').val();
-         if (review != '') {
-
-         var token = $("meta[name='_csrf']").attr("content");
-         var header = $("meta[name='_csrf_header']").attr("content");
-         $(document).ajaxSend(function (e, xhr, options) {
-         xhr.setRequestHeader(header, token);
-         });
-
-         var jsonStr = '{ "user": "' + sessionId + '" , "content": "' + review + ' "}';
-         $.ajax({
-         type: 'POST',
-         url: '/review',
-         data: jsonStr,
-         contentType: 'application/json; charset=utf-8',
-         processData: false,
-         cache: false,
-         success: function (data, textStatus, xhr) {
-         $('textarea#review').val('');
-         },
-         error: function (data, textStatus, xhr) {
-         }
-         });
-         }
-         });*/
 
         $('.chat_box').on('click', '.chat_head', function (e) {
             e.stopPropagation();
@@ -132,6 +106,7 @@ $(document).ready(function () {
         $("#contacts-uli").on("click", "li", function (event) {
             // do your code
             console.log('clicked ' + $(this).attr('id'));
+            $('#ul-messages').html('');
             $('.message-input').attr('id', $(this).attr('id'));
             var sender = uuid;
             var receiver = $(this).attr('id');
@@ -143,23 +118,20 @@ $(document).ready(function () {
                 success: function (data) {
 
                     if (!$.trim(data)) {
-                        alert("What follows is blank: " + data);
                     }
                     else {
-                        alert("What follows is not blank: " + data);
-
                         jQuery(data).each(function (i, item) {
                             console.log(item.sender)
 
-                            if (sender === uuid) {
+                            if (item.sender === uuid) {
 
-                                $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + item.content + '</p></li>').appendTo($('.messages ul'));
+                                $('<li class="sent"><p>' + item.content + '</p></li>').appendTo($('.messages ul'));
                                 $('.message-input input').val(null);
                                 $('.contact.online .preview').html('<span>You: </span>' + item.content);
                                 $(".messages").animate({scrollTop: $(document).height()}, "fast");
                             }
                             else {
-                                receiveMessage(item.sender, item.content)
+                                receiveMessage(item.content, item.sender)
                             }
                         })
 
@@ -195,7 +167,7 @@ $(document).ready(function () {
                 return false;
             }
 
-            $('<li class="replies"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+            $('<li class="replies"><p>' + message + '</p></li>').appendTo($('.messages ul'));
             $('.message-input input').val(null);
             $('.contact.online .preview').html('<span>You: </span>' + message);
             $(".messages").animate({scrollTop: $(document).height()}, "fast");
@@ -212,7 +184,7 @@ $(document).ready(function () {
                 'topic': "message", 'message': message,
                 'recipient': recipientId, 'sender': sessionId
             }));
-            $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+            $('<li class="sent"><p>' + message + '</p></li>').appendTo($('.messages ul'));
             $('.message-input input').val(null);
             $('.contact.online .preview').html('<span>You: </span>' + message);
             $(".messages").animate({scrollTop: $(document).height()}, "fast");

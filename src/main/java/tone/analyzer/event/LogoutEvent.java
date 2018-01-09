@@ -18,4 +18,12 @@ public class LogoutEvent {
   public void setUserName(String userName) {
     this.userName = userName;
   }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
 }

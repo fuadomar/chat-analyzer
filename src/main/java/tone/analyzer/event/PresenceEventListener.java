@@ -104,8 +104,11 @@ public class PresenceEventListener {
                 participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
                 .ifPresent(
                         login -> {
-                            messagingTemplate.convertAndSend(
-                                    logoutDestination, new LogoutEvent(login.getUserName(), login.getId()));
+                            List<LoginEvent> onlineBuddyList = retrieveBuddyList(login.getUserName());
+                            for (LoginEvent loginEvent1 : onlineBuddyList)
+                                messagingTemplate.convertAndSend(logoutDestination + "-" + loginEvent1.getUserName(), new LogoutEvent(login.getUserName(), login.getId()));
+                           /* messagingTemplate.convertAndSend(
+                                    logoutDestination, new LogoutEvent(login.getUserName(), login.getId()));*/
                             participantRepository.removeParticipant(sessionToUserIdMap.get(event.getSessionId()));
                         });
     }
