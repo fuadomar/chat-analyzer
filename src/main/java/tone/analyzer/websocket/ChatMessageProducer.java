@@ -21,6 +21,7 @@ public class ChatMessageProducer {
 
   public void sendMessageToRecipient(ChatMessage chatMessage) {
 
+
     this.template.convertAndSend(messageTopic + "-" + chatMessage.getRecipient(), chatMessage);
   }
 

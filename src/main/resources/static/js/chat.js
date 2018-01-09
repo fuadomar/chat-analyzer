@@ -1,6 +1,6 @@
 function createChatList(user) {
 
-    var chatListDiv = '<li class="contact" id="'+user.id+'"> <div class="wrap">';
+    var chatListDiv = '<li class="contact" id="' + user.id + '"> <div class="wrap">';
 
     if (user.online === true) {
         chatListDiv = chatListDiv + '<span class="contact-status online"/>';
@@ -8,7 +8,7 @@ function createChatList(user) {
     else {
         chatListDiv = chatListDiv + '<span class="contact-status"/>';
     }
-    chatListDiv = chatListDiv + '<div class="meta"><p class="name" id="'+user.id+'">' + user.userName+ '</p> <p class="preview">You just got LITT up, Mike.</p> </div> </div> </li>';
+    chatListDiv = chatListDiv + '<div class="meta"><p class="name" id="' + user.id + '">' + user.userName + '</p> <p class="preview">You just got LITT up, Mike.</p> </div> </div> </li>';
     //chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
     console.log(chatListDiv);
     return chatListDiv;
@@ -44,25 +44,13 @@ $(document).ready(function () {
         console.log("uuid " + uuid);
         var sessionId = uuid;
 
-        /* stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
+        stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
 
-         var payload = JSON.parse(data.body);
-         console.log("received message: " + payload);
-         if ($("#msg_push" + payload.sender).length <= 0) {
-         chatBox.append(createChatBox(payload.sender));
-         $('.msg_wrap').show();
-         $('#msgbox' + payload.sender).show();
-         }
-         $('#chatbox-container').on('customOnMessageEvent', "#msg_push" + payload.sender, function (event, msg) {
+            var payload = JSON.parse(data.body);
+            receiveMessage(payload.message, payload.sender)
+            console.log("received message: " + payload);
 
-         msg = payload.sender + ": " + msg;
-         if (msg != '')
-         $('<div class="msg_a">' + msg + '</div>').insertBefore('#msg_push' + payload.sender);
-         $('#msg_body' + payload.sender).scrollTop($('#msg_body' + payload.sender)[0].scrollHeight);
-         event.stopImmediatePropagation();
-         });
-         $("#msg_push" + payload.sender).trigger('customOnMessageEvent', [payload.message]);
-         });*/
+        });
 
         stompClient.subscribe("/app/chat.participants/" + uuid, function (data) {
             var messageArray = JSON.parse(data.body);
@@ -74,11 +62,11 @@ $(document).ready(function () {
             }
         });
 
-        stompClient.subscribe("/topic/chat.login"+"-"+sessionId, function (message) {
+        stompClient.subscribe("/topic/chat.login" + "-" + sessionId, function (message) {
             if (sessionId !== JSON.parse(message.body).userName)
-                //chatList.append(createChatList(JSON.parse(message.body)));
-                 var spanDiv = '#'+JSON.parse(message.body).id+" "+'span'
-                 $(spanDiv).attr('class','contact-status online')
+            //chatList.append(createChatList(JSON.parse(message.body)));
+                var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
+            $(spanDiv).attr('class', 'contact-status online')
         });
 
         stompClient.subscribe("/topic/chat.logout", function (message) {
@@ -141,9 +129,11 @@ $(document).ready(function () {
             }
         });
 
-        $("#contacts-uli").on("click", "li", function(event){
-                // do your code
-                console.log('clicked ' + $(this).attr('id'));
+        $("#contacts-uli").on("click", "li", function (event) {
+            // do your code
+            console.log('clicked ' + $(this).attr('id'));
+            $('.message-input').attr('id', $(this).attr('id'));
+
         });
 
         $('#chatbox-container').on('keypress', 'textarea',
@@ -163,6 +153,49 @@ $(document).ready(function () {
                     $('#msg_body' + recipientId).scrollTop($('#msg_body' + recipientId)[0].scrollHeight);
                 }
             });
+
+
+        function receiveMessage(message, sender) {
+
+            if ($.trim(message) == '') {
+                return false;
+            }
+
+            $('<li class="replies"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+            $('.message-input input').val(null);
+            $('.contact.online .preview').html('<span>You: </span>' + message);
+            $(".messages").animate({scrollTop: $(document).height()}, "fast");
+        };
+
+        function newMessage() {
+            var message = $(".message-input input").val();
+            var recipientId = $('.message-input').attr('id');
+            console.log("id from newMessage: " + recipientId);
+            if ($.trim(message) == '') {
+                return false;
+            }
+            stompClient.send("/app/chat-message/message", {}, JSON.stringify({
+                'topic': "message", 'message': message,
+                'recipient': recipientId, 'sender': sessionId
+            }));
+            $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+            $('.message-input input').val(null);
+            $('.contact.online .preview').html('<span>You: </span>' + message);
+            $(".messages").animate({scrollTop: $(document).height()}, "fast");
+        };
+
+        $('.submit').click(function () {
+            newMessage();
+        });
+
+        $(window).on('keydown', function (e) {
+            if (e.which == 13) {
+                newMessage();
+                return false;
+            }
+        });
+
+
     });
 
 });

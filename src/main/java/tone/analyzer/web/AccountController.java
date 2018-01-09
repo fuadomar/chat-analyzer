@@ -163,6 +163,10 @@ public class AccountController {
             method = RequestMethod.GET
     )
     public String chat(Model model) {
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName();
+        model.addAttribute("username", name);
         return CHAT_VIEW;
     }
 
