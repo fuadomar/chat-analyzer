@@ -141,6 +141,11 @@ $(document).ready(function () {
             }
         });
 
+        $("#contacts-uli").on("click", "li", function(event){
+                // do your code
+                console.log('clicked ' + $(this).attr('id'));
+        });
+
         $('#chatbox-container').on('keypress', 'textarea',
             function (e) {
                 if (e.keyCode == 13) {

@@ -43,12 +43,13 @@ public class InvitationController {
 
         String url = getURLBase(request)+"/confirmation-email";
         String token = UUID.randomUUID().toString();
-        String recipientAddress = "mozammaltomal.1001@gmail.com";
+        String recipientAddress = "mozammal@nascenia.com";
         String subject = "Registration Confirmation";
         String sender = "moz1";
         String receiver = "mozammaltomal.1001@gmail.com";
         String confirmationUrl = "?token=" + token + "&sender=" + sender + "&receiver=" + receiver;
         SimpleMailMessage email = new SimpleMailMessage();
+        email.setFrom("mozammaltomal.1001@mail.com");
         email.setTo(recipientAddress);
         email.setSubject(subject);
         email.setText("thank you for registration " + url + confirmationUrl);
