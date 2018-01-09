@@ -133,7 +133,41 @@ $(document).ready(function () {
             // do your code
             console.log('clicked ' + $(this).attr('id'));
             $('.message-input').attr('id', $(this).attr('id'));
+            var sender = uuid;
+            var receiver = $(this).attr('id');
+            $.get({
+                type: 'get',
+                url: '/fetch/messages',
+                dataType: 'json',
+                data: 'sender=' + sender + "&receiver=" + receiver,
+                success: function (data) {
 
+                    if (!$.trim(data)) {
+                        alert("What follows is blank: " + data);
+                    }
+                    else {
+                        alert("What follows is not blank: " + data);
+
+                        jQuery(data).each(function (i, item) {
+                            console.log(item.sender)
+
+                            if (sender === uuid) {
+
+                                $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + item.content + '</p></li>').appendTo($('.messages ul'));
+                                $('.message-input input').val(null);
+                                $('.contact.online .preview').html('<span>You: </span>' + item.content);
+                                $(".messages").animate({scrollTop: $(document).height()}, "fast");
+                            }
+                            else {
+                                receiveMessage(item.sender, item.content)
+                            }
+                        })
+
+                        //var json = $.parseJSON(data); // create an object with the key of the array
+                        //alert(json.html);
+                    }
+                }
+            });
         });
 
         $('#chatbox-container').on('keypress', 'textarea',

@@ -30,7 +30,7 @@ public class ToneAnalyzerController {
   @PreAuthorize("hasRole('ROLE_ADMIN')")
   @RequestMapping(value = "/tone-analyzer-places-individual", method = RequestMethod.GET)
   public PlacesDTO analyzeStatedPlacesTone(@RequestParam("sender") String sender)
-      throws IOException, IndicoException, URISyntaxException {
+          throws IOException, IndicoException, URISyntaxException {
 
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setSender(sender);

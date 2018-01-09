@@ -5,58 +5,73 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-/** Created by user on 4/11/2017. */
+/**
+ * Created by user on 4/11/2017.
+ */
 @Document
 public class Message {
 
-  @Id private String id;
+    @Id
+    private String id;
 
-  private String sender;
+    private String sender;
 
-  private String content;
+    private String content;
 
-  private Date createdTime;
+    private Date createdTime;
 
-  private String conversationId;
+    private String conversationId;
 
-  public Message() {}
+    private String receiver;
 
-  public Message(String conversationId, String sender, String content, Date createdTime) {
-    this.content = content;
-    this.conversationId = conversationId;
-    this.sender = sender;
-    this.createdTime = createdTime;
-  }
+    public Message() {
+    }
 
-  public String getContent() {
-    return content;
-  }
+    public Message(String conversationId, String sender, String receiver, String content, Date createdTime) {
+        this.content = content;
+        this.conversationId = conversationId;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.createdTime = createdTime;
+    }
 
-  public void setContent(String content) {
-    this.content = content;
-  }
+    public String getContent() {
+        return content;
+    }
 
-  public String getConversationId() {
-    return conversationId;
-  }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-  public void setConversationId(String conversationId) {
-    this.conversationId = conversationId;
-  }
+    public String getConversationId() {
+        return conversationId;
+    }
 
-  public String getSender() {
-    return sender;
-  }
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
 
-  public void setSender(String sender) {
-    this.sender = sender;
-  }
+    public String getSender() {
+        return sender;
+    }
 
-  public Date getCreatedTime() {
-    return createdTime;
-  }
+    public void setSender(String sender) {
+        this.sender = sender;
+    }
 
-  public void setCreatedTime(Date createdTime) {
-    this.createdTime = createdTime;
-  }
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
 }
