@@ -67,7 +67,7 @@ public class ToneAnalyzerController {
     return toneAnalyzerGateway.analyzeIndividualTextTag(chatMessage);
   }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/tone-analyzer-between-users", method = RequestMethod.GET)
   public ToneAnalyzerFeedBackDTO analyzerConversationalTone(
       @RequestParam("sender") String sender, @RequestParam("recipient") String recipient) {

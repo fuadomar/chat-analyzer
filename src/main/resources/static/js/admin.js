@@ -8,7 +8,7 @@ $(document).ready(function () {
                     continue
                 console.log(key + " -> " + data[key]);
                 var arr = [];
-                var number = data[key];
+                var number = parseFloat(data[key]);
                 console.log(number);
                 arr.push(key);
                 arr.push(parseFloat(number.toFixed(2)));

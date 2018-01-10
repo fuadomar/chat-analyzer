@@ -14,6 +14,58 @@ function createChatList(user) {
     return chatListDiv;
 }
 
+function drawDonut(dataPoint, div, title) {
+
+    var divId = "";
+    if (typeof div === 'undefined') {
+        divId = divId + 'graph';
+    }
+    else divId = divId + div;
+
+    Highcharts.chart(divId, {
+        chart: {
+            type: 'pie',
+            options3d: {
+                enabled: true,
+                alpha: 45
+            }
+        },
+        title: {
+            text: title
+        },
+        subtitle: {
+            text: '3D donut'
+        },
+        plotOptions: {
+            pie: {
+                innerSize: 100,
+                depth: 45
+            }
+        },
+        series: [{
+            name: 'Tone',
+            data: dataPoint
+        }]
+    });
+}
+function normalizedDataToneAnalyzer(data) {
+    var series = [];
+    for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+            if (data[key] < 0.2)
+                continue
+            console.log(key + " -> " + data[key]);
+            var arr = [];
+            var number = data[key];
+            arr.push(key);
+            arr.push(parseFloat(number.toFixed(2)));
+            series.push(arr)
+        }
+    }
+    return series;
+}
+
+
 function createChatBox(userId) {
 
     var chatBox = '<div class="msg_box" style="right:290px"  id="msgbox' + userId + '"><div class="msg_head">' + userId +
@@ -78,7 +130,29 @@ $(document).ready(function () {
             $(spanDiv).attr('class', 'contact-status');
         });
 
-        $("#save-model-data").click(function () {
+        $("#conversation-end-ok").click(function () {
+
+            var sender = $('.message-input').attr('id');
+            $.get({
+                type: 'get',
+                url: '/tone-analyzer-between-users',
+                dataType: "json",
+                data: 'sender=' + sender + "&recipient=" + uuid,
+                success: function (data) {
+                    $("#modal-end-conversation").modal('hide');
+
+                    console.log(data);
+                    var series = normalizedDataToneAnalyzer(data);
+                    console.log(series);
+                    $("#tone-analyzer-charts").modal('show');
+                    drawDonut(series, "graph", "tone analyzer for people")
+                }
+            });
+
+        });
+
+
+        $("#send-invitation-modal").click(function () {
             var email = $("#inputEmail3").val();
             var name = $("#text3").val();
             console.log(email + " " + name);
@@ -126,12 +200,6 @@ $(document).ready(function () {
                 $('#msgbox' + divId).show();
             }
         });
-
-        $("#anchor-tone-anlysis").click(function (event) {
-
-
-        })
-
 
         $("#contacts-uli").on("click", "li", function (event) {
             // do your code

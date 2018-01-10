@@ -17,4 +17,12 @@ public interface MessageRepository extends MongoRepository<Message, String> {
                   "{ $or: [ { $and: [ {'sender' : ?0}, {'receiver' : ?1}  ] },  { $and: [ {'sender' : ?1}, {'receiver' : ?0}  ] } ]}"
   )
   List<Message> findMessagesBySenderAndReceiver(String sender, String recipient, org.springframework.data.domain.Sort sort);
+
+
+  @Query(
+          value =
+                  "{ $and: [ {'sender' : ?0}, {'receiver' : ?1}  ] }"
+  )
+  List<Message> findReceivedMessagesByReceiverFromSender(String sender, String recipient, org.springframework.data.domain.Sort sort);
+
 }
