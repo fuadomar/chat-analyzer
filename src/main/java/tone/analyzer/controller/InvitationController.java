@@ -5,6 +5,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tone.analyzer.domain.entity.EmailInvitation;
 import tone.analyzer.domain.repository.EmailInvitationRepository;
@@ -36,25 +37,21 @@ public class InvitationController {
     }
 
     @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
-    public String inviteUserByEmail(HttpServletRequest request) throws MalformedURLException {
-     /*   User user = event.getUser();
-        String token = UUID.randomUUID().toString();
-        service.createVerificationToken(user, token);*/
+    public String inviteUserByEmail(@RequestParam("sender") String sender, @RequestParam("email") String email,
+                                    HttpServletRequest request) throws MalformedURLException {
 
-        String url = getURLBase(request)+"/confirmation-email";
+        String url = getURLBase(request) + "/confirmation-email";
         String token = UUID.randomUUID().toString();
-        String recipientAddress = "mozammal@nascenia.com";
+        String recipientAddress = email;
         String subject = "Registration Confirmation";
-        String sender = "moz1";
-        String receiver = "mozammaltomal.1001@gmail.com";
-        String confirmationUrl = "?token=" + token + "&sender=" + sender + "&receiver=" + receiver;
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setFrom("mozammaltomal.1001@mail.com");
-        email.setTo(recipientAddress);
-        email.setSubject(subject);
-        email.setText("thank you for registration " + url + confirmationUrl);
-        mailSender.send(email);
-        EmailInvitation emailInvitation = new EmailInvitation(sender, receiver, token);
+        String confirmationUrl = "?token=" + token + "&sender=" + sender + "&receiver=" + email;
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setTo(recipientAddress);
+        simpleMailMessage.setFrom("mozammaltomal.1001@mail.com");
+        simpleMailMessage.setSubject(subject);
+        simpleMailMessage.setText("thank you for registration " + url + confirmationUrl);
+        mailSender.send(simpleMailMessage);
+        EmailInvitation emailInvitation = new EmailInvitation(sender, email, token);
         emailInvitationRepository.save(emailInvitation);
         return "Ok";
     }

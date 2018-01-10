@@ -52,6 +52,7 @@ public class PresenceEventListener {
     }
 
     public List<LoginEvent> retrieveBuddyList(String userName) {
+
         Account userAccount = accountRepository.findByName(userName);
         List<LoginEvent> buddyListObjects = new ArrayList<>();
         Set<BuddyDetails> buddyList = userAccount.getBuddyList();

@@ -213,16 +213,21 @@ public class AccountController {
             emailInvitationReceiverBuddyList = new HashSet<>();
         }
 
-        Account userCreatedByEmailInvitation = userService.save(account);
+        Account receiverAccount = userService.findByName(token.getReceiver());
+        if (receiverAccount == null)
+            receiverAccount = userService.save(account);
+
         Account userEmailInvitationSender = userService.findByName(token.getSender());
         Set<BuddyDetails> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
+
         if (emailInvitionSenderBuddyList == null) {
             emailInvitionSenderBuddyList = new HashSet<>();
         }
+
         emailInvitationReceiverBuddyList.add(new BuddyDetails(userEmailInvitationSender.getId(), token.getSender()));
-        emailInvitionSenderBuddyList.add(new BuddyDetails(userCreatedByEmailInvitation.getId(), token.getReceiver()));
+        emailInvitionSenderBuddyList.add(new BuddyDetails(receiverAccount.getId(), token.getReceiver()));
         userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
-        userService.addBudyyToUser(userEmailInvitationSender, userCreatedByEmailInvitation);
+        userService.addBudyyToUser(userEmailInvitationSender, receiverAccount);
 
         securityService.autoLogin(account.getName(), password, request, response);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

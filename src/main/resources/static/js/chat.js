@@ -57,24 +57,41 @@ $(document).ready(function () {
             //chatList.html('');
             for (var i = 0; i < messageArray.length; i++) {
                 if (sessionId === messageArray[i].userName)
-                    continue;
+                continue;
                 chatList.append(createChatList(messageArray[i]));
             }
         });
 
         stompClient.subscribe("/topic/chat.login" + "-" + sessionId, function (message) {
-            //chatList.append(createChatList(JSON.parse(message.body)));
             var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
-            $(spanDiv).attr('class', 'contact-status online');
+            if ($('#selector').length) {
+                $(spanDiv).attr('class', 'contact-status online');
+            }
+            else {
+                chatList.append(createChatList(JSON.parse(message.body)));
+            }
         });
 
         stompClient.subscribe("/topic/chat.logout" + "-" + sessionId, function (message) {
-
             console.log(JSON.parse(message.body));
             var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
             $(spanDiv).attr('class', 'contact-status');
         });
 
+        $("#save-model-data").click(function () {
+            var email = $("#inputEmail3").val();
+            var name = $("#text3").val();
+            console.log(email + " " + name);
+            $.get({
+                type: 'get',
+                url: '/invitation-email',
+                dataType: "text",
+                data: 'sender=' + name + "&email=" + email,
+                success: function (data) {
+                    $('#myModalHorizontal').modal('hide');
+                }
+            });
+        });
 
         $('.chat_box').on('click', '.chat_head', function (e) {
             e.stopPropagation();
@@ -103,6 +120,9 @@ $(document).ready(function () {
             }
         });
 
+
+
+
         $("#contacts-uli").on("click", "li", function (event) {
             // do your code
             console.log('clicked ' + $(this).attr('id'));
@@ -110,6 +130,7 @@ $(document).ready(function () {
             $('.message-input').attr('id', $(this).attr('id'));
             var sender = uuid;
             var receiver = $(this).attr('id');
+
             $.get({
                 type: 'get',
                 url: '/fetch/messages',
@@ -134,9 +155,6 @@ $(document).ready(function () {
                                 receiveMessage(item.content, item.sender)
                             }
                         })
-
-                        //var json = $.parseJSON(data); // create an object with the key of the array
-                        //alert(json.html);
                     }
                 }
             });
@@ -204,4 +222,5 @@ $(document).ready(function () {
 
     });
 
-});
+})
+;
