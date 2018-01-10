@@ -93,6 +93,12 @@ $(document).ready(function () {
             });
         });
 
+        $("#myModal").on("show.bs.modal", function(e) {
+            var link = $(e.relatedTarget);
+            $(this).find(".modal-body").load(link.attr("href"));
+        });
+
+
         $('.chat_box').on('click', '.chat_head', function (e) {
             e.stopPropagation();
             $(this).siblings('.chat_body').slideToggle('slow');
@@ -120,7 +126,10 @@ $(document).ready(function () {
             }
         });
 
+        $("#anchor-tone-anlysis").click(function (event) {
 
+
+        })
 
 
         $("#contacts-uli").on("click", "li", function (event) {
