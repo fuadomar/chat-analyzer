@@ -57,7 +57,7 @@ $(document).ready(function () {
             //chatList.html('');
             for (var i = 0; i < messageArray.length; i++) {
                 if (sessionId === messageArray[i].userName)
-                continue;
+                    continue;
                 chatList.append(createChatList(messageArray[i]));
             }
         });
@@ -93,8 +93,9 @@ $(document).ready(function () {
             });
         });
 
-        $("#myModal").on("show.bs.modal", function(e) {
+        $("#myModal").on("show.bs.modal", function (e) {
             var link = $(e.relatedTarget);
+            alert(link);
             $(this).find(".modal-body").load(link.attr("href"));
         });
 
