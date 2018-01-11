@@ -44,7 +44,7 @@ function drawChart() {
     canvg(document.getElementById('canvas'), chart.getSVG())
     var canvas = document.getElementById("canvas");
     var img = canvas.toDataURL("image/png");
-    $('#canvas').replaceWith('<img height="400" width="400" src="'+img+'"/>');
+    $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
     //$('#graph').prepend($('<img>', {id: 'theImg', src: img}))
     //document.write('<img src="'+img+'"/>');
 }
@@ -58,7 +58,7 @@ function drawDonut(dataPoint, div, title) {
     }
     else divId = divId + div;
 
-    chart = new Highcharts.chart( {
+    chart = new Highcharts.chart({
         chart: {
             type: 'pie',
             renderTo: 'canvas',
@@ -88,7 +88,22 @@ function drawDonut(dataPoint, div, title) {
     canvg(document.getElementById('canvas'), chart.getSVG())
     var canvas = document.getElementById("canvas");
     var img = canvas.toDataURL("image/png");
-    $('#canvas').replaceWith('<img height="400" width="400" src="'+img+'"/>');
+    $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
+
+   /* $.post({
+        type: 'post',
+        url: '/upload/images',
+        data: 'image=' + img,
+        success: function (data) {
+            console.log(data);
+            $('#generate-image-tone-analysis').attr({
+                type: 'hidden',
+                id: 'generate-hidden-uri',
+                name: 'generate-hidden-uri'
+            })
+        }
+    });*/
+
 }
 function normalizedDataToneAnalyzer(data) {
     var series = [];
@@ -174,25 +189,25 @@ $(document).ready(function () {
 
         $("#conversation-end-ok").click(function () {
 
-          /*  $("#modal-end-conversation").modal('hide');
-            $("#tone-analyzer-charts").modal('show');*/
+            /*  $("#modal-end-conversation").modal('hide');
+             $("#tone-analyzer-charts").modal('show');*/
 
-              var sender = $('.message-input').attr('id');
-             $.get({
-             type: 'get',
-             url: '/tone-analyzer-between-users',
-             dataType: "json",
-             data: 'sender=' + sender + "&recipient=" + uuid,
-             success: function (data) {
-             $("#modal-end-conversation").modal('hide');
+            var sender = $('.message-input').attr('id');
+            $.get({
+                type: 'get',
+                url: '/tone-analyzer-between-users',
+                dataType: "json",
+                data: 'sender=' + sender + "&recipient=" + uuid,
+                success: function (data) {
+                    $("#modal-end-conversation").modal('hide');
 
-             console.log(data);
-             var series = normalizedDataToneAnalyzer(data);
-             console.log(series);
-             $("#tone-analyzer-charts").modal('show');
-             drawDonut(series, "graph", "tone analyzer for people")
-             }
-             });
+                    console.log(data);
+                    var series = normalizedDataToneAnalyzer(data);
+                    console.log(series);
+                    $("#tone-analyzer-charts").modal('show');
+                    drawDonut(series, "graph", "tone analyzer for people")
+                }
+            });
 
             //drawChart();
         });
@@ -214,18 +229,19 @@ $(document).ready(function () {
         });
 
 
-        $('#share_button').click(function(e){
+        $('#share_button').click(function (e) {
             e.preventDefault();
-            FB.ui(
+            $("#tone-analyzer-charts").modal('hide');
+          /*  FB.ui(
                 {
                     method: 'feed',
                     name: 'This is the content of the "name" field.',
-                    link: 'https://bdnews24.com/world/2018/01/11/us-grand-jury-indicts-man-accused-of-manhattan-terror-attack',
+                    link: generate-hidden-uri,
                     picture: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
                     caption: 'Top 3 reasons why you should care about your finance',
                     description: "What happens when you don't take care of your finances? Just look at our country -- you spend irresponsibly, get in debt up to your eyeballs, and stress about how you're going to make ends meet. The difference is that you don't have a glut of taxpayers…",
-                    message: ""
-                });
+                    message: "Hello Mozammal"
+                });*/
         });
 
 
