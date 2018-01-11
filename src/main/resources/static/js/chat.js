@@ -90,7 +90,6 @@ function drawDonut(dataPoint, div, title) {
     var img = canvas.toDataURL("image/png");
     $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
 
-
     var token = $("meta[name='_csrf']").attr("content");
     var header = $("meta[name='_csrf_header']").attr("content");
     $(document).ajaxSend(function (e, xhr, options) {
@@ -98,37 +97,34 @@ function drawDonut(dataPoint, div, title) {
     });
 
 
-    $.ajax({
-        type: 'POST',
-        url: '/upload/images',
-        data: 'image=' + img,
-        processData: false,
-        cache: false,
-        success: function (data, textStatus, xhr) {
-            console.log(data);
-            $('#generate-image-tone-analysis').attr({
-                type: 'hidden',
-                id: 'generate-hidden-uri',
-                name: 'generate-hidden-uri'
-            });
-        },
-        error: function (data, textStatus, xhr) {
-        }
-    });
+    /* $.ajax({
+     type: 'POST',
+     url: 'http://data-uri-to-img-url.herokuapp.com/images.json',
+     headers: {  'Access-Control-Allow-Origin': 'http://data-uri-to-img-url.herokuapp.com' },
+     data: image,
+     cache: false,
+     success: function (data, textStatus, xhr) {
+     console.log(data);
+     $('#generate-image-tone-analysis').attr({
+     type: 'hidden',
+     id: 'generate-hidden-uri',
+     name: 'generate-hidden-uri'
+     });
+     },
+     error: function (data, textStatus, xhr) {
+     }
+     });*/
 
-   /* $.post({
+    $.post({
         type: 'post',
         url: '/upload/images',
         data: 'image=' + img,
         success: function (data) {
             console.log(data);
-            $('#generate-image-tone-analysis').attr({
-                type: 'hidden',
-                id: 'generate-hidden-uri',
-                name: 'generate-hidden-uri'
-            });
+            var urlJson = JSON.parse(data);
+            $('#generate-image-tone-analysis').val(urlJson.url);
         }
-    });*/
+    });
 
 }
 function normalizedDataToneAnalyzer(data) {
@@ -267,7 +263,7 @@ $(document).ready(function () {
                     link: 'http://localhost:8080',
                     picture: hidUrl,
                     caption: 'your friends tone is: ',
-                    description:  "learn more about machine learning with tone analyzer",
+                    description: "learn more about machine learning with tone analyzer",
                     message: "Hello machine learning"
                 });
         });
