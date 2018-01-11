@@ -1029,7 +1029,9 @@ Website: http://emilcarlsson.se/
                <!-- <div id="graph" style="height: 300px; width: 300px"></div>-->
                 <div id="fb-root"></div>
                 <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis" value="">
-                <img src = "share_button.png" id = "share_button"/>
+                <!--<img src = "share_button.png" id = "share_button"/>-->
+                <img th:height="50" id = "share_button" th:width="180"
+                     th:src="@{/images/share_button.png}"/>
             </div>
 
             <div class="modal-footer">

@@ -46,6 +46,7 @@ public class ToneAnalyzerController {
         return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
 
     }
+
     private File getFileFromURL() {
         URL url = getClass().getClassLoader().getResource("upload-images");
         File file = null;
@@ -57,49 +58,30 @@ public class ToneAnalyzerController {
             return file;
         }
     }
+
     @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/upload/images", method = RequestMethod.POST)
-    public @ResponseBody String uploadImage(@RequestParam("image") String image, HttpServletRequest request) {
+    public
+    @ResponseBody
+    String uploadImage(@RequestParam("image") String image, HttpServletRequest request) {
         try {
             String token = UUID.randomUUID().toString();
             String delimiter = "data:image/png;base64,";
-            String bse64Image =  image.substring(delimiter.length());
+            int imageLength = image.length();
+            String bse64Image = image.substring(delimiter.length(), imageLength-2);
             HttpClient httpclient = HttpClients.createDefault();
             HttpPost httppost = new HttpPost("http://data-uri-to-img-url.herokuapp.com/images.json");
-            //httppost.setHeader("Content-Type", "text; charset=UTF-8");
 
-// Request parameters and other properties.
-            List<NameValuePair> params = new ArrayList<NameValuePair>(2);
+            List<NameValuePair> params = new ArrayList<NameValuePair>(1);
             params.add(new BasicNameValuePair("image[data_uri]", bse64Image));
             httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-          /*  params.add(new BasicNameValuePair("param-2", "Hello!"));
-            httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));*/
 
-//Execute and get the response.
             HttpResponse response = httpclient.execute(httppost);
             HttpEntity entity = response.getEntity();
             String responseString = EntityUtils.toString(entity, "UTF-8");
             return responseString;
 
-          /*  if (entity != null) {
-                InputStream instream = entity.getContent();
-
-                try {
-                    // do something useful
-                } finally {
-                    instream.close();
-                }
-            }*/
-
-          /*  byte[] imageByte = Base64.decodeBase64(image);
-            ClassLoader classLoader = getClass().getClassLoader();
-            //File file = new File(classLoader.getResource("upload-images").getFile());
-            String path = request.getSession().getServletContext().getRealPath("/resources/upload-images");
-            //return new FileSystemResource(new File(path));
-            String directory = path + "/" + token + ".jpg";
-            new FileOutputStream(directory).write(imageByte);
-            return getURLBase(request) + "images/sample" + token + ".jpg";*/
-        } catch (Exception e) {
+           } catch (Exception e) {
             return "error = " + e;
         }
 

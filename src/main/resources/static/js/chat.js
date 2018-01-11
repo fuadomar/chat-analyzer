@@ -121,6 +121,7 @@ function drawDonut(dataPoint, div, title) {
         data: 'image=' + img,
         success: function (data) {
             console.log(data);
+            alert(data);
             var urlJson = JSON.parse(data);
             $('#generate-image-tone-analysis').val(urlJson.url);
         }
