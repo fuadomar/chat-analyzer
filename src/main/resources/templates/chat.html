@@ -870,6 +870,9 @@
     <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
     <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
     <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
 </head>
 <body>
 <!--
@@ -989,11 +992,13 @@ Website: http://emilcarlsson.se/
 
 
 <!-- Default bootstrap modal example -->
-<div class="modal fade" id="modal-end-conversation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal-end-conversation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel1"></h4>
             </div>
             <div class="modal-body">
@@ -1009,16 +1014,23 @@ Website: http://emilcarlsson.se/
 
 
 <!-- Default bootstrap modal example -->
-<div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="tone-analyzer-charts-title"></h4>
             </div>
             <div class="modal-body">
-                <div id="graph" style="height: 300px"></div>
+
+                <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
+               <!-- <div id="graph" style="height: 300px; width: 300px"></div>-->
+                <div id="fb-root"></div>
+                <img src = "share_button.png" id = "share_button">
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-primary" id="conversation-end-ok1">Ok</button>
@@ -1026,9 +1038,6 @@ Website: http://emilcarlsson.se/
         </div>
     </div>
 </div>
-
-
-
 
 
 <div id="frame">
@@ -1098,10 +1107,10 @@ Website: http://emilcarlsson.se/
                 <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
                 <!-- <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>-->
             </div>
-            <a href="#" data-toggle="modal" data-target="#modal-end-conversation" id="anchor-tone-anlysis"><i class="fa fa-paper-plane" aria-hidden="true"> End Chat and see your partner's mood</i></a>
-           <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
+            <a href="#" data-toggle="modal" data-target="#modal-end-conversation" id="anchor-tone-anlysis"><i
+                    class="fa fa-paper-plane" aria-hidden="true"> End Chat and see your partner's mood</i></a>
+            <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
         </div>
-        <div id="fb-root"></div>
 
     </div>
 </div>
@@ -1117,7 +1126,7 @@ Website: http://emilcarlsson.se/
 
 window.fbAsyncInit = function () {
     FB.init({
-        appId: 'YOUR APP ID', status: true, cookie: true,
+        appId: '412709559157712', status: true, cookie: true,
         xfbml: true
     });
 };

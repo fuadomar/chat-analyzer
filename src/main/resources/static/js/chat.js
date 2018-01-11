@@ -14,6 +14,42 @@ function createChatList(user) {
     return chatListDiv;
 }
 
+function drawChart() {
+
+    chart = new Highcharts.chart({
+
+        chart: {
+            renderTo: 'canvas'
+        },
+
+        title: {
+            text: ''
+        },
+
+        xAxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        },
+
+        series: [{
+            data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1, 95.6, 54.4]
+        }],
+
+        navigation: {
+            buttonOptions: {
+                align: 'center'
+            }
+        }
+    });
+
+    canvg(document.getElementById('canvas'), chart.getSVG())
+    var canvas = document.getElementById("canvas");
+    var img = canvas.toDataURL("image/png");
+    $('#canvas').replaceWith('<img height="400" width="400" src="'+img+'"/>');
+    //$('#graph').prepend($('<img>', {id: 'theImg', src: img}))
+    //document.write('<img src="'+img+'"/>');
+}
+
+
 function drawDonut(dataPoint, div, title) {
 
     var divId = "";
@@ -22,9 +58,10 @@ function drawDonut(dataPoint, div, title) {
     }
     else divId = divId + div;
 
-    Highcharts.chart(divId, {
+    chart = new Highcharts.chart( {
         chart: {
             type: 'pie',
+            renderTo: 'canvas',
             options3d: {
                 enabled: true,
                 alpha: 45
@@ -47,6 +84,11 @@ function drawDonut(dataPoint, div, title) {
             data: dataPoint
         }]
     });
+
+    canvg(document.getElementById('canvas'), chart.getSVG())
+    var canvas = document.getElementById("canvas");
+    var img = canvas.toDataURL("image/png");
+    $('#canvas').replaceWith('<img height="400" width="400" src="'+img+'"/>');
 }
 function normalizedDataToneAnalyzer(data) {
     var series = [];
@@ -132,23 +174,27 @@ $(document).ready(function () {
 
         $("#conversation-end-ok").click(function () {
 
-            var sender = $('.message-input').attr('id');
-            $.get({
-                type: 'get',
-                url: '/tone-analyzer-between-users',
-                dataType: "json",
-                data: 'sender=' + sender + "&recipient=" + uuid,
-                success: function (data) {
-                    $("#modal-end-conversation").modal('hide');
+          /*  $("#modal-end-conversation").modal('hide');
+            $("#tone-analyzer-charts").modal('show');*/
 
-                    console.log(data);
-                    var series = normalizedDataToneAnalyzer(data);
-                    console.log(series);
-                    $("#tone-analyzer-charts").modal('show');
-                    drawDonut(series, "graph", "tone analyzer for people")
-                }
-            });
+              var sender = $('.message-input').attr('id');
+             $.get({
+             type: 'get',
+             url: '/tone-analyzer-between-users',
+             dataType: "json",
+             data: 'sender=' + sender + "&recipient=" + uuid,
+             success: function (data) {
+             $("#modal-end-conversation").modal('hide');
 
+             console.log(data);
+             var series = normalizedDataToneAnalyzer(data);
+             console.log(series);
+             $("#tone-analyzer-charts").modal('show');
+             drawDonut(series, "graph", "tone analyzer for people")
+             }
+             });
+
+            //drawChart();
         });
 
 
@@ -166,6 +212,22 @@ $(document).ready(function () {
                 }
             });
         });
+
+
+        $('#share_button').click(function(e){
+            e.preventDefault();
+            FB.ui(
+                {
+                    method: 'feed',
+                    name: 'This is the content of the "name" field.',
+                    link: 'https://bdnews24.com/world/2018/01/11/us-grand-jury-indicts-man-accused-of-manhattan-terror-attack',
+                    picture: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
+                    caption: 'Top 3 reasons why you should care about your finance',
+                    description: "What happens when you don't take care of your finances? Just look at our country -- you spend irresponsibly, get in debt up to your eyeballs, and stress about how you're going to make ends meet. The difference is that you don't have a glut of taxpayers…",
+                    message: ""
+                });
+        });
+
 
         $("#myModal").on("show.bs.modal", function (e) {
             var link = $(e.relatedTarget);
