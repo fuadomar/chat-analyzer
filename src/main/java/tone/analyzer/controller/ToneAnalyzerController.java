@@ -11,12 +11,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tone.analyzer.domain.DTO.*;
 import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.gateway.ToneAnalyzerGateway;
+import tone.analyzer.utility.ToneAnalyzerUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -38,6 +41,8 @@ public class ToneAnalyzerController {
 
     @Autowired
     private ToneAnalyzerGateway toneAnalyzerGateway;
+
+    private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerController.class);
 
     public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
@@ -65,10 +70,13 @@ public class ToneAnalyzerController {
     @ResponseBody
     String uploadImage(@RequestParam("image") String image, HttpServletRequest request) {
         try {
+
             String token = UUID.randomUUID().toString();
+            log.info("image base64:  {}", image);
             String delimiter = "data:image/png;base64,";
             int imageLength = image.length();
-            String bse64Image = image.substring(delimiter.length(), imageLength-2);
+            String bse64Image = image.substring(delimiter.length(), imageLength - 2);
+            String s = image.substring(imageLength - 2);
             HttpClient httpclient = HttpClients.createDefault();
             HttpPost httppost = new HttpPost("http://data-uri-to-img-url.herokuapp.com/images.json");
 
@@ -81,7 +89,7 @@ public class ToneAnalyzerController {
             String responseString = EntityUtils.toString(entity, "UTF-8");
             return responseString;
 
-           } catch (Exception e) {
+        } catch (Exception e) {
             return "error = " + e;
         }
 

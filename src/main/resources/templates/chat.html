@@ -8,6 +8,11 @@
 
     <meta charset='UTF-8'>
     <meta name="robots" content="noindex">
+    <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="tone analyzer"/>
+    <meta property="og:description" content="we use machine learning"/>
+    <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="shortcut icon" type="image/x-icon"
@@ -872,11 +877,17 @@
     <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
     <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
     <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+    <!-- <script type="text/javascript" src="https//connect.facebook.net/en_US/sdk.js"></script>-->
     <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
 </head>
 <body>
+
+
+
+
+
 <!--
 
 A concept for a chat interface.
@@ -891,7 +902,7 @@ Website: http://emilcarlsson.se/
 
 -->
 
-
+<div id="fb-root"></div>
 <!-- Button trigger modal -->
 <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
     Invite Friends
@@ -1015,7 +1026,8 @@ Website: http://emilcarlsson.se/
 
 
 <!-- Default bootstrap modal example -->
-<div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+<div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
+     aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -1026,12 +1038,18 @@ Website: http://emilcarlsson.se/
             <div class="modal-body">
 
                 <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
-               <!-- <div id="graph" style="height: 300px; width: 300px"></div>-->
-                <div id="fb-root"></div>
+                <!-- <div id="graph" style="height: 300px; width: 300px"></div>-->
+                <!-- <div id="fb-root"></div>-->
                 <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis" value="">
                 <!--<img src = "share_button.png" id = "share_button"/>-->
-                <img th:height="50" id = "share_button" th:width="180"
-                     th:src="@{/images/share_button.png}"/>
+                <div class="fb-share-button"
+                     data-href="http://localhost:8080/login"
+                     data-layout="button_count">
+                    <img th:height="50" id="share_button" th:width="180"
+                         th:src="@{/images/share_button.png}"/>
+                </div>
+                <!-- <img th:height="50" id = "share_button" th:width="180"
+                      th:src="@{/images/share_button.png}"/>-->
             </div>
 
             <div class="modal-footer">
@@ -1129,20 +1147,98 @@ Website: http://emilcarlsson.se/
 <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
 <script>$(".messages").animate({scrollTop: $(document).height()}, "fast");
 
+/*window.fbAsyncInit = function () {
+ FB.init({
+ appId: '160871787875627', status: true, cookie: true,
+ xfbml: true
+ });
+ };
+ (function () {
+ var e = document.createElement('script');
+ e.async = true;
+ e.src = document.location.protocol +
+ '//connect.facebook.net/en_US/all.js';
+ document.getElementById('fb-root').appendChild(e);
+ }());*/
+
+
+
+
+
+// this loads the Facebook API
+(function (d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) { return; }
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));
 
 window.fbAsyncInit = function () {
+    var appId = '160871787875627';
     FB.init({
-        appId: '160871787875627', status: true, cookie: true,
-        xfbml: true
+        appId: appId,
+        xfbml: true,
+        version: 'v2.9'
     });
 };
-(function () {
-    var e = document.createElement('script');
-    e.async = true;
-    e.src = document.location.protocol +
-        '//connect.facebook.net/en_US/all.js';
-    document.getElementById('fb-root').appendChild(e);
-}());
+
+// FB Share with custom OG data.
+(function($) {
+
+   /* $('#share_button').click(function (e) {
+        e.preventDefault();
+        $("#tone-analyzer-charts").modal('hide');
+        var hidUrl = $("#generate-image-tone-analysis").val();
+        console.log("hidden url: " + hidUrl);
+        FB.ui(
+                {
+                    method: 'feed',
+                    name: 'This is the tone analyzer',
+                    link: 'http://dev.myhost.com:8080/login',
+                    picture: hidUrl,
+                    caption: 'your friends tone is: ',
+                    description: "learn more about machine learning with tone analyzer",
+                    message: "Hello machine learning"
+                });
+    });*/
+
+
+    $('#share_button').on('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        $("#tone-analyzer-charts").modal('hide');
+        var hidUrl = $("#generate-image-tone-analysis").val();
+        console.log("hidden url: " + hidUrl);
+
+        // Dynamically gather and set the FB share data.
+        var FBDesc      = 'learn more about machine learning with tone analyzer';
+        var FBTitle     = 'This is the tone analyzer';
+        var FBLink      = 'http://dev.myhost.com:8080/login';
+        var FBPic       = hidUrl;
+
+        // Open FB share popup
+        FB.ui({
+                    method: 'share_open_graph',
+                    action_type: 'og.shares',
+                    action_properties: JSON.stringify({
+                        object: {
+                            'og:url': FBLink,
+                            'og:title': FBTitle,
+                            'og:description': FBDesc,
+                            'og:image': FBPic
+                        }
+                    })
+                },
+                function (response) {
+                    // Action after response
+                })
+    })
+
+})( jQuery );
+
+
 
 $("#profile-img").click(function () {
     $("#status-options").toggleClass("online");

@@ -118,7 +118,7 @@ function drawDonut(dataPoint, div, title) {
     $.post({
         type: 'post',
         url: '/upload/images',
-        data: 'image=' + img,
+        data: 'image=' + encodeURIComponent(img),
         success: function (data) {
             console.log(data);
             alert(data);
@@ -261,7 +261,7 @@ $(document).ready(function () {
                 {
                     method: 'feed',
                     name: 'This is the tone analyzer',
-                    link: 'http://localhost:8080',
+                    link: 'http://dev.myhost.com:8080/login',
                     picture: hidUrl,
                     caption: 'your friends tone is: ',
                     description: "learn more about machine learning with tone analyzer",
