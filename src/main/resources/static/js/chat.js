@@ -90,6 +90,32 @@ function drawDonut(dataPoint, div, title) {
     var img = canvas.toDataURL("image/png");
     $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
 
+
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+    });
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/upload/images',
+        data: 'image=' + img,
+        processData: false,
+        cache: false,
+        success: function (data, textStatus, xhr) {
+            console.log(data);
+            $('#generate-image-tone-analysis').attr({
+                type: 'hidden',
+                id: 'generate-hidden-uri',
+                name: 'generate-hidden-uri'
+            });
+        },
+        error: function (data, textStatus, xhr) {
+        }
+    });
+
    /* $.post({
         type: 'post',
         url: '/upload/images',
@@ -100,7 +126,7 @@ function drawDonut(dataPoint, div, title) {
                 type: 'hidden',
                 id: 'generate-hidden-uri',
                 name: 'generate-hidden-uri'
-            })
+            });
         }
     });*/
 
@@ -232,16 +258,18 @@ $(document).ready(function () {
         $('#share_button').click(function (e) {
             e.preventDefault();
             $("#tone-analyzer-charts").modal('hide');
-          /*  FB.ui(
+            var hidUrl = $("#generate-image-tone-analysis").val();
+            console.log("hidden url: " + hidUrl);
+            FB.ui(
                 {
                     method: 'feed',
-                    name: 'This is the content of the "name" field.',
-                    link: generate-hidden-uri,
-                    picture: 'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-                    caption: 'Top 3 reasons why you should care about your finance',
-                    description: "What happens when you don't take care of your finances? Just look at our country -- you spend irresponsibly, get in debt up to your eyeballs, and stress about how you're going to make ends meet. The difference is that you don't have a glut of taxpayers…",
-                    message: "Hello Mozammal"
-                });*/
+                    name: 'This is the tone analyzer',
+                    link: 'http://localhost:8080',
+                    picture: hidUrl,
+                    caption: 'your friends tone is: ',
+                    description:  "learn more about machine learning with tone analyzer",
+                    message: "Hello machine learning"
+                });
         });
 
 

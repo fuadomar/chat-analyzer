@@ -8,6 +8,8 @@
 
     <meta charset='UTF-8'>
     <meta name="robots" content="noindex">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <link rel="shortcut icon" type="image/x-icon"
           href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"/>
     <link rel="mask-icon" type=""
@@ -1113,6 +1115,9 @@ Website: http://emilcarlsson.se/
 
     </div>
 </div>
+<input id="csrf_value" type="hidden"
+       th:name="${_csrf.parameterName}"
+       th:value="${_csrf.token}"/>
 <form th:action="@{/logout}" method="get">
     <button class="btn btn-md btn-danger btn-block" name="registration"
             type="Submit">Logout
@@ -1123,9 +1128,9 @@ Website: http://emilcarlsson.se/
 <script>$(".messages").animate({scrollTop: $(document).height()}, "fast");
 
 
-/*window.fbAsyncInit = function () {
+window.fbAsyncInit = function () {
     FB.init({
-        appId: '412709559157712', status: true, cookie: true,
+        appId: '160871787875627', status: true, cookie: true,
         xfbml: true
     });
 };
@@ -1135,7 +1140,7 @@ Website: http://emilcarlsson.se/
     e.src = document.location.protocol +
         '//connect.facebook.net/en_US/all.js';
     document.getElementById('fb-root').appendChild(e);
-}());*/
+}());
 
 $("#profile-img").click(function () {
     $("#status-options").toggleClass("online");

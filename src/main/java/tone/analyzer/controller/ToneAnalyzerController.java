@@ -10,6 +10,7 @@ import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.gateway.ToneAnalyzerGateway;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -33,16 +34,28 @@ public class ToneAnalyzerController {
         return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
 
     }
-
+    private File getFileFromURL() {
+        URL url = getClass().getClassLoader().getResource("upload-images");
+        File file = null;
+        try {
+            file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            file = new File(url.getPath());
+        } finally {
+            return file;
+        }
+    }
+    @PreAuthorize("hasRole('ROLE_USER')")
     @RequestMapping(value = "/upload/images", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String uploadImage(@RequestParam("image") String image, HttpServletRequest request) {
+    public @ResponseBody String uploadImage(@RequestParam("image") String image, HttpServletRequest request) {
         try {
             String token = UUID.randomUUID().toString();
             byte[] imageByte = Base64.decodeBase64(image);
-
-            String directory = request.getRealPath("/") + "images/sample" + token + ".jpg";
+            ClassLoader classLoader = getClass().getClassLoader();
+            //File file = new File(classLoader.getResource("upload-images").getFile());
+            String path = request.getSession().getServletContext().getRealPath("/resources/upload-images");
+            //return new FileSystemResource(new File(path));
+            String directory = path + "/" + token + ".jpg";
             new FileOutputStream(directory).write(imageByte);
             return getURLBase(request) + "images/sample" + token + ".jpg";
         } catch (Exception e) {
