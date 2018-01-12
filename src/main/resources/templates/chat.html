@@ -904,6 +904,11 @@ Website: http://emilcarlsson.se/
 
 <div id="fb-root"></div>
 <!-- Button trigger modal -->
+
+<div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
+    <img src="https://www.drupal.org/files/issues/ajax-loader.gif"></img>
+</div>
+
 <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
     Invite Friends
 </button>
@@ -1040,7 +1045,7 @@ Website: http://emilcarlsson.se/
                 <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
                 <!-- <div id="graph" style="height: 300px; width: 300px"></div>-->
                 <!-- <div id="fb-root"></div>-->
-                <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis" value="">
+                <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis" value=""/>
                 <!--<img src = "share_button.png" id = "share_button"/>-->
                 <div class="fb-share-button"
                      data-href="http://localhost:8080/login"
@@ -1059,6 +1064,8 @@ Website: http://emilcarlsson.se/
         </div>
     </div>
 </div>
+
+<input type="hidden" id="cur-user-uuid" name="cur-user-uuid" value=""/>
 
 
 <div id="frame">

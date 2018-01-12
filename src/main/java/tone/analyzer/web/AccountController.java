@@ -27,6 +27,8 @@ import tone.analyzer.validator.AccountValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 /**
@@ -191,9 +193,8 @@ public class AccountController {
     // Process confirmation link
     @RequestMapping(value = "/confirmation-email", method = RequestMethod.POST)
     public String processConfirmationForm(ModelAndView modelAndView, BindingResult bindingResult, @RequestParam Map requestParams, HttpServletRequest request,
-                                          HttpServletResponse response, RedirectAttributes redir) {
+                                          HttpServletResponse response, RedirectAttributes redir) throws UnsupportedEncodingException {
 
-        // modelAndView.setViewName("confirm");
         EmailInvitation token = emailInvitationService.findByToekn((String) requestParams.get("token"));
 
         if (token == null) {
@@ -203,7 +204,6 @@ public class AccountController {
             return "redirect:confirm?token=" + requestParams.get("token");
 
         }
-        // Set new password
 
         String password = (String) requestParams.get("password");
         Account account = new Account(token.getReceiver(), password);
@@ -233,6 +233,6 @@ public class AccountController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Account user = userService.findByName(auth.getName());
         redir.addFlashAttribute(USER_NAME, user.getName());
-        return "redirect:/live-chat";
+        return "redirect:/live-chat?invited="+ URLEncoder.encode(token.getSender(), "UTF-8");
     }
 }

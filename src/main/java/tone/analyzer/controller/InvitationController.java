@@ -47,7 +47,7 @@ public class InvitationController {
         String confirmationUrl = "?token=" + token + "&sender=" + sender + "&receiver=" + email;
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(recipientAddress);
-        simpleMailMessage.setFrom("mozammaltomal.1001@mail.com");
+        simpleMailMessage.setFrom("<mozammaltomal.1001@mail.com>");
         simpleMailMessage.setSubject(subject);
         simpleMailMessage.setText("thank you for registration " + url + confirmationUrl);
         mailSender.send(simpleMailMessage);

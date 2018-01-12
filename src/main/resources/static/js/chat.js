@@ -1,6 +1,6 @@
 function createChatList(user) {
 
-    var chatListDiv = '<li class="contact" id="' + user.id + '"> <div class="wrap">';
+    var chatListDiv = '<li class="contact" id="mgs-li-' + user.id + '"> <div class="wrap">';
 
     if (user.online === true) {
         chatListDiv = chatListDiv + '<span class="contact-status online"/>';
@@ -85,6 +85,7 @@ function drawDonut(dataPoint, div, title) {
         }]
     });
 
+
     canvg(document.getElementById('canvas'), chart.getSVG())
     var canvas = document.getElementById("canvas");
     var img = canvas.toDataURL("image/png");
@@ -96,34 +97,16 @@ function drawDonut(dataPoint, div, title) {
         xhr.setRequestHeader(header, token);
     });
 
-
-    /* $.ajax({
-     type: 'POST',
-     url: 'http://data-uri-to-img-url.herokuapp.com/images.json',
-     headers: {  'Access-Control-Allow-Origin': 'http://data-uri-to-img-url.herokuapp.com' },
-     data: image,
-     cache: false,
-     success: function (data, textStatus, xhr) {
-     console.log(data);
-     $('#generate-image-tone-analysis').attr({
-     type: 'hidden',
-     id: 'generate-hidden-uri',
-     name: 'generate-hidden-uri'
-     });
-     },
-     error: function (data, textStatus, xhr) {
-     }
-     });*/
-
     $.post({
         type: 'post',
         url: '/upload/images',
         data: 'image=' + encodeURIComponent(img),
         success: function (data) {
             console.log(data);
-            alert(data);
+            $("#tone-analyzer-charts").modal('show');
             var urlJson = JSON.parse(data);
             $('#generate-image-tone-analysis').val(urlJson.url);
+            jQuery.event.trigger("ajaxStop");
         }
     });
 
@@ -171,12 +154,12 @@ $(document).ready(function () {
 
         console.log(socket._transport.url);
         var url = socket._transport.url.split("/");
-        var uuid = frame.headers['user-name'];
+        var userName = frame.headers['user-name'];
         console.log(frame);
-        console.log("uuid " + uuid);
-        var sessionId = uuid;
+        console.log("userName " + userName);
+        var sessionName = userName;
 
-        stompClient.subscribe("/topic/chat.message" + "-" + sessionId, function (data) {
+        stompClient.subscribe("/topic/chat.message" + "-" + sessionName, function (data) {
 
             var payload = JSON.parse(data.body);
             receiveMessage(payload.message, payload.sender)
@@ -184,19 +167,47 @@ $(document).ready(function () {
 
         });
 
-        stompClient.subscribe("/app/chat.participants/" + uuid, function (data) {
+        stompClient.subscribe("/app/chat.participants/" + userName, function (data) {
+
             var messageArray = JSON.parse(data.body);
-            //chatList.html('');
+            //alert(window.location.search);
+            var queryString = window.location.search.replace("?", '');
+            console.log("query string: " + queryString);
+            var sender = null;
+            if (queryString.indexOf("=") != -1) {
+                var qStringArray = queryString.split("=");
+
+                if (qStringArray.length == 2) {
+                    sender = qStringArray[1];
+                }
+            }
+
             for (var i = 0; i < messageArray.length; i++) {
-                if (sessionId === messageArray[i].userName)
+                if (sessionName === messageArray[i].userName) {
+                    $("#cur-user-uuid").val(messageArray[i].id);
+                    //   alert(messageArray[i].id);
+                    console.log("user own uuid: " + messageArray[i].id);
                     continue;
+                }
+                else if (sender == messageArray[i].userName) {
+                    sender = messageArray[i].id;
+                }
                 chatList.append(createChatList(messageArray[i]));
             }
+            if ($.trim(sender)) {
+                $("#mgs-li-" + sender).click();
+                var uri = window.location.href.toString();
+                if (uri.indexOf("?") > 0) {
+                    var clean_uri = uri.substring(0, uri.indexOf("?"));
+                    window.history.replaceState({}, document.title, clean_uri);
+                }
+            }
+
         });
 
-        stompClient.subscribe("/topic/chat.login" + "-" + sessionId, function (message) {
-            var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
-            if ($('#selector').length) {
+        stompClient.subscribe("/topic/chat.login" + "-" + sessionName, function (message) {
+            var spanDiv = '#' + "mgs-li-" + JSON.parse(message.body).id + " " + 'span'
+            if ($(spanDiv).length) {
                 $(spanDiv).attr('class', 'contact-status online');
             }
             else {
@@ -204,47 +215,75 @@ $(document).ready(function () {
             }
         });
 
-        stompClient.subscribe("/topic/chat.logout" + "-" + sessionId, function (message) {
+        stompClient.subscribe("/topic/chat.logout" + "-" + sessionName, function (message) {
             console.log(JSON.parse(message.body));
-            var spanDiv = '#' + JSON.parse(message.body).id + " " + 'span'
+            var spanDiv = '#' + "mgs-li-" + JSON.parse(message.body).id + " " + 'span'
             $(spanDiv).attr('class', 'contact-status');
         });
 
+        $(document).ajaxStop(function () {
+            console.debug("ajaxStop");
+            $("#ajax_loader").hide();
+        });
+        $(document).ajaxStart(function () {
+            console.debug("ajaxStart");
+            $("#ajax_loader").show();
+        });
+
+        /* $('#btnStart').click(function(e)  {
+         console.debug("click start");
+         jQuery.event.trigger("ajaxStart");
+         e.preventDefault();
+         });
+         */
+
+
         $("#conversation-end-ok").click(function () {
 
-            /*  $("#modal-end-conversation").modal('hide');
-             $("#tone-analyzer-charts").modal('show');*/
-
             var sender = $('.message-input').attr('id');
+            $("#modal-end-conversation").modal('hide');
+            jQuery.event.trigger("ajaxStart");
+
+          /*  $(document).ajaxStart(function () {
+                console.debug("ajaxStart");
+                $("#ajax_loader").show();
+            });*/
+           /* $('#btnStart').click(function (e) {
+                console.debug("click start");
+                jQuery.event.trigger("ajaxStart");
+                e.preventDefault();
+            });
+            $('#btnStop').click(function (e) {
+                console.debug("click stop");
+                jQuery.event.trigger("ajaxStop");
+                e.preventDefault();
+            });*/
+
+
             $.get({
                 type: 'get',
                 url: '/tone-analyzer-between-users',
                 dataType: "json",
-                data: 'sender=' + sender + "&recipient=" + uuid,
+                data: 'sender=' + sender + "&recipient=" + userName,
                 success: function (data) {
-                    $("#modal-end-conversation").modal('hide');
-
                     console.log(data);
                     var series = normalizedDataToneAnalyzer(data);
                     console.log(series);
-                    $("#tone-analyzer-charts").modal('show');
                     drawDonut(series, "graph", "tone analyzer for people")
                 }
             });
-
-            //drawChart();
         });
 
 
         $("#send-invitation-modal").click(function () {
             var email = $("#inputEmail3").val();
             var name = $("#text3").val();
-            console.log(email + " " + name);
+            console.log("cur usr id " + $("#cur-user-uuid").val());
             $.get({
                 type: 'get',
                 url: '/invitation-email',
                 dataType: "text",
-                data: 'sender=' + name + "&email=" + email,
+                data: 'sender=' + userName + "&email=" + email,
                 success: function (data) {
                     $('#myModalHorizontal').modal('hide');
                 }
@@ -308,9 +347,10 @@ $(document).ready(function () {
             // do your code
             console.log('clicked ' + $(this).attr('id'));
             $('#ul-messages').html('');
-            $('.message-input').attr('id', $(this).attr('id'));
-            var sender = uuid;
-            var receiver = $(this).attr('id');
+            var receiverId = $(this).attr('id').replace('mgs-li-', '')
+            $('.message-input').attr('id', receiverId);
+            var sender = userName;
+            var receiver = receiverId;
 
             $.get({
                 type: 'get',
@@ -325,7 +365,7 @@ $(document).ready(function () {
                         jQuery(data).each(function (i, item) {
                             console.log(item.sender)
 
-                            if (item.sender === uuid) {
+                            if (item.sender === userName) {
 
                                 $('<li class="sent"><p>' + item.content + '</p></li>').appendTo($('.messages ul'));
                                 $('.message-input input').val(null);
@@ -350,11 +390,11 @@ $(document).ready(function () {
                     $(this).val('');
                     stompClient.send("/app/chat-message/message", {}, JSON.stringify({
                         'topic': "message", 'message': msg,
-                        'recipient': recipientId, 'sender': sessionId
+                        'recipient': recipientId, 'sender': sessionName
                     }));
 
                     if (msg != '')
-                        $('<div class="msg_b">' + sessionId + ": " + msg + '</div>').insertBefore('#msg_push' + recipientId);
+                        $('<div class="msg_b">' + sessionName + ": " + msg + '</div>').insertBefore('#msg_push' + recipientId);
                     $('#msg_body' + recipientId).scrollTop($('#msg_body' + recipientId)[0].scrollHeight);
                 }
             });
@@ -381,7 +421,7 @@ $(document).ready(function () {
             }
             stompClient.send("/app/chat-message/message", {}, JSON.stringify({
                 'topic': "message", 'message': message,
-                'recipient': recipientId, 'sender': sessionId
+                'recipient': recipientId, 'sender': sessionName
             }));
             $('<li class="sent"><p>' + message + '</p></li>').appendTo($('.messages ul'));
             $('.message-input input').val(null);

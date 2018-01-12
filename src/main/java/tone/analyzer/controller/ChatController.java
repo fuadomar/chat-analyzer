@@ -86,6 +86,11 @@ public class ChatController {
 
         if (buddyList == null)
             return buddyListObjects;
+
+        LoginEvent loggedInUserLoginEvent = new LoginEvent(userAccount.getName(), false);
+        loggedInUserLoginEvent.setId(userAccount.getId());
+        buddyListObjects.add(loggedInUserLoginEvent);
+
         for (BuddyDetails buddy : buddyList) {
             LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
             loginEvent.setId(buddy.getId());
