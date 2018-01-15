@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.stereotype.Service;
 import tone.analyzer.domain.entity.EmailInvitation;
 import tone.analyzer.domain.model.NewUserInvitationNotification;
 import tone.analyzer.service.mail.MailService;
@@ -13,6 +14,8 @@ import tone.analyzer.service.mail.MailService;
 /**
  * Created by Dell on 1/15/2018.
  */
+
+@Service
 public class RabbitmqMessageListener {
 
 

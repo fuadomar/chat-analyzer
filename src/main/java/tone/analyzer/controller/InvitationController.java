@@ -55,7 +55,7 @@ public class InvitationController {
         String token = UUID.randomUUID().toString();
         String url = getURLBase(request) + "/confirmation-email";
 
-        rabbitTemplate.convertAndSend(environment.getProperty("spring.rabbitmq.queue"), new NewUserInvitationNotification(sender, email, token, url));
+        rabbitTemplate.convertAndSend(rabbitmqQueue, new NewUserInvitationNotification(sender, email, token, url));
         return "Ok";
     }
 

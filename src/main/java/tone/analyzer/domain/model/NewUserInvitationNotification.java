@@ -1,9 +1,11 @@
 package tone.analyzer.domain.model;
 
+import java.io.Serializable;
+
 /**
  * Created by Dell on 1/15/2018.
  */
-public class NewUserInvitationNotification {
+public class NewUserInvitationNotification implements Serializable{
 
     private String sender;
 
