@@ -1,6 +1,8 @@
 package tone.analyzer.controller;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tone.analyzer.domain.entity.EmailInvitation;
+import tone.analyzer.domain.model.NewUserInvitationNotification;
 import tone.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,6 +31,15 @@ public class InvitationController {
     @Autowired
     private EmailInvitationRepository emailInvitationRepository;
 
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    private String rabbitmqQueue;
+
     public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
         URL requestURL = new URL(request.getRequestURL().toString());
@@ -40,19 +52,10 @@ public class InvitationController {
     public String inviteUserByEmail(@RequestParam("sender") String sender, @RequestParam("email") String email,
                                     HttpServletRequest request) throws MalformedURLException {
 
-        String url = getURLBase(request) + "/confirmation-email";
         String token = UUID.randomUUID().toString();
-        String recipientAddress = email;
-        String subject = "Registration Confirmation";
-        String confirmationUrl = "?token=" + token + "&sender=" + sender + "&receiver=" + email;
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(recipientAddress);
-        simpleMailMessage.setFrom("<mozammaltomal.1001@mail.com>");
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText("thank you for registration " + url + confirmationUrl);
-        mailSender.send(simpleMailMessage);
-        EmailInvitation emailInvitation = new EmailInvitation(sender, email, token);
-        emailInvitationRepository.save(emailInvitation);
+        String url = getURLBase(request) + "/confirmation-email";
+
+        rabbitTemplate.convertAndSend(environment.getProperty("spring.rabbitmq.queue"), new NewUserInvitationNotification(sender, email, token, url));
         return "Ok";
     }
 
