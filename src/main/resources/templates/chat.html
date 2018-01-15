@@ -23,7 +23,6 @@
     <link rel="canonical" href="https://codepen.io/emilcarlsson/pen/ZOQZaV?limit=all&page=74&q=contact+"/>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300' rel='stylesheet'
           type='text/css'>
-
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
 
     <script src="https://use.typekit.net/hoy3lrg.js"></script>
@@ -51,6 +50,7 @@
 
     #frame {
         width: 95%;
+        margin-top: 100px;
         min-width: 360px;
         max-width: 1000px;
         height: 92vh;
@@ -867,7 +867,10 @@
         margin-left: 15px;
     }
 
-
+    .button-container {
+        float: right;
+        margin-left: 10px;
+    }
     </style>
 
     <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
@@ -883,9 +886,6 @@
     <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
 </head>
 <body>
-
-
-
 
 
 <!--
@@ -909,9 +909,94 @@ Website: http://emilcarlsson.se/
     <img src="https://www.drupal.org/files/issues/ajax-loader.gif"></img>
 </div>
 
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
-    Invite Friends
-</button>
+<div class="container">
+    <div class="row">
+        <div class="button-container">
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
+                Invite Friends
+            </button>
+            <form th:action="@{/logout}" method="get">
+                <button class="btn btn-md btn-danger btn-block" name="registration"
+                        type="Submit">Logout
+                </button>
+            </form>
+        </div>
+
+    </div>
+    <div class="row">
+        <div id="frame">
+
+            <div id="sidepanel">
+                <div id="profile">
+                    <div class="wrap">
+                        <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
+                        <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
+                                th:src="@{/images/images.png}"/>-->
+                        <img th:src="@{/images/default-avatar.png}" alt="memorynotfound logo" class="online" alt=""/>
+                        <p th:text="${username}"></p>
+                        <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+                        <div id="status-options">
+                            <ul>
+                                <li id="status-online" class="online"><span class="status-circle"></span>
+                                    <p>Online</p></li>
+                                <li id="status-away"><span class="status-circle"></span>
+                                    <p>Away</p></li>
+                                <li id="status-busy"><span class="status-circle"></span>
+                                    <p>Busy</p></li>
+                                <li id="status-offline"><span class="status-circle"></span>
+                                    <p>Offline</p></li>
+                            </ul>
+                        </div>
+                        <div id="expanded">
+                            <label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
+                            <input name="twitter" type="text" value="mikeross"/>
+                            <label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
+                            <input name="twitter" type="text" value="ross81"/>
+                            <label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
+                            <input name="twitter" type="text" value="mike.ross"/>
+                        </div>
+                    </div>
+                </div>
+                <div id="search">
+                    <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+                    <input type="text" placeholder="Search contacts..."/>
+                </div>
+                <div id="contacts">
+                    <ul id="contacts-uli">
+                    </ul>
+                </div>
+
+            </div>
+            <div class="content">
+                <!-- <div class="contact-profile">
+                     <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+                     <p>Harvey Specter</p>
+                     <div class="social-media">
+                         <i class="fa fa-facebook" aria-hidden="true"></i>
+                         <i class="fa fa-twitter" aria-hidden="true"></i>
+                         <i class="fa fa-instagram" aria-hidden="true"></i>
+                     </div>
+                 </div>-->
+                <div class="messages" id="messages">
+                    <ul id="ul-messages">
+                    </ul>
+                </div>
+                <div class="message-input">
+                    <div class="wrap">
+                        <input type="text" placeholder="Write your message..."/>
+                        <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                        <!-- <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>-->
+                    </div>
+                    <a href="#" data-toggle="modal" data-target="#modal-end-conversation" id="anchor-tone-anlysis"><i
+                            class="fa fa-paper-plane" aria-hidden="true"> End Chat and see your partner's mood</i></a>
+                    <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Modal -->
 <div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog"
@@ -969,45 +1054,6 @@ Website: http://emilcarlsson.se/
     </div>
 </div>
 
-<!--
-<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#tone-analysis-modal">
-    Invite Friends
-</button>
-
-&lt;!&ndash; Modal &ndash;&gt;
-<div class="modal fade" id="tone-analysis-modal" tabindex="-1" role="dialog"
-     aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            &lt;!&ndash; Modal Header &ndash;&gt;
-            <div class="modal-header">
-                <button type="button" class="close"
-                        data-dismiss="modal">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <h4 class="modal-title" id="toneModalLabel">
-                    Tone Analyzer
-                </h4>
-            </div>
-
-            &lt;!&ndash; Modal Body &ndash;&gt;
-            <div class="modal-body" id="tone-analysis-content">
-            </div>
-
-            &lt;!&ndash; Modal Footer &ndash;&gt;
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default"
-                        data-dismiss="modal" id="cancel-tone-analysis">
-                    Ok
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
--->
-
-
 <!-- Default bootstrap modal example -->
 <div class="modal fade" id="modal-end-conversation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
      aria-hidden="true">
@@ -1031,7 +1077,7 @@ Website: http://emilcarlsson.se/
 
 
 <!-- Default bootstrap modal example -->
-<div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2"
+<div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog" aria-labelledby="toneAnalyzerModal"
      aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -1042,9 +1088,9 @@ Website: http://emilcarlsson.se/
             </div>
             <div class="modal-body">
 
-                <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
-                <!-- <div id="graph" style="height: 300px; width: 300px"></div>-->
-                <!-- <div id="fb-root"></div>-->
+                <div id="render-div">
+                    <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
+                </div>
                 <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis" value=""/>
                 <!--<img src = "share_button.png" id = "share_button"/>-->
                 <div class="fb-share-button"
@@ -1058,8 +1104,8 @@ Website: http://emilcarlsson.se/
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-primary" id="conversation-end-ok1">Ok</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" id="conversation-share-cxancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="conversation-share-ok">Ok</button>
             </div>
         </div>
     </div>
@@ -1068,115 +1114,22 @@ Website: http://emilcarlsson.se/
 <input type="hidden" id="cur-user-uuid" name="cur-user-uuid" value=""/>
 
 
-<div id="frame">
-
-    <div id="sidepanel">
-        <div id="profile">
-            <div class="wrap">
-                <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
-                <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
-                        th:src="@{/images/images.png}"/>-->
-                <img th:src="@{/images/default-avatar.png}" alt="memorynotfound logo" class="online" alt=""/>
-                <p th:text="${username}"></p>
-                <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
-                <div id="status-options">
-                    <ul>
-                        <li id="status-online" class="online"><span class="status-circle"></span>
-                            <p>Online</p></li>
-                        <li id="status-away"><span class="status-circle"></span>
-                            <p>Away</p></li>
-                        <li id="status-busy"><span class="status-circle"></span>
-                            <p>Busy</p></li>
-                        <li id="status-offline"><span class="status-circle"></span>
-                            <p>Offline</p></li>
-                    </ul>
-                </div>
-                <div id="expanded">
-                    <label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
-                    <input name="twitter" type="text" value="mikeross"/>
-                    <label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
-                    <input name="twitter" type="text" value="ross81"/>
-                    <label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
-                    <input name="twitter" type="text" value="mike.ross"/>
-                </div>
-            </div>
-        </div>
-        <div id="search">
-            <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-            <input type="text" placeholder="Search contacts..."/>
-        </div>
-        <div id="contacts">
-            <ul id="contacts-uli">
-            </ul>
-        </div>
-        <div id="bottom-bar">
-            <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span>
-            </button>
-            <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
-        </div>
-    </div>
-    <div class="content">
-        <!-- <div class="contact-profile">
-             <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-             <p>Harvey Specter</p>
-             <div class="social-media">
-                 <i class="fa fa-facebook" aria-hidden="true"></i>
-                 <i class="fa fa-twitter" aria-hidden="true"></i>
-                 <i class="fa fa-instagram" aria-hidden="true"></i>
-             </div>
-         </div>-->
-        <div class="messages" id="messages">
-            <ul id="ul-messages">
-            </ul>
-        </div>
-        <div class="message-input">
-            <div class="wrap">
-                <input type="text" placeholder="Write your message..."/>
-                <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
-                <!-- <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>-->
-            </div>
-            <a href="#" data-toggle="modal" data-target="#modal-end-conversation" id="anchor-tone-anlysis"><i
-                    class="fa fa-paper-plane" aria-hidden="true"> End Chat and see your partner's mood</i></a>
-            <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
-        </div>
-
-    </div>
-</div>
 <input id="csrf_value" type="hidden"
        th:name="${_csrf.parameterName}"
        th:value="${_csrf.token}"/>
-<form th:action="@{/logout}" method="get">
-    <button class="btn btn-md btn-danger btn-block" name="registration"
-            type="Submit">Logout
-    </button>
-</form>
+
 
 <script src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
 <script>$(".messages").animate({scrollTop: $(document).height()}, "fast");
 
-/*window.fbAsyncInit = function () {
- FB.init({
- appId: '160871787875627', status: true, cookie: true,
- xfbml: true
- });
- };
- (function () {
- var e = document.createElement('script');
- e.async = true;
- e.src = document.location.protocol +
- '//connect.facebook.net/en_US/all.js';
- document.getElementById('fb-root').appendChild(e);
- }());*/
-
-
-
-
-
 // this loads the Facebook API
 (function (d, s, id) {
     var js, fjs = d.getElementsByTagName(s)[0];
-    if (d.getElementById(id)) { return; }
-    js = d.createElement(s); js.id = id;
+    if (d.getElementById(id)) {
+        return;
+    }
+    js = d.createElement(s);
+    js.id = id;
     js.src = "//connect.facebook.net/en_US/sdk.js";
     fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
@@ -1191,24 +1144,24 @@ window.fbAsyncInit = function () {
 };
 
 // FB Share with custom OG data.
-(function($) {
+(function ($) {
 
-   /* $('#share_button').click(function (e) {
-        e.preventDefault();
-        $("#tone-analyzer-charts").modal('hide');
-        var hidUrl = $("#generate-image-tone-analysis").val();
-        console.log("hidden url: " + hidUrl);
-        FB.ui(
-                {
-                    method: 'feed',
-                    name: 'This is the tone analyzer',
-                    link: 'http://dev.myhost.com:8080/login',
-                    picture: hidUrl,
-                    caption: 'your friends tone is: ',
-                    description: "learn more about machine learning with tone analyzer",
-                    message: "Hello machine learning"
-                });
-    });*/
+    /* $('#share_button').click(function (e) {
+     e.preventDefault();
+     $("#tone-analyzer-charts").modal('hide');
+     var hidUrl = $("#generate-image-tone-analysis").val();
+     console.log("hidden url: " + hidUrl);
+     FB.ui(
+     {
+     method: 'feed',
+     name: 'This is the tone analyzer',
+     link: 'http://dev.myhost.com:8080/login',
+     picture: hidUrl,
+     caption: 'your friends tone is: ',
+     description: "learn more about machine learning with tone analyzer",
+     message: "Hello machine learning"
+     });
+     });*/
 
 
     $('#share_button').on('click', function (event) {
@@ -1220,31 +1173,30 @@ window.fbAsyncInit = function () {
         console.log("hidden url: " + hidUrl);
 
         // Dynamically gather and set the FB share data.
-        var FBDesc      = 'learn more about machine learning with tone analyzer';
-        var FBTitle     = 'This is the tone analyzer';
-        var FBLink      = 'http://dev.myhost.com:8080/login';
-        var FBPic       = hidUrl;
+        var FBDesc = 'learn more about machine learning with tone analyzer';
+        var FBTitle = 'This is the tone analyzer';
+        var FBLink = 'http://dev.myhost.com:8080/login';
+        var FBPic = hidUrl;
 
         // Open FB share popup
         FB.ui({
-                    method: 'share_open_graph',
-                    action_type: 'og.shares',
-                    action_properties: JSON.stringify({
-                        object: {
-                            'og:url': FBLink,
-                            'og:title': FBTitle,
-                            'og:description': FBDesc,
-                            'og:image': FBPic
-                        }
-                    })
-                },
-                function (response) {
-                    // Action after response
+                method: 'share_open_graph',
+                action_type: 'og.shares',
+                action_properties: JSON.stringify({
+                    object: {
+                        'og:url': FBLink,
+                        'og:title': FBTitle,
+                        'og:description': FBDesc,
+                        'og:image': FBPic
+                    }
                 })
+            },
+            function (response) {
+                // Action after response
+            })
     })
 
-})( jQuery );
-
+})(jQuery);
 
 
 $("#profile-img").click(function () {
@@ -1280,30 +1232,6 @@ $("#status-options ul li").click(function () {
     $("#status-options").removeClass("online");
 });
 
-/*function newMessage() {
- message = $(".message-input input").val();
- if($.trim(message) == '') {
- return false;
- }
- $('<li class="sent"><img src="http://emilcarlsson.se/assets/mikeross.png" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
- $('.message-input input').val(null);
- $('.contact.online .preview').html('<span>You: </span>' + message);
- $(".messages").animate({ scrollTop: $(document).height() }, "fast");
- };
-
- $('.submit').click(function() {
- newMessage();
- });
-
- $(window).on('keydown', function(e) {
- if (e.which == 13) {
- newMessage();
- return false;
- }
- });*/
-
-
-//# sourceURL=pen.js
 </script>
 <script type="text/javascript" th:src="@{/js/chat.js}"></script>
 </body>

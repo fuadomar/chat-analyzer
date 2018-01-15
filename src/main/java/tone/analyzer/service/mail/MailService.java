@@ -23,8 +23,7 @@ public class MailService {
 
     public void sendMail(NewUserInvitationNotification userInvitationNotification) {
 
-
-        String url = userInvitationNotification.getUrl() + "/confirmation-email";
+        String url = userInvitationNotification.getUrl();
         String recipientAddress = userInvitationNotification.getReceiver();
         String confirmationUrl = "?token=" + userInvitationNotification.getToken() + "&sender=" + userInvitationNotification.getSender() + "&receiver=" + userInvitationNotification.getReceiver();
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -38,6 +37,4 @@ public class MailService {
         emailInvitationRepository.save(emailInvitation);
 
     }
-
-
 }

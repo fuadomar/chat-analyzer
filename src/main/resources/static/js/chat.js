@@ -16,7 +16,7 @@ function createChatList(user) {
 
 function drawChart() {
 
-    chart = new Highcharts.chart({
+    Highcharts.chart({
 
         chart: {
             renderTo: 'canvas'
@@ -43,22 +43,32 @@ function drawChart() {
 
     canvg(document.getElementById('canvas'), chart.getSVG())
     var canvas = document.getElementById("canvas");
-    var img = canvas.toDataURL("image/png");
     $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
-    //$('#graph').prepend($('<img>', {id: 'theImg', src: img}))
-    //document.write('<img src="'+img+'"/>');
 }
 
+function clearGraphDdiv() {
+    //$("#canvas").empty();
+    //var canvas = $('#canvas').remove(); // or document.getElementById('canvas');
+}
 
 function drawDonut(dataPoint, div, title) {
 
+    $('#canvas').remove();
+    var newCanvas = $('<canvas/>', {
+        id: 'canvas'
+    }).prop({
+        width: 600,
+        height: 600
+    });
+    $('#render-div').empty();
+    $('#render-div').append(newCanvas);
     var divId = "";
     if (typeof div === 'undefined') {
         divId = divId + 'graph';
     }
     else divId = divId + div;
 
-    chart = new Highcharts.chart({
+    var chart = new Highcharts.chart({
         chart: {
             type: 'pie',
             renderTo: 'canvas',
@@ -107,6 +117,7 @@ function drawDonut(dataPoint, div, title) {
             var urlJson = JSON.parse(data);
             $('#generate-image-tone-analysis').val(urlJson.url);
             jQuery.event.trigger("ajaxStop");
+
         }
     });
 
@@ -244,22 +255,6 @@ $(document).ready(function () {
             $("#modal-end-conversation").modal('hide');
             jQuery.event.trigger("ajaxStart");
 
-          /*  $(document).ajaxStart(function () {
-                console.debug("ajaxStart");
-                $("#ajax_loader").show();
-            });*/
-           /* $('#btnStart').click(function (e) {
-                console.debug("click start");
-                jQuery.event.trigger("ajaxStart");
-                e.preventDefault();
-            });
-            $('#btnStop').click(function (e) {
-                console.debug("click stop");
-                jQuery.event.trigger("ajaxStop");
-                e.preventDefault();
-            });*/
-
-
             $.get({
                 type: 'get',
                 url: '/tone-analyzer-between-users',
@@ -269,6 +264,7 @@ $(document).ready(function () {
                     console.log(data);
                     var series = normalizedDataToneAnalyzer(data);
                     console.log(series);
+                    clearGraphDdiv();
                     drawDonut(series, "graph", "tone analyzer for people")
                 }
             });
@@ -439,8 +435,6 @@ $(document).ready(function () {
                 return false;
             }
         });
-
-
     });
 
 })
