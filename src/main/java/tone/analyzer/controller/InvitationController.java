@@ -3,19 +3,19 @@ package tone.analyzer.controller;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tone.analyzer.domain.entity.EmailInvitation;
 import tone.analyzer.domain.model.NewUserInvitationNotification;
 import tone.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /** Created by user on 1/8/2018. */
@@ -49,8 +49,22 @@ public class InvitationController {
     String token = UUID.randomUUID().toString();
     String url = getURLBase(request) + "/confirmation-email";
 
+    String subject="Hi "+email+", "+ "a friend on nascenia invited you to join toneAnalyzer";
+    String confirmationUrl =
+            url + "?token="
+                    + token
+                    + "&sender="
+                    + sender
+                    + "&receiver="
+                    + email;
+    Map<String, Object> model = new HashMap<String, Object>();
+    model.put("name", email);
+    model.put("url", url);
+    model.put("sender", sender);
+    NewUserInvitationNotification newUserInvitationNotification = new NewUserInvitationNotification(sender, email, subject, token, confirmationUrl);
+    newUserInvitationNotification.setModel(model);
     rabbitTemplate.convertAndSend(
-        rabbitmqQueue, new NewUserInvitationNotification(sender, email, token, url));
+        rabbitmqQueue, newUserInvitationNotification);
     return "Ok";
   }
 }

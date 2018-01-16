@@ -11,6 +11,8 @@ import tone.analyzer.domain.entity.EmailInvitation;
 import tone.analyzer.domain.model.NewUserInvitationNotification;
 import tone.analyzer.service.mail.MailService;
 
+import javax.mail.MessagingException;
+
 /** Created by Dell on 1/15/2018. */
 @Service
 public class RabbitmqMessageListener {
@@ -25,7 +27,7 @@ public class RabbitmqMessageListener {
   private String from;
 
   @RabbitListener(queues = RABBITMQ_QUEUE)
-  public void receiveMessage(NewUserInvitationNotification newuser) {
+  public void receiveMessage(NewUserInvitationNotification newuser) throws MessagingException {
 
     logger.info("Received message for sending email" + newuser.toString());
 
