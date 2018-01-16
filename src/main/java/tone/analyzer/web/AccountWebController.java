@@ -139,7 +139,7 @@ public class AccountWebController {
     Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
     List<LoginEvent> buddyList = retrieveBuddyList(user.getName());
-    redirectAttributes.addAttribute("buddyList", buddyList);
+   // redirectAttributes.addAttribute("buddyList", buddyList);
     return "redirect:/live-chat";
   }
 
@@ -172,8 +172,7 @@ public class AccountWebController {
     model.addAttribute(USER_LIST, userList);
     return ADMIN_PANEL_VIEW;
   }
-
-  @PreAuthorize("hasRole('ROLE_USER')")
+  
   @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
   public ModelAndView confirmationUserByEmail(
       ModelAndView modelAndView, @RequestParam("token") String token) {

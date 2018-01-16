@@ -298,7 +298,7 @@ $(document).ready(function () {
       FB.ui(
           {
             method: 'feed',
-            name: 'This is the tone analyzer',
+            name: 'An amazing tone analyzer that can read your mind',
             link: 'http://dev.myhost.com:8080/login',
             picture: hidUrl,
             caption: 'your friends tone is: ',
@@ -348,7 +348,12 @@ $(document).ready(function () {
       $('.message-input').attr('id', receiverId);
       var sender = userName;
       var receiver = receiverId;
-
+      $(this).css({'background':'grey'});
+      $("#contacts-uli li").each(function(){
+        if (receiver !==  $(this).attr('id').replace("msg-li-")) {
+          $(this).css({'background':'#2c3e50'});
+        }
+      });
       $.get({
         type: 'get',
         url: '/fetch/messages',

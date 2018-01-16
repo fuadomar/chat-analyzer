@@ -52,21 +52,7 @@ public class MailService {
     helper.setSubject(userInvitationNotification.getSubject());
     helper.setFrom("<mozammaltomal.1001@mail.com>");
     mailSender.send(message);
-  /*  String url = userInvitationNotification.getUrl();
-    String recipientAddress = userInvitationNotification.getReceiver();
-    String confirmationUrl =
-        "?token="
-            + userInvitationNotification.getToken()
-            + "&sender="
-            + userInvitationNotification.getSender()
-            + "&receiver="
-            + userInvitationNotification.getReceiver();
-    SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-    simpleMailMessage.setTo(recipientAddress);
-    simpleMailMessage.setFrom("<mozammaltomal.1001@mail.com>");
-    simpleMailMessage.setText("thank you for registration " + url + confirmationUrl);
-    simpleMailMessage.setSubject("Invitation confirmatin");*/
-   // mailSender.send(simpleMailMessage);
+
     EmailInvitation emailInvitation =
         new EmailInvitation(
             userInvitationNotification.getSender(),

@@ -17,12 +17,14 @@
     </style>
 </head>
 <body style="margin: 0; padding: 0;">
-
-<p>Dear <span th:text="${name}"/>,</p>
-<br/>
+Dear
+<p th:text="${name}"/>,
+<br />
 <p>I have found a great chatting tool where they will show us some really cool insights based on our
     conversation. I think, it will be a lot of fun! Why don't you join with me in this chat by clicking:
-    <a th:href="${url}" ></a. Talk to you there soon!</b></p>
+    <a th:href="${url}" >tone analyzer </a>
+    <br /><p>Talk to you there soon!</p>
+<br /><br />
 <p th:text="${sender}"></p>
 </body>
 </html>
