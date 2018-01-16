@@ -881,8 +881,6 @@
     background-size: cover;
     height: 400px;
   }
-
-
   </style>
 
   <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
@@ -936,6 +934,7 @@ Website: http://emilcarlsson.se/
 
   </div>
   <div class="row">
+
     <div id="frame">
 
       <div id="sidepanel">
@@ -1129,6 +1128,35 @@ Website: http://emilcarlsson.se/
     </div>
   </div>
 </div>
+
+<button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload file</button>
+
+<!-- Modal -->
+<div id="uploadModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">File upload form</h4>
+      </div>
+      <div class="modal-body">
+        <!-- Form -->
+        <form method='post' action='' enctype="multipart/form-data">
+          Select file : <input type='file' name='file' id='file' class='form-control' ><br>
+          <input type='button' class='btn btn-info' value='Upload' id='upload'>
+        </form>
+
+        <!-- Preview-->
+        <div id='preview'></div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
 
 <input type="hidden" id="cur-user-uuid" name="cur-user-uuid" value=""/>
 
