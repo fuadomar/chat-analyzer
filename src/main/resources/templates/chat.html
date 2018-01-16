@@ -871,6 +871,15 @@
         float: right;
         margin-left: 10px;
     }
+
+    #invitation-modal {
+        background-image: url('images/cafe.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 400px;
+    }
+
+
     </style>
 
     <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
@@ -1011,12 +1020,12 @@ Website: http://emilcarlsson.se/
                     <span class="sr-only">Close</span>
                 </button>
                 <h4 class="modal-title">
-                    Modal title
+                    Send Inviation to friends & family
                 </h4>
             </div>
 
             <!-- Modal Body -->
-            <div class="modal-body">
+            <div class="modal-body" id="invitation-modal">
 
                 <form class="form-horizontal" role="form" id="invitation-form">
 
