@@ -20,6 +20,7 @@ import java.util.Collection;
 /** Created by mozammal on 4/18/17. */
 @Service
 public class SecurityServiceImpl implements SecurityService {
+
   @Autowired private AuthenticationManager authenticationManager;
 
   @Autowired private UserDetailsService userDetailsService;

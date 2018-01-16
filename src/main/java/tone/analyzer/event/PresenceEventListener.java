@@ -29,96 +29,98 @@ import tone.analyzer.domain.repository.ParticipantRepository;
 @Component
 public class PresenceEventListener {
 
-    private static final Logger log = LoggerFactory.getLogger(PresenceEventListener.class);
+  private static final Logger log = LoggerFactory.getLogger(PresenceEventListener.class);
 
-    private ParticipantRepository participantRepository;
+  private ParticipantRepository participantRepository;
 
-    private SimpMessagingTemplate messagingTemplate;
+  private SimpMessagingTemplate messagingTemplate;
 
-    private String loginDestination;
+  private String loginDestination;
 
-    private String logoutDestination;
+  private String logoutDestination;
 
-    private Map<String, String> sessionToUserIdMap;
+  private Map<String, String> sessionToUserIdMap;
 
-    @Autowired
-    private AccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
-    public PresenceEventListener(
-            SimpMessagingTemplate messagingTemplate, ParticipantRepository participantRepository) {
-        this.messagingTemplate = messagingTemplate;
-        this.participantRepository = participantRepository;
-        this.sessionToUserIdMap = new ConcurrentHashMap<>();
+  public PresenceEventListener(
+      SimpMessagingTemplate messagingTemplate, ParticipantRepository participantRepository) {
+    this.messagingTemplate = messagingTemplate;
+    this.participantRepository = participantRepository;
+    this.sessionToUserIdMap = new ConcurrentHashMap<>();
+  }
+
+  public List<LoginEvent> retrieveBuddyList(String userName) {
+
+    Account userAccount = accountRepository.findByName(userName);
+    List<LoginEvent> buddyListObjects = new ArrayList<>();
+    Set<BuddyDetails> buddyList = userAccount.getBuddyList();
+    List<LoginEvent> onlineBuddyList = new ArrayList<>();
+
+    if (buddyList == null) return buddyListObjects;
+
+    for (BuddyDetails buddy : buddyList) {
+      LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+      loginEvent.setId(buddy.getId());
+      buddyListObjects.add(loginEvent);
     }
+    List<LoginEvent> activeUser =
+        new ArrayList<>(participantRepository.getActiveSessions().values());
 
-    public List<LoginEvent> retrieveBuddyList(String userName) {
+    for (LoginEvent loginEvent : buddyListObjects)
+      if (activeUser.contains(loginEvent)) {
+        loginEvent.setOnline(true);
+        onlineBuddyList.add(loginEvent);
+      }
+    return onlineBuddyList;
+  }
 
-        Account userAccount = accountRepository.findByName(userName);
-        List<LoginEvent> buddyListObjects = new ArrayList<>();
-        Set<BuddyDetails> buddyList = userAccount.getBuddyList();
-        List<LoginEvent> onlineBuddyList = new ArrayList<>();
+  @EventListener
+  private void handleSessionConnected(SessionConnectEvent event) {
+    SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
+    String userName = headers.getUser().getName();
 
-        if (buddyList == null)
-            return buddyListObjects;
+    Account account = accountRepository.findByName(userName);
 
-        for (BuddyDetails buddy : buddyList) {
-            LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
-            loginEvent.setId(buddy.getId());
-            buddyListObjects.add(loginEvent);
-        }
-        List<LoginEvent> activeUser = new ArrayList<>(participantRepository.getActiveSessions().values());
-
-        for (LoginEvent loginEvent : buddyListObjects)
-            if (activeUser.contains(loginEvent)) {
-                loginEvent.setOnline(true);
-                onlineBuddyList.add(loginEvent);
-            }
-        return onlineBuddyList;
+    LoginEvent loginEvent = new LoginEvent(userName);
+    loginEvent.setId(account.getId());
+    if (participantRepository.getParticipant(userName) == null) {
+      /* this.template.convertAndSend(messageTopic + "-" + chatMessage.getRecipient(), chatMessage);*/
+      List<LoginEvent> onlineBuddyList = retrieveBuddyList(userName);
+      for (LoginEvent loginEvent1 : onlineBuddyList)
+        messagingTemplate.convertAndSend(
+            loginDestination + "-" + loginEvent1.getUserName(), loginEvent);
     }
+    String sessionId = headers.getSessionId();
+    log.info("logged in user session id: {}", sessionId);
+    sessionToUserIdMap.put(sessionId, userName);
+    // We store the session as we need to be idempotent in the disconnect event processing
+    participantRepository.add(userName, loginEvent);
+  }
 
-    @EventListener
-    private void handleSessionConnected(SessionConnectEvent event) {
-        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-        String userName = headers.getUser().getName();
+  @EventListener
+  private void handleSessionDisconnect(SessionDisconnectEvent event) {
+    log.info("logged out user session id: {}", event.getSessionId());
+    Optional.ofNullable(
+            participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
+        .ifPresent(
+            login -> {
+              List<LoginEvent> onlineBuddyList = retrieveBuddyList(login.getUserName());
+              for (LoginEvent loginEvent1 : onlineBuddyList)
+                messagingTemplate.convertAndSend(
+                    logoutDestination + "-" + loginEvent1.getUserName(),
+                    new LogoutEvent(login.getUserName(), login.getId()));
+              /* messagingTemplate.convertAndSend(
+              logoutDestination, new LogoutEvent(login.getUserName(), login.getId()));*/
+              participantRepository.removeParticipant(sessionToUserIdMap.get(event.getSessionId()));
+            });
+  }
 
-        Account account = accountRepository.findByName(userName);
+  public void setLoginDestination(String loginDestination) {
+    this.loginDestination = loginDestination;
+  }
 
-        LoginEvent loginEvent = new LoginEvent(userName);
-        loginEvent.setId(account.getId());
-        if (participantRepository.getParticipant(userName) == null) {
-           /* this.template.convertAndSend(messageTopic + "-" + chatMessage.getRecipient(), chatMessage);*/
-            List<LoginEvent> onlineBuddyList = retrieveBuddyList(userName);
-            for (LoginEvent loginEvent1 : onlineBuddyList)
-                messagingTemplate.convertAndSend(loginDestination + "-" + loginEvent1.getUserName(), loginEvent);
-        }
-        String sessionId = headers.getSessionId();
-        log.info("logged in user session id: {}", sessionId);
-        sessionToUserIdMap.put(sessionId, userName);
-        // We store the session as we need to be idempotent in the disconnect event processing
-        participantRepository.add(userName, loginEvent);
-    }
-
-    @EventListener
-    private void handleSessionDisconnect(SessionDisconnectEvent event) {
-        log.info("logged out user session id: {}", event.getSessionId());
-        Optional.ofNullable(
-                participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
-                .ifPresent(
-                        login -> {
-                            List<LoginEvent> onlineBuddyList = retrieveBuddyList(login.getUserName());
-                            for (LoginEvent loginEvent1 : onlineBuddyList)
-                                messagingTemplate.convertAndSend(logoutDestination + "-" + loginEvent1.getUserName(), new LogoutEvent(login.getUserName(), login.getId()));
-                           /* messagingTemplate.convertAndSend(
-                                    logoutDestination, new LogoutEvent(login.getUserName(), login.getId()));*/
-                            participantRepository.removeParticipant(sessionToUserIdMap.get(event.getSessionId()));
-                        });
-    }
-
-    public void setLoginDestination(String loginDestination) {
-        this.loginDestination = loginDestination;
-    }
-
-    public void setLogoutDestination(String logoutDestination) {
-        this.logoutDestination = logoutDestination;
-    }
+  public void setLogoutDestination(String logoutDestination) {
+    this.logoutDestination = logoutDestination;
+  }
 }

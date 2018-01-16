@@ -3,23 +3,23 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:title" content="tone analyzer"/>
-    <meta property="og:description" content="we use machine learning"/>
-    <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
-    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
+  <meta property="og:type" content="website"/>
+  <meta property="og:title" content="tone analyzer"/>
+  <meta property="og:description" content="we use machine learning"/>
+  <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
+  <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
 
-    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
-    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+  <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
 </head>
 
 <body>
 
 <form th:action="@{/user-registration}" method="get">
-    <button class="btn btn-md btn-warning btn-block" type="Submit">Go To Registration Page</button>
+  <button class="btn btn-md btn-warning btn-block" type="Submit">Go To Registration Page</button>
 </form>
 
 <!--
@@ -30,35 +30,34 @@
 
 <div class="container">
 
-    <form th:action="@{/login}" method="POST" class="form-signin">
-        <h3 class="form-signin-heading" th:text="Welcome"></h3>
-        <br/>
+  <form th:action="@{/login}" method="POST" class="form-signin">
+    <h3 class="form-signin-heading" th:text="Welcome"></h3>
+    <br/>
 
-        <input type="text" id="name" name="name" th:placeholder="UserName"
-               class="form-control"/> <br/>
-        <input type="password" th:placeholder="Password"
-               id="password" name="password" class="form-control"/> <br/>
+    <input type="text" id="name" name="name" th:placeholder="UserName"
+           class="form-control"/> <br/>
+    <input type="password" th:placeholder="Password"
+           id="password" name="password" class="form-control"/> <br/>
 
-        <div align="center" th:if="${param.error}">
-            <p style="font-size: 20; color: #FF1C19;">Email or Password invalid, please verify</p>
-        </div>
-        <div align="center">
-            <label for="remember-me">Remember me</label>
-            <input type="checkbox" name="remember-me" id="remember-me">
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit"
-                th:text="Login"></button>
-    </form>
-    <!--    <label> <input type="checkbox" name="remember-me" id="remember-me"/>Remember Me</label>-->
+    <div align="center" th:if="${param.error}">
+      <p style="font-size: 20; color: #FF1C19;">Email or Password invalid, please verify</p>
+    </div>
+    <div align="center">
+      <label for="remember-me">Remember me</label>
+      <input type="checkbox" name="remember-me" id="remember-me">
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit"
+            th:text="Login"></button>
+  </form>
+  <!--    <label> <input type="checkbox" name="remember-me" id="remember-me"/>Remember Me</label>-->
 </div>
 <div class="row">
-    <div class="col-md-2 col-md-offset-5">
-        <br/>
-        <a href="/login/google"> <img th:height="50" th:width="180" src="../static/images/images.png"
-                                      th:src="@{/images/images.png}"/></a>
-    </div>
+  <div class="col-md-2 col-md-offset-5">
+    <br/>
+    <a href="/login/google"> <img th:height="50" th:width="180" src="../static/images/images.png"
+                                  th:src="@{/images/images.png}"/></a>
+  </div>
 </div>
-
 
 
 </body>

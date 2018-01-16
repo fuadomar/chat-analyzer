@@ -18,45 +18,39 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-/**
- * Created by user on 1/8/2018.
- */
-
+/** Created by user on 1/8/2018. */
 @RestController
 public class InvitationController {
 
-    @Autowired
-    private JavaMailSender mailSender;
+  @Autowired private JavaMailSender mailSender;
 
-    @Autowired
-    private EmailInvitationRepository emailInvitationRepository;
+  @Autowired private EmailInvitationRepository emailInvitationRepository;
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
+  @Autowired private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private Environment environment;
+  @Autowired private Environment environment;
 
-    @Autowired
-    private String rabbitmqQueue;
+  @Autowired private String rabbitmqQueue;
 
-    public String getURLBase(HttpServletRequest request) throws MalformedURLException {
+  public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
-        URL requestURL = new URL(request.getRequestURL().toString());
-        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+    URL requestURL = new URL(request.getRequestURL().toString());
+    String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+    return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+  }
 
-    }
+  @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
+  public String inviteUserByEmail(
+      @RequestParam("sender") String sender,
+      @RequestParam("email") String email,
+      HttpServletRequest request)
+      throws MalformedURLException {
 
-    @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
-    public String inviteUserByEmail(@RequestParam("sender") String sender, @RequestParam("email") String email,
-                                    HttpServletRequest request) throws MalformedURLException {
+    String token = UUID.randomUUID().toString();
+    String url = getURLBase(request) + "/confirmation-email";
 
-        String token = UUID.randomUUID().toString();
-        String url = getURLBase(request) + "/confirmation-email";
-
-        rabbitTemplate.convertAndSend(rabbitmqQueue, new NewUserInvitationNotification(sender, email, token, url));
-        return "Ok";
-    }
-
+    rabbitTemplate.convertAndSend(
+        rabbitmqQueue, new NewUserInvitationNotification(sender, email, token, url));
+    return "Ok";
+  }
 }

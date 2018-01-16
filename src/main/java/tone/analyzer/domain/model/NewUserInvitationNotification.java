@@ -2,65 +2,60 @@ package tone.analyzer.domain.model;
 
 import java.io.Serializable;
 
-/**
- * Created by Dell on 1/15/2018.
- */
-public class NewUserInvitationNotification implements Serializable{
+/** Created by Dell on 1/15/2018. */
+public class NewUserInvitationNotification implements Serializable {
 
-    private String sender;
+  private String sender;
 
-    private String receiver;
+  private String receiver;
 
-    private String token;
+  private String token;
 
-    private String url;
+  private String url;
 
-    public NewUserInvitationNotification() {
-    }
+  public NewUserInvitationNotification() {}
 
-    public NewUserInvitationNotification(String sender, String receiver, String token, String url) {
-        this.sender = sender;
-        this.receiver = receiver;
-        this.token = token;
-        this.url = url;
-    }
+  public NewUserInvitationNotification(String sender, String receiver, String token, String url) {
+    this.sender = sender;
+    this.receiver = receiver;
+    this.token = token;
+    this.url = url;
+  }
 
-    public String getSender() {
-        return sender;
-    }
+  public String getSender() {
+    return sender;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    @Override
-    public String toString() {
-        return "NewUserInvitationNotification{" +
-                "sender='" + sender + '\'' +
-                '}';
-    }
+  @Override
+  public String toString() {
+    return "NewUserInvitationNotification{" + "sender='" + sender + '\'' + '}';
+  }
 
-    public void setSender(String sender) {
-        this.sender = sender;
-    }
+  public void setSender(String sender) {
+    this.sender = sender;
+  }
 
-    public String getReceiver() {
-        return receiver;
-    }
+  public String getReceiver() {
+    return receiver;
+  }
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
+  public void setReceiver(String receiver) {
+    this.receiver = receiver;
+  }
 
-    public String getToken() {
-        return token;
-    }
+  public String getToken() {
+    return token;
+  }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 }

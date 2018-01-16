@@ -28,81 +28,77 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Created by mozammal on 4/11/17.
- */
+/** Created by mozammal on 4/11/17. */
 @RestController
 public class ChatController {
 
-    private static final Logger log = LoggerFactory.getLogger(ChatController.class);
+  private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
-    @Autowired
-    private ChatGateway chatGateway;
+  @Autowired private ChatGateway chatGateway;
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+  @Autowired private ParticipantRepository participantRepository;
 
-    @Autowired
-    private AccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
-    @Autowired
-    private MessageRepository messageRepository;
+  @Autowired private MessageRepository messageRepository;
 
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @RequestMapping(
+    value = "/fetch/messages",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  public List<Message> analyzeStatedPlacesTone(
+      @RequestParam("sender") String sender, @RequestParam("receiver") String receiver)
+      throws IOException, IndicoException, URISyntaxException {
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/fetch/messages", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Message> analyzeStatedPlacesTone(@RequestParam("sender") String sender, @RequestParam("receiver") String receiver)
-            throws IOException, IndicoException, URISyntaxException {
+    Account recipent = accountRepository.findOne(receiver.trim());
+    if (recipent == null) return null;
+    Sort sort = new Sort(Sort.Direction.ASC, "createdTime");
+    List<Message> messagesBySenderAndReceiver =
+        messageRepository.findMessagesBySenderAndReceiver(sender, recipent.getName(), sort);
 
-        Account recipent = accountRepository.findOne(receiver.trim());
-        if (recipent == null)
-            return null;
-        Sort sort = new Sort(Sort.Direction.ASC, "createdTime");
-        List<Message> messagesBySenderAndReceiver = messageRepository.findMessagesBySenderAndReceiver(sender, recipent.getName(), sort);
+    return messagesBySenderAndReceiver;
+  }
 
-        return messagesBySenderAndReceiver;
+  @MessageMapping("/chat-message/message")
+  public String sendChatMessageToDestination(ChatMessage chatMessage) {
 
+    chatGateway.sendMessageTo(chatMessage);
+    return "Ok";
+  }
+
+  /* @SubscribeMapping("/chat.participants")
+  public Collection<LoginEvent> retrieveParticipants() {
+      log.info("retrieveParticipants method fired");
+      return participantRepository.getActiveSessions().values();
+  }*/
+
+  @SubscribeMapping("/chat.participants/{userName}")
+  public Collection<LoginEvent> retrieveBuddyList(@DestinationVariable String userName) {
+    log.info("retrieveParticipants method fired");
+    Account userAccount = accountRepository.findByName(userName);
+    List<LoginEvent> buddyListObjects = new ArrayList<>();
+    Set<BuddyDetails> buddyList = userAccount.getBuddyList();
+
+    if (buddyList == null) return buddyListObjects;
+
+    LoginEvent loggedInUserLoginEvent = new LoginEvent(userAccount.getName(), false);
+    loggedInUserLoginEvent.setId(userAccount.getId());
+    buddyListObjects.add(loggedInUserLoginEvent);
+
+    for (BuddyDetails buddy : buddyList) {
+      LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+      loginEvent.setId(buddy.getId());
+      buddyListObjects.add(loginEvent);
     }
+    List<LoginEvent> activeUser =
+        new ArrayList<>(participantRepository.getActiveSessions().values());
 
-    @MessageMapping("/chat-message/message")
-    public String sendChatMessageToDestination(ChatMessage chatMessage) {
-
-        chatGateway.sendMessageTo(chatMessage);
-        return "Ok";
-    }
-
-   /* @SubscribeMapping("/chat.participants")
-    public Collection<LoginEvent> retrieveParticipants() {
-        log.info("retrieveParticipants method fired");
-        return participantRepository.getActiveSessions().values();
-    }*/
-
-    @SubscribeMapping("/chat.participants/{userName}")
-    public Collection<LoginEvent> retrieveBuddyList(@DestinationVariable String userName) {
-        log.info("retrieveParticipants method fired");
-        Account userAccount = accountRepository.findByName(userName);
-        List<LoginEvent> buddyListObjects = new ArrayList<>();
-        Set<BuddyDetails> buddyList = userAccount.getBuddyList();
-
-        if (buddyList == null)
-            return buddyListObjects;
-
-        LoginEvent loggedInUserLoginEvent = new LoginEvent(userAccount.getName(), false);
-        loggedInUserLoginEvent.setId(userAccount.getId());
-        buddyListObjects.add(loggedInUserLoginEvent);
-
-        for (BuddyDetails buddy : buddyList) {
-            LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
-            loginEvent.setId(buddy.getId());
-            buddyListObjects.add(loginEvent);
-        }
-        List<LoginEvent> activeUser = new ArrayList<>(participantRepository.getActiveSessions().values());
-
-        for (LoginEvent loginEvent : buddyListObjects)
-            if (activeUser.contains(loginEvent)) {
-                loginEvent.setOnline(true);
-            }
-        return buddyListObjects;
-    }
-
+    for (LoginEvent loginEvent : buddyListObjects)
+      if (activeUser.contains(loginEvent)) {
+        loginEvent.setOnline(true);
+      }
+    return buddyListObjects;
+  }
 }

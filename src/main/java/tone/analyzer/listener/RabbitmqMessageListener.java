@@ -11,29 +11,24 @@ import tone.analyzer.domain.entity.EmailInvitation;
 import tone.analyzer.domain.model.NewUserInvitationNotification;
 import tone.analyzer.service.mail.MailService;
 
-/**
- * Created by Dell on 1/15/2018.
- */
-
+/** Created by Dell on 1/15/2018. */
 @Service
 public class RabbitmqMessageListener {
 
+  public static final String RABBITMQ_QUEUE = "registered.user.email";
 
-    public static final String RABBITMQ_QUEUE = "registered.user.email";
+  private static Logger logger = LoggerFactory.getLogger(RabbitmqMessageListener.class);
 
-    private static Logger logger = LoggerFactory.getLogger(RabbitmqMessageListener.class);
+  @Autowired private MailService mailService;
 
-    @Autowired
-    private MailService mailService;
+  @Value("${mail.from}")
+  private String from;
 
-    @Value("${mail.from}")
-    private String from;
+  @RabbitListener(queues = RABBITMQ_QUEUE)
+  public void receiveMessage(NewUserInvitationNotification newuser) {
 
-    @RabbitListener(queues = RABBITMQ_QUEUE)
-    public void receiveMessage(NewUserInvitationNotification newuser) {
+    logger.info("Received message for sending email" + newuser.toString());
 
-        logger.info("Received message for sending email" + newuser.toString());
-
-        mailService.sendMail(newuser);
-    }
+    mailService.sendMail(newuser);
+  }
 }
