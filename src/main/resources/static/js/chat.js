@@ -348,10 +348,10 @@ $(document).ready(function () {
       $('.message-input').attr('id', receiverId);
       var sender = userName;
       var receiver = receiverId;
-      $(this).css({'background':'grey'});
-      $("#contacts-uli li").each(function(){
-        if (receiver !==  $(this).attr('id').replace("msg-li-")) {
-          $(this).css({'background':'#2c3e50'});
+      $(this).css({'background': 'grey'});
+      $("#contacts-uli li").each(function () {
+        if (receiver !== $(this).attr('id').replace("msg-li-")) {
+          $(this).css({'background': '#2c3e50'});
         }
       });
       $.get({

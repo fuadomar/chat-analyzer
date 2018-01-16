@@ -18,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 
 import org.thymeleaf.context.Context;
 
-
 /** Created by Dell on 1/15/2018. */
 @Service
 public class MailService {
@@ -29,16 +28,15 @@ public class MailService {
 
   @Autowired private EmailInvitationRepository emailInvitationRepository;
 
+  @Autowired private SpringTemplateEngine templateEngine;
 
-  @Autowired
-  private SpringTemplateEngine templateEngine;
-
-  public void sendMail(NewUserInvitationNotification userInvitationNotification) throws MessagingException {
+  public void sendMail(NewUserInvitationNotification userInvitationNotification)
+      throws MessagingException {
 
     MimeMessage message = mailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-            StandardCharsets.UTF_8.name());
-
+    MimeMessageHelper helper =
+        new MimeMessageHelper(
+            message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
 
     Context context = new Context();
     context.setVariable("name", userInvitationNotification.getReceiver());

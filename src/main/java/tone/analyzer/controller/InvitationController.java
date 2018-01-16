@@ -49,22 +49,16 @@ public class InvitationController {
     String token = UUID.randomUUID().toString();
     String url = getURLBase(request) + "/confirmation-email";
 
-    String subject="Hi "+email+", "+ "a friend on nascenia invited you to join toneAnalyzer";
-    String confirmationUrl =
-            url + "?token="
-                    + token
-                    + "&sender="
-                    + sender
-                    + "&receiver="
-                    + email;
+    String subject = "Hi " + email + ", " + "a friend on nascenia invited you to join toneAnalyzer";
+    String confirmationUrl = url + "?token=" + token + "&sender=" + sender + "&receiver=" + email;
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("name", email);
     model.put("url", url);
     model.put("sender", sender);
-    NewUserInvitationNotification newUserInvitationNotification = new NewUserInvitationNotification(sender, email, subject, token, confirmationUrl);
+    NewUserInvitationNotification newUserInvitationNotification =
+        new NewUserInvitationNotification(sender, email, subject, token, confirmationUrl);
     newUserInvitationNotification.setModel(model);
-    rabbitTemplate.convertAndSend(
-        rabbitmqQueue, newUserInvitationNotification);
+    rabbitTemplate.convertAndSend(rabbitmqQueue, newUserInvitationNotification);
     return "Ok";
   }
 }

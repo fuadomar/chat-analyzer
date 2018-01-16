@@ -20,7 +20,8 @@ public class NewUserInvitationNotification implements Serializable {
 
   public NewUserInvitationNotification() {}
 
-  public NewUserInvitationNotification(String sender, String receiver, String subject, String token, String url) {
+  public NewUserInvitationNotification(
+      String sender, String receiver, String subject, String token, String url) {
     this.sender = sender;
     this.receiver = receiver;
     this.token = token;

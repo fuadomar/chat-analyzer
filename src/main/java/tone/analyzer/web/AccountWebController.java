@@ -139,7 +139,7 @@ public class AccountWebController {
     Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
     List<LoginEvent> buddyList = retrieveBuddyList(user.getName());
-   // redirectAttributes.addAttribute("buddyList", buddyList);
+    // redirectAttributes.addAttribute("buddyList", buddyList);
     return "redirect:/live-chat";
   }
 
@@ -172,19 +172,17 @@ public class AccountWebController {
     model.addAttribute(USER_LIST, userList);
     return ADMIN_PANEL_VIEW;
   }
-  
+
   @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
   public ModelAndView confirmationUserByEmail(
       ModelAndView modelAndView, @RequestParam("token") String token) {
 
     EmailInvitation emailInvitationServiceByToekn = emailInvitationService.findByToekn(token);
     modelAndView.addObject("confirmationToken", emailInvitationServiceByToekn.getToken());
-    modelAndView.setViewName("confirm");
+    modelAndView.setViewName("user-registration-email");
     return modelAndView;
   }
 
-  // Process confirmation link
-  @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/confirmation-email", method = RequestMethod.POST)
   public String processConfirmationForm(
       ModelAndView modelAndView,
@@ -206,13 +204,13 @@ public class AccountWebController {
 
     String password = (String) requestParams.get("password");
     Account account = new Account(token.getReceiver(), password);
-    Set<BuddyDetails> emailInvitationReceiverBuddyList = account.getBuddyList();
-
-    if (emailInvitationReceiverBuddyList == null) {
-      emailInvitationReceiverBuddyList = new HashSet<>();
-    }
 
     Account receiverAccount = userService.findByName(token.getReceiver());
+    Set<BuddyDetails> emailInvitationReceiverBuddyList = emailInvitationReceiverBuddyList = new HashSet<>();;
+
+    if (receiverAccount != null) {
+      emailInvitationReceiverBuddyList = receiverAccount.getBuddyList();
+    }
     if (receiverAccount == null) receiverAccount = userService.save(account);
 
     Account userEmailInvitationSender = userService.findByName(token.getSender());

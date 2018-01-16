@@ -8,9 +8,7 @@ import org.thymeleaf.templatemode.StandardTemplateModeHandlers;
 
 import java.nio.charset.StandardCharsets;
 
-/**
- * Created by user on 1/16/2018.
- */
+/** Created by user on 1/16/2018. */
 /*@Configuration
 public class ThymeleafConfig {
 
