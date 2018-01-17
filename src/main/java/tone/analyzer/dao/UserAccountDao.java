@@ -39,6 +39,7 @@ public class UserAccountDao {
     emailInvitionSenderBuddyList.add(
         new BuddyDetails(receiverAccount.getId(), token.getReceiver()));
     userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
+    receiverAccount.setBuddyList(emailInvitationReceiverBuddyList);
     userService.addBudyyToUser(userEmailInvitationSender, receiverAccount);
   }
 }

@@ -191,8 +191,7 @@ $(document).ready(function () {
         function (data) {
 
           var messageArray = JSON.parse(data.body);
-          alert("chat participants "+messageArray);
-          //alert(window.location.search);
+
           var queryString = window.location.search.replace("?", '');
           console.log("query string: " + queryString);
           var sender = null;
@@ -210,7 +209,6 @@ $(document).ready(function () {
 
             if (sessionName === messageArray[i].userName) {
               $("#cur-user-uuid").val(messageArray[i].id);
-              //   alert(messageArray[i].id);
               console.log("user own uuid: " + messageArray[i].id);
               continue;
             } else if (sender == messageArray[i].userName) {
@@ -231,7 +229,7 @@ $(document).ready(function () {
 
     stompClient.subscribe("/topic/chat.login" + "-" + sessionName,
         function (message) {
-          alert("login "+JSON.parse(message.body));
+
           var spanDiv = '#' + "mgs-li-" + JSON.parse(message.body).id + " "
               + 'span'
           if ($(spanDiv).length) {
@@ -313,7 +311,6 @@ $(document).ready(function () {
 
     $("#myModal").on("show.bs.modal", function (e) {
       var link = $(e.relatedTarget);
-      alert(link);
       $(this).find(".modal-body").load(link.attr("href"));
     });
 
