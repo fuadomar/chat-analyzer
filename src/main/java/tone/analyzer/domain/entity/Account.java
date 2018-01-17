@@ -11,7 +11,7 @@ import java.util.Set;
 
 /** Created by mozammal on 4/18/17. */
 @Document
-public class Account implements Serializable{
+public class Account implements Serializable {
 
   @Id private String id;
 
@@ -24,7 +24,9 @@ public class Account implements Serializable{
 
   private boolean enabled;
 
-  Set<BuddyDetails> buddyList;
+  private Set<BuddyDetails> buddyList;
+
+  private DocumentMetaData documentMetaData;
 
   public Account() {}
 
@@ -80,5 +82,13 @@ public class Account implements Serializable{
 
   public void setBuddyList(Set<BuddyDetails> buddyList) {
     this.buddyList = buddyList;
+  }
+
+  public DocumentMetaData getDocumentMetaData() {
+    return documentMetaData;
+  }
+
+  public void setDocumentMetaData(DocumentMetaData documentMetaData) {
+    this.documentMetaData = documentMetaData;
   }
 }

@@ -205,7 +205,7 @@ $(document).ready(function () {
 
           for (var i = 0; i < messageArray.length; i++) {
 
-            console.log("user list: "+messageArray[i].userName)
+            console.log("user list: " + messageArray[i].userName)
 
             if (sessionName === messageArray[i].userName) {
               $("#cur-user-uuid").val(messageArray[i].id);
@@ -389,24 +389,32 @@ $(document).ready(function () {
 
     $('#upload').click(function () {
 
+      var token = $("meta[name='_csrf']").attr("content");
+      var header = $("meta[name='_csrf_header']").attr("content");
+      $(document).ajaxSend(function (e, xhr, options) {
+        xhr.setRequestHeader(header, token);
+      });
+
       var fd = new FormData();
       var files = $('#file')[0].files[0];
       fd.append('file', files);
       console.log(files);
+
       $.ajax({
         url: '/upload/profile/images',
         type: 'post',
         data: fd,
         contentType: false,
         processData: false,
+        cache: false,
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content')
+        },
         success: function (response) {
-          if (response != 0) {
-            // Show image preview
-            $('#preview').append("<img src='" + response
-                + "' width='100' height='100' style='display: inline-block;'>");
-          } else {
-            alert('file not uploaded');
-          }
+
+          $('#preview').append("<img src='" + response
+              + "' width='100' height='100' style='display: inline-block;'>");
         }
       });
     });
