@@ -21,7 +21,7 @@ public class ParticipantRepository {
   }
 
   public void add(String sessionId, LoginEvent event) {
-    if (activeSessions.get(sessionId) == null) activeSessions.put(sessionId, event);
+    activeSessions.putIfAbsent(sessionId, event);
   }
 
   public LoginEvent getParticipant(String sessionId) {

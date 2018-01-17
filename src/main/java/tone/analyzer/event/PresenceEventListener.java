@@ -15,6 +15,7 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.repository.AccountRepository;
@@ -43,6 +44,8 @@ public class PresenceEventListener {
 
   @Autowired private AccountRepository accountRepository;
 
+  @Autowired private UserAccountDao userAccountDao;
+
   public PresenceEventListener(
       SimpMessagingTemplate messagingTemplate, ParticipantRepository participantRepository) {
     this.messagingTemplate = messagingTemplate;
@@ -50,29 +53,9 @@ public class PresenceEventListener {
     this.sessionToUserIdMap = new ConcurrentHashMap<>();
   }
 
-  public List<LoginEvent> retrieveBuddyList(String userName) {
+  public ParticipantRepository getParticipantRepository() {
 
-    Account userAccount = accountRepository.findByName(userName);
-    List<LoginEvent> buddyListObjects = new ArrayList<>();
-    Set<BuddyDetails> buddyList = userAccount.getBuddyList();
-    List<LoginEvent> onlineBuddyList = new ArrayList<>();
-
-    if (buddyList == null) return buddyListObjects;
-
-    for (BuddyDetails buddy : buddyList) {
-      LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
-      loginEvent.setId(buddy.getId());
-      buddyListObjects.add(loginEvent);
-    }
-    List<LoginEvent> activeUser =
-        new ArrayList<>(participantRepository.getActiveSessions().values());
-
-    for (LoginEvent loginEvent : buddyListObjects)
-      if (activeUser.contains(loginEvent)) {
-        loginEvent.setOnline(true);
-        onlineBuddyList.add(loginEvent);
-      }
-    return onlineBuddyList;
+    return participantRepository;
   }
 
   @EventListener
@@ -85,8 +68,7 @@ public class PresenceEventListener {
     LoginEvent loginEvent = new LoginEvent(userName);
     loginEvent.setId(account.getId());
     if (participantRepository.getParticipant(userName) == null) {
-      /* this.template.convertAndSend(messageTopic + "-" + chatMessage.getRecipient(), chatMessage);*/
-      List<LoginEvent> onlineBuddyList = retrieveBuddyList(userName);
+      List<LoginEvent> onlineBuddyList = userAccountDao.retrieveBuddyList(userName);
       for (LoginEvent loginEvent1 : onlineBuddyList)
         messagingTemplate.convertAndSend(
             loginDestination + "-" + loginEvent1.getUserName(), loginEvent);
@@ -105,13 +87,12 @@ public class PresenceEventListener {
             participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
         .ifPresent(
             login -> {
-              List<LoginEvent> onlineBuddyList = retrieveBuddyList(login.getUserName());
+              List<LoginEvent> onlineBuddyList =
+                  userAccountDao.retrieveBuddyList(login.getUserName());
               for (LoginEvent loginEvent1 : onlineBuddyList)
                 messagingTemplate.convertAndSend(
                     logoutDestination + "-" + loginEvent1.getUserName(),
                     new LogoutEvent(login.getUserName(), login.getId()));
-              /* messagingTemplate.convertAndSend(
-              logoutDestination, new LogoutEvent(login.getUserName(), login.getId()));*/
               participantRepository.removeParticipant(sessionToUserIdMap.get(event.getSessionId()));
             });
   }
