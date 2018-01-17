@@ -15,8 +15,8 @@ public class ProfileGateway {
   @Autowired
   FileUploadService fileUploadService;
 
-  public void upload(MultipartFile file) throws IOException {
+  public String upload(MultipartFile file) throws IOException {
 
-    fileUploadService.upload(file);
+    return fileUploadService.upload(file);
   }
 }

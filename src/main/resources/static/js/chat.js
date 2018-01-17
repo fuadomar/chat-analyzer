@@ -413,7 +413,8 @@ $(document).ready(function () {
         },
         success: function (response) {
 
-          $('#preview').append("<img src='" + response
+          var image = "data:image/png;base64, "+response
+          $('#preview').append("<img src='" + image
               + "' width='100' height='100' style='display: inline-block;'>");
         }
       });

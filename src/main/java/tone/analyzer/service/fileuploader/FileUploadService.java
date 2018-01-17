@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Encoder;
 import tone.analyzer.dao.DocumentFileSystemRepository;
 import tone.analyzer.domain.entity.DocumentMetaData;
 import tone.analyzer.domain.model.Document;
@@ -26,7 +27,7 @@ public class FileUploadService {
 
   @Autowired private AccountRepository accountRepository;
 
-  public void upload(MultipartFile file) throws IOException {
+  public String upload(MultipartFile file) throws IOException {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
@@ -41,7 +42,8 @@ public class FileUploadService {
     DocumentMetaData documentMetaData =
         new DocumentMetaData(fileName, fileStorageLocation, currentDate);
     documentFileSystemRepository.add(document);
-
+    BASE64Encoder encoder = new BASE64Encoder();
+    return encoder.encode(document.getContent());
     // documentRepository.save(documentMetaData);
   }
 }
