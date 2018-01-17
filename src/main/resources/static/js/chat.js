@@ -191,6 +191,7 @@ $(document).ready(function () {
         function (data) {
 
           var messageArray = JSON.parse(data.body);
+          alert("chat participants "+messageArray);
           //alert(window.location.search);
           var queryString = window.location.search.replace("?", '');
           console.log("query string: " + queryString);
@@ -204,6 +205,8 @@ $(document).ready(function () {
           }
 
           for (var i = 0; i < messageArray.length; i++) {
+
+            console.log("user list: "+messageArray[i].userName)
 
             if (sessionName === messageArray[i].userName) {
               $("#cur-user-uuid").val(messageArray[i].id);
@@ -228,6 +231,7 @@ $(document).ready(function () {
 
     stompClient.subscribe("/topic/chat.login" + "-" + sessionName,
         function (message) {
+          alert("login "+JSON.parse(message.body));
           var spanDiv = '#' + "mgs-li-" + JSON.parse(message.body).id + " "
               + 'span'
           if ($(spanDiv).length) {

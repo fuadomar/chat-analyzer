@@ -8,4 +8,6 @@ import tone.analyzer.domain.entity.Token;
 public interface EmailInvitationRepository extends MongoRepository<EmailInvitation, String> {
 
   EmailInvitation findByToken(String toekn);
+
+  EmailInvitation findByTokenAndSenderAndReceiver(String token, String sender, String receiver);
 }

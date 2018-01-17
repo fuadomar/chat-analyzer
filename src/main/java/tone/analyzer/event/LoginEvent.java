@@ -28,8 +28,7 @@ public class LoginEvent {
   @Override
   public int hashCode() {
     int result = userName.hashCode();
-    result = 31 * result + (time != null ? time.hashCode() : 0);
-    result = 31 * result + (online ? 1 : 0);
+    result = 31 * result ;
     return result;
   }
 

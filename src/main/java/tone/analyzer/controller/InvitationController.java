@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tone.analyzer.domain.model.NewUserInvitationNotification;
+import tone.analyzer.domain.model.UserEmailInvitationNotification;
 import tone.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,6 +32,8 @@ public class InvitationController {
 
   @Autowired private String rabbitmqQueue;
 
+  private String SUBJECT = "Hi %s, a friend on nascenia invited you to join toneAnalyzer";
+
   public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
     URL requestURL = new URL(request.getRequestURL().toString());
@@ -46,17 +48,20 @@ public class InvitationController {
       HttpServletRequest request)
       throws MalformedURLException {
 
+    if (org.apache.commons.lang3.StringUtils.isBlank(sender)
+        || org.apache.commons.lang3.StringUtils.isBlank(email)) return "Error";
+
     String token = UUID.randomUUID().toString();
     String url = getURLBase(request) + "/confirmation-email";
 
     String subject = "Hi " + email + ", " + "a friend on nascenia invited you to join toneAnalyzer";
     String confirmationUrl = url + "?token=" + token + "&sender=" + sender + "&receiver=" + email;
     Map<String, Object> model = new HashMap<String, Object>();
-    model.put("name", email);
-    model.put("url", url);
+    model.put("receiver", email);
+    model.put("url", confirmationUrl);
     model.put("sender", sender);
-    NewUserInvitationNotification newUserInvitationNotification =
-        new NewUserInvitationNotification(sender, email, subject, token, confirmationUrl);
+    UserEmailInvitationNotification newUserInvitationNotification =
+        new UserEmailInvitationNotification(subject, token);
     newUserInvitationNotification.setModel(model);
     rabbitTemplate.convertAndSend(rabbitmqQueue, newUserInvitationNotification);
     return "Ok";

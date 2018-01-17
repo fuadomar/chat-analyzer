@@ -5,10 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
-import tone.analyzer.domain.entity.EmailInvitation;
-import tone.analyzer.domain.model.NewUserInvitationNotification;
+import tone.analyzer.domain.model.UserEmailInvitationNotification;
 import tone.analyzer.service.mail.MailService;
 
 import javax.mail.MessagingException;
@@ -27,7 +25,7 @@ public class RabbitmqMessageListener {
   private String from;
 
   @RabbitListener(queues = RABBITMQ_QUEUE)
-  public void receiveMessage(NewUserInvitationNotification newuser) throws MessagingException {
+  public void receiveMessage(UserEmailInvitationNotification newuser) throws MessagingException {
 
     logger.info("Received message for sending email" + newuser.toString());
 

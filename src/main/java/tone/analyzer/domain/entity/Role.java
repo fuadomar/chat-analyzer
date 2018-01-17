@@ -1,10 +1,11 @@
 package tone.analyzer.domain.entity;
 
+import java.io.Serializable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /** Created by mozammal on 4/20/17. */
 @Document
-public class Role {
+public class Role implements Serializable{
 
   private String id;
 

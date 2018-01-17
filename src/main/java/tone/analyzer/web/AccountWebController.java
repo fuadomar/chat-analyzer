@@ -1,5 +1,6 @@
 package tone.analyzer.web;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.IEmailInvitationService;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
+import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.entity.EmailInvitation;
@@ -80,6 +82,8 @@ public class AccountWebController {
   @Autowired private AccountRepository accountRepository;
 
   @Autowired private ParticipantRepository participantRepository;
+
+  @Autowired private UserAccountDao userAccountDao;
 
   public List<LoginEvent> retrieveBuddyList(String userName) {
 
@@ -175,9 +179,17 @@ public class AccountWebController {
 
   @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
   public ModelAndView confirmationUserByEmail(
-      ModelAndView modelAndView, @RequestParam("token") String token) {
+      ModelAndView modelAndView,
+      @RequestParam("token") String token,
+      @RequestParam("sender") String sender,
+      @RequestParam("receiver") String receiver) {
 
-    EmailInvitation emailInvitationServiceByToekn = emailInvitationService.findByToekn(token);
+    EmailInvitation emailInvitationServiceByToekn =
+        emailInvitationService.findByToeknAndSenderAndReceiver(token, sender, receiver);
+
+    if (emailInvitationServiceByToekn == null) {
+      new ModelAndView("redirect:/login");
+    }
     modelAndView.addObject("confirmationToken", emailInvitationServiceByToekn.getToken());
     modelAndView.setViewName("user-registration-email");
     return modelAndView;
@@ -193,7 +205,7 @@ public class AccountWebController {
       RedirectAttributes redir)
       throws UnsupportedEncodingException {
 
-    EmailInvitation token = emailInvitationService.findByToekn((String) requestParams.get("token"));
+    EmailInvitation token = emailInvitationService.findByToken((String) requestParams.get("token"));
 
     if (token == null) {
       bindingResult.reject("password");
@@ -202,30 +214,16 @@ public class AccountWebController {
       return "redirect:confirm?token=" + requestParams.get("token");
     }
 
-    String password = (String) requestParams.get("password");
-    Account account = new Account(token.getReceiver(), password);
+    Object userPassword = requestParams.get("password");
+    if (userPassword == null || StringUtils.isBlank((String) requestParams.get("password")))
+      return "redirect:confirm?token=" + requestParams.get("token");
 
-    Account receiverAccount = userService.findByName(token.getReceiver());
-    Set<BuddyDetails> emailInvitationReceiverBuddyList = emailInvitationReceiverBuddyList = new HashSet<>();;
+    String password = (String) userPassword;
+    Account account = new Account(token.getReceiver(), password.trim());
 
-    if (receiverAccount != null) {
-      emailInvitationReceiverBuddyList = receiverAccount.getBuddyList();
-    }
-    if (receiverAccount == null) receiverAccount = userService.save(account);
 
-    Account userEmailInvitationSender = userService.findByName(token.getSender());
-    Set<BuddyDetails> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
-
-    if (emailInvitionSenderBuddyList == null) {
-      emailInvitionSenderBuddyList = new HashSet<>();
-    }
-
-    emailInvitationReceiverBuddyList.add(
-        new BuddyDetails(userEmailInvitationSender.getId(), token.getSender()));
-    emailInvitionSenderBuddyList.add(
-        new BuddyDetails(receiverAccount.getId(), token.getReceiver()));
-    userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
-    userService.addBudyyToUser(userEmailInvitationSender, receiverAccount);
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(
+        token, account);
 
     securityService.autoLogin(account.getName(), password, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();

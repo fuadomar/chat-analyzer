@@ -1,5 +1,6 @@
 package tone.analyzer.domain.entity;
 
+import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 /** Created by mozammal on 4/26/17. */
 @Document
-public class FlaggedMessage {
+public class FlaggedMessage implements Serializable{
 
   @Id private String id;
 

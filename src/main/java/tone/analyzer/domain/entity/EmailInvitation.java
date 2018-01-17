@@ -1,11 +1,12 @@
 package tone.analyzer.domain.entity;
 
+import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /** Created by user on 1/8/2018. */
 @Document
-public class EmailInvitation {
+public class EmailInvitation implements Serializable{
 
   @Id private String id;
 

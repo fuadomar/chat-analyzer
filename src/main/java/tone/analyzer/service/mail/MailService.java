@@ -3,13 +3,13 @@ package tone.analyzer.service.mail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import tone.analyzer.domain.entity.EmailInvitation;
-import tone.analyzer.domain.model.NewUserInvitationNotification;
+import tone.analyzer.domain.model.UserEmailInvitationNotification;
 import tone.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.mail.MessagingException;
@@ -24,13 +24,16 @@ public class MailService {
 
   private static final Logger log = LoggerFactory.getLogger(MailService.class);
 
+  @Value("${mail.from}")
+  private String mailFrom;
+
   @Autowired private JavaMailSender mailSender;
 
   @Autowired private EmailInvitationRepository emailInvitationRepository;
 
   @Autowired private SpringTemplateEngine templateEngine;
 
-  public void sendMail(NewUserInvitationNotification userInvitationNotification)
+  public void sendMail(UserEmailInvitationNotification userInvitationNotification)
       throws MessagingException {
 
     MimeMessage message = mailSender.createMimeMessage();
@@ -39,22 +42,20 @@ public class MailService {
             message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
 
     Context context = new Context();
-    context.setVariable("name", userInvitationNotification.getReceiver());
-    context.setVariable("url", userInvitationNotification.getUrl());
-    context.setVariable("sender", userInvitationNotification.getSender());
+    context.setVariables(userInvitationNotification.getModel());
     String html = templateEngine.process("email-invitation", context);
     log.info("email content: {}", html);
 
-    helper.setTo(userInvitationNotification.getReceiver());
+    helper.setTo((String)userInvitationNotification.getModel().get("receiver"));
     helper.setText(html, true);
     helper.setSubject(userInvitationNotification.getSubject());
-    helper.setFrom("<mozammaltomal.1001@mail.com>");
+    helper.setFrom(mailFrom);
     mailSender.send(message);
 
     EmailInvitation emailInvitation =
         new EmailInvitation(
-            userInvitationNotification.getSender(),
-            userInvitationNotification.getReceiver(),
+            (String)userInvitationNotification.getModel().get("sender"),
+            (String)userInvitationNotification.getModel().get("receiver"),
             userInvitationNotification.getToken());
     emailInvitationRepository.save(emailInvitation);
   }
