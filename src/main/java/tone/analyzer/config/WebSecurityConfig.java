@@ -154,9 +154,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             REGISTRATION_URI,
             ADMIN_PANEL_URI,
             "/invitation-email/**",
-            "/confirmation-email/**",
-            "/js/**",
-            "/css/**")
+            "/confirmation-email/**")
         .permitAll()
         .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
         .hasRole(ADMIN_ROLE_NAME)
