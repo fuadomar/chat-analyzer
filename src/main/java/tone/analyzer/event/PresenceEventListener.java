@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -40,6 +41,9 @@ public class PresenceEventListener {
 
   private String logoutDestination;
 
+  @Value("${app.user.login}")
+  private String loginTopic;
+
   private Map<String, String> sessionToUserIdMap;
 
   @Autowired private AccountRepository accountRepository;
@@ -67,12 +71,19 @@ public class PresenceEventListener {
 
     LoginEvent loginEvent = new LoginEvent(userName);
     loginEvent.setId(account.getId());
-    if (participantRepository.getParticipant(userName) == null) {
+    /*if (participantRepository.getParticipant(userName) == null) {*/
       List<LoginEvent> onlineBuddyList = userAccountDao.retrieveBuddyList(userName);
-      for (LoginEvent loginEvent1 : onlineBuddyList)
-        messagingTemplate.convertAndSend(
-            loginDestination + "-" + loginEvent1.getUserName(), loginEvent);
-    }
+      for (LoginEvent loginEvent1 : onlineBuddyList) {
+        messagingTemplate.convertAndSendToUser(loginEvent1.getUserName(),
+                loginTopic, loginEvent);
+
+        messagingTemplate.convertAndSendToUser(loginEvent1.getUserName(),
+                "/topic/registry.broadcast", loginEvent);
+
+
+
+      }
+   /* }*/
     String sessionId = headers.getSessionId();
     log.info("logged in user session id: {}", sessionId);
     sessionToUserIdMap.put(sessionId, userName);
@@ -89,10 +100,14 @@ public class PresenceEventListener {
             login -> {
               List<LoginEvent> onlineBuddyList =
                   userAccountDao.retrieveBuddyList(login.getUserName());
-              for (LoginEvent loginEvent1 : onlineBuddyList)
-                messagingTemplate.convertAndSend(
-                    logoutDestination + "-" + loginEvent1.getUserName(),
-                    new LogoutEvent(login.getUserName(), login.getId()));
+              for (LoginEvent loginEvent1 : onlineBuddyList) {
+                messagingTemplate.convertAndSendToUser(loginEvent1.getUserName(),
+                        logoutDestination,
+                        new LogoutEvent(login.getUserName(), login.getId()));
+
+                messagingTemplate.convertAndSendToUser(loginEvent1.getUserName(),
+                        "/topic/registry.broadcast", new LogoutEvent(login.getUserName(), login.getId()));
+              }
               participantRepository.removeParticipant(sessionToUserIdMap.get(event.getSessionId()));
             });
   }

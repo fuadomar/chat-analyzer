@@ -11,10 +11,14 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptorAdapter;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Request;
+
+import org.springframework.session.ExpiringSession;
+import org.springframework.session.web.socket.config.annotation.AbstractSessionWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
@@ -27,25 +31,45 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
+@EnableScheduling
+public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
 
-  @Override
-  public void registerStompEndpoints(StompEndpointRegistry registry) {
+    @Value("${ebook.chat.relay.host}")
+    private String relayHost;
 
-    registry.addEndpoint("/stomp").withSockJS();
-  }
+    @Value("${ebook.chat.relay.port}")
+    private Integer relayPort;
 
-  @Override
-  public void configureMessageBroker(MessageBrokerRegistry config) {
-    config.enableSimpleBroker("/topic", "/queue/");
-    config.setApplicationDestinationPrefixes("/app");
-  }
+    //@Override
+   /* public void registerStompEndpoints(StompEndpointRegistry registry) {
 
-  @Override
-  public void configureClientInboundChannel(ChannelRegistration registration) {
+        registry.addEndpoint("/stomp").withSockJS();
+    }*/
+
+    @Override
+    protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
+        stompEndpointRegistry.addEndpoint("/stomp").withSockJS();
+
+    }
+
+    //@Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableStompBrokerRelay("/topic/", "/queue/").setUserDestinationBroadcast("/topic/unresolved.user.dest")
+                .setUserRegistryBroadcast("/topic/registry.broadcast")
+                .setRelayHost("127.0.0.1")
+                .setRelayPort(61613)
+                .setClientLogin("guest")
+                .setClientPasscode("guest");
+        config.setApplicationDestinationPrefixes("/app");
+    }
+
+
+ /* public void configureClientInboundChannel(ChannelRegistration registration) {
 
     registration.setInterceptors(
         new ChannelInterceptorAdapter() {
@@ -101,5 +125,5 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
             return message;
           }
         });
-  }
+  }*/
 }

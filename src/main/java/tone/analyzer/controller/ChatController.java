@@ -7,9 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.BuddyDetails;
@@ -23,6 +27,7 @@ import tone.analyzer.domain.model.ChatMessage;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,10 +66,11 @@ public class ChatController {
     return messagesBySenderAndReceiver;
   }
 
-  @MessageMapping("/chat-message/message")
-  public String sendChatMessageToDestination(ChatMessage chatMessage) {
+  @MessageExceptionHandler
+  @MessageMapping("/send.message")
+  public String sendChatMessageToDestination(@Payload  ChatMessage chatMessage, Principal principal) {
 
-    chatGateway.sendMessageTo(chatMessage);
+    chatGateway.sendMessageTo(chatMessage, principal);
     return "Ok";
   }
 
@@ -74,9 +80,11 @@ public class ChatController {
       return participantRepository.getActiveSessions().values();
   }*/
 
-  @SubscribeMapping("/chat.participants/{userName}")
-  public Collection<LoginEvent> retrieveBuddyList(@DestinationVariable String userName) {
+  @SubscribeMapping("/chat.participants")
+  public Collection<LoginEvent> retrieveBuddyList(SimpMessageHeaderAccessor headerAccessor) {
     log.info("retrieveParticipants method fired");
+
+    String userName = headerAccessor.getUser().getName();
     Account userAccount = accountRepository.findByName(userName);
     List<LoginEvent> buddyListObjects = new ArrayList<>();
     Set<BuddyDetails> buddyList = userAccount.getBuddyList();

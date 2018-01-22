@@ -11,6 +11,7 @@ import tone.analyzer.domain.repository.ConversationRepository;
 import tone.analyzer.domain.repository.MessageRepository;
 import tone.analyzer.websocket.ChatMessageProducer;
 
+import java.security.Principal;
 import java.util.Date;
 
 /** Created by mozammal on 4/11/17. */
@@ -26,10 +27,9 @@ public class ChatServiceImpl implements ChatService {
   @Autowired private AccountRepository accountRepository;
 
   @Override
-  public void sendMessageTo(ChatMessage chatMessage) {
+  public void sendMessageTo(ChatMessage chatMessage, Principal principal) {
 
     Account recipent = accountRepository.findOne(chatMessage.getRecipient());
-
     if (recipent == null) return;
     chatMessage.setRecipient(recipent.getName());
     messageProducer.sendMessageToRecipient(chatMessage);
