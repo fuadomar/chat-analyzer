@@ -25,6 +25,7 @@ import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.domain.repository.ParticipantRepository;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.service.admin.AdminService;
+import tone.analyzer.utility.ToneAnalyzerUtility;
 import tone.analyzer.validator.AccountValidator;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,37 +80,14 @@ public class AccountWebController {
 
   @Autowired private IEmailInvitationService emailInvitationService;
 
-  @Autowired private AccountRepository accountRepository;
-
-  @Autowired private ParticipantRepository participantRepository;
-
   @Autowired private UserAccountDao userAccountDao;
 
-  public List<LoginEvent> retrieveBuddyList(String userName) {
-
-    Account userAccount = accountRepository.findByName(userName);
-    List<LoginEvent> buddyListObjects = new ArrayList<>();
-    Set<BuddyDetails> buddyList = userAccount.getBuddyList();
-
-    if (buddyList == null) return buddyListObjects;
-
-    for (BuddyDetails buddy : buddyList) {
-      LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
-      loginEvent.setId(buddy.getId());
-      buddyListObjects.add(loginEvent);
-    }
-    List<LoginEvent> activeUser =
-        new ArrayList<>(participantRepository.getActiveSessions().values());
-
-    for (LoginEvent loginEvent : buddyListObjects)
-      if (activeUser.contains(loginEvent)) {
-        loginEvent.setOnline(true);
-      }
-    return buddyListObjects;
-  }
+  @Autowired
+  private ToneAnalyzerUtility toneAnalyzerUtility;
 
   @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
   public String adminPanel(Model model) {
+
     model.addAttribute(ACCOUNT_FORM, new Account());
 
     return ADMIN_LOGIN_VIEW;
@@ -136,14 +114,14 @@ public class AccountWebController {
     if (bindingResult.hasErrors()) {
       return USERS_REGISTRATION_VIEW;
     }
+
     String plainTextPassword = accountForm.getPassword();
     userService.save(accountForm);
     securityService.autoLogin(accountForm.getName(), plainTextPassword, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
-    List<LoginEvent> buddyList = retrieveBuddyList(user.getName());
-    // redirectAttributes.addAttribute("buddyList", buddyList);
+
     return "redirect:/live-chat";
   }
 
@@ -163,8 +141,10 @@ public class AccountWebController {
   public String chat(Model model) {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Object details = auth.getDetails();
     String name = auth.getName();
-    model.addAttribute("username", name);
+    String principalNameFromAuthentication = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
+    model.addAttribute("username", principalNameFromAuthentication);
     return CHAT_VIEW;
   }
 

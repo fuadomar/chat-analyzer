@@ -17,6 +17,7 @@ import java.util.List;
 /** Created by mozammal on 4/18/17. */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
   @Autowired private AccountRepository userRepository;
 
   @Override
