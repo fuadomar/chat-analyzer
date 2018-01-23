@@ -1,5 +1,6 @@
 package tone.analyzer.config;
 
+import java.util.Map.Entry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -277,12 +278,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
             Map<String, String> details = new LinkedHashMap<>();
             details = (Map<String, String>) authentication1.getDetails();
+            Object emails = ((Map<String, String>) authentication1.getDetails()).get("emails");
+
+            List<Map<String, String>> emails1 = (List<Map<String, String>>) emails;
+            Map<String, String> stringStringMap = emails1.get(0);
+            String emails2 = emails1.get(0).get("value");
             String displayName =
                 details.get(DISPLAY_NAME).replaceAll("\\s+", "").toLowerCase()
                     + userPrincipal.getName();
             if (authentication.isAuthenticated()) {
-              Account account = userRepository.findByName(displayName);
-              if (account == null) userRepository.save(new Account(displayName, ""));
+              Account account = userRepository.findByName(emails2);
+              if (account == null) userRepository.save(new Account(emails2, ""));
               redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LIVE_CHAT_URI);
             }
           }

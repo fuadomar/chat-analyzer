@@ -1,5 +1,7 @@
 package tone.analyzer.config;
 
+import java.util.List;
+import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,45 +33,37 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Created by mozammal on 4/11/17.
- */
+/** Created by mozammal on 4/11/17. */
 @Configuration
 @EnableWebSocketMessageBroker
 @EnableScheduling
-public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
+public class WebSocketConfig
+    extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
 
-    @Value("${ebook.chat.relay.host}")
-    private String relayHost;
+  @Value("${app.relay.host}")
+  private String relayHost;
 
-    @Value("${ebook.chat.relay.port}")
-    private Integer relayPort;
+  @Value("${app.relay.port}")
+  private Integer relayPort;
 
-    //@Override
-   /* public void registerStompEndpoints(StompEndpointRegistry registry) {
+  @Override
+  protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
+    stompEndpointRegistry.addEndpoint("/stomp").withSockJS();
+  }
 
-        registry.addEndpoint("/stomp").withSockJS();
-    }*/
+  public void configureMessageBroker(MessageBrokerRegistry config) {
+    config
+        .enableStompBrokerRelay("/topic/", "/queue/")
+        .setUserDestinationBroadcast("/topic/unresolved.user.dest")
+        .setUserRegistryBroadcast("/topic/registry.broadcast")
+        .setRelayHost(relayHost)
+        .setRelayPort(relayPort)
+        .setClientLogin("guest")
+        .setClientPasscode("guest");
+    config.setApplicationDestinationPrefixes("/app");
+  }
 
-    @Override
-    protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
-        stompEndpointRegistry.addEndpoint("/stomp").withSockJS();
-
-    }
-
-    //@Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableStompBrokerRelay("/topic/", "/queue/").setUserDestinationBroadcast("/topic/unresolved.user.dest")
-                .setUserRegistryBroadcast("/topic/registry.broadcast")
-                .setRelayHost("127.0.0.1")
-                .setRelayPort(61613)
-                .setClientLogin("guest")
-                .setClientPasscode("guest");
-        config.setApplicationDestinationPrefixes("/app");
-    }
-
-
- /* public void configureClientInboundChannel(ChannelRegistration registration) {
+  public void configureClientInboundChannel(ChannelRegistration registration) {
 
     registration.setInterceptors(
         new ChannelInterceptorAdapter() {
@@ -99,16 +93,30 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
             if (StompCommand.CONNECT.equals(accessor.getCommand())) {
               Principal authentication = accessor.getUser();
               String userName;
+              String email;
+
               if (authentication instanceof OAuth2Authentication) {
                 OAuth2Authentication userPrincipal = (OAuth2Authentication) authentication;
                 org.springframework.security.core.Authentication authentication1 =
                     userPrincipal.getUserAuthentication();
                 Map<String, String> details = new LinkedHashMap<>();
                 details = (Map<String, String>) authentication1.getDetails();
+
+                Object emails = ((Map<String, String>) authentication1.getDetails()).get("emails");
+
+                List<Entry<String, String>> emails1 = (List<Entry<String, String>>) emails;
+
+                for (Entry<String, String> x : emails1) {
+
+                  String key = x.getKey();
+                  String value = x.getValue();
+
+                  key = key + value;
+                }
                 userName =
                     details.get("displayName").replaceAll("\\s+", "").toLowerCase()
                         + authentication.getName();
-                Object o = userName;
+
                 accessor.setNativeHeader("chat-user-name", userName);
 
                 User user =
@@ -125,5 +133,5 @@ public class WebSocketConfig extends AbstractSessionWebSocketMessageBrokerConfig
             return message;
           }
         });
-  }*/
+  }
 }

@@ -59,7 +59,7 @@ public class UserAccountDao {
     userService.addBudyyToUser(userEmailInvitationSender, receiverAccount);
   }
 
-  public List<LoginEvent> retrieveBuddyList(String userName, boolean completeList) {
+  public List<LoginEvent> retrieveBuddyList(String userName, boolean completeBuddyListWithOnlinePresence) {
 
     Account userAccount = accountRepository.findByName(userName);
     List<LoginEvent> buddyListObjects = new ArrayList<>();
@@ -80,7 +80,7 @@ public class UserAccountDao {
         int indexOnlineUser = buddyListObjects.indexOf(new LoginEvent(currentUser.getName(), true));
         if (indexOnlineUser == -1) continue;
 
-        if (completeList) {
+        if (completeBuddyListWithOnlinePresence) {
           LoginEvent loginEvent = buddyListObjects.get(indexOnlineUser);
           loginEvent.setOnline(true);
         } else {
@@ -90,7 +90,7 @@ public class UserAccountDao {
         }
       }
     }
-    if (completeList) return buddyListObjects;
+    if (completeBuddyListWithOnlinePresence) return buddyListObjects;
     return onlineBuddyList;
   }
 }
