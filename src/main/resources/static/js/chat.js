@@ -288,6 +288,12 @@ $(document).ready(function () {
         data: 'sender=' + userName + "&email=" + email,
         success: function (data) {
           $('#myModalHorizontal').modal('hide');
+          $("#success-msg-mail-send").show();
+          var fade_out = function() {
+
+            $("#success-msg-mail-send").fadeOut().empty();
+          }
+          setTimeout(fade_out, 3000);
         }
       });
     });
