@@ -44,7 +44,7 @@ public class BuddyDetails implements Serializable{
 
     BuddyDetails that = (BuddyDetails) o;
 
-    if (id != null ? !id.equals(that.id) : that.id != null) {
+    if (name != null ? !name.equals(that.name) : that.name!= null) {
       return false;
     }
     return true;
@@ -52,7 +52,7 @@ public class BuddyDetails implements Serializable{
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
+    int result = name != null ? name.hashCode() : 0;
     result = 31 * result;
     return result;
   }

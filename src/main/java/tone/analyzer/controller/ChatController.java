@@ -15,6 +15,7 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.entity.Message;
@@ -47,6 +48,8 @@ public class ChatController {
 
   @Autowired private MessageRepository messageRepository;
 
+  @Autowired private UserAccountDao userAccountDao;
+
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
     value = "/fetch/messages",
@@ -68,45 +71,18 @@ public class ChatController {
 
   @MessageExceptionHandler
   @MessageMapping("/send.message")
-  public String sendChatMessageToDestination(@Payload  ChatMessage chatMessage, Principal principal) {
+  public String sendChatMessageToDestination(
+      @Payload ChatMessage chatMessage, Principal principal) {
 
     chatGateway.sendMessageTo(chatMessage, principal);
     return "Ok";
   }
-
-  /* @SubscribeMapping("/chat.participants")
-  public Collection<LoginEvent> retrieveParticipants() {
-      log.info("retrieveParticipants method fired");
-      return participantRepository.getActiveSessions().values();
-  }*/
 
   @SubscribeMapping("/chat.participants")
   public Collection<LoginEvent> retrieveBuddyList(SimpMessageHeaderAccessor headerAccessor) {
     log.info("retrieveParticipants method fired");
 
     String userName = headerAccessor.getUser().getName();
-    Account userAccount = accountRepository.findByName(userName);
-    List<LoginEvent> buddyListObjects = new ArrayList<>();
-    Set<BuddyDetails> buddyList = userAccount.getBuddyList();
-
-    if (buddyList == null) return buddyListObjects;
-
-    LoginEvent loggedInUserLoginEvent = new LoginEvent(userAccount.getName(), false);
-    loggedInUserLoginEvent.setId(userAccount.getId());
-    buddyListObjects.add(loggedInUserLoginEvent);
-
-    for (BuddyDetails buddy : buddyList) {
-      LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
-      loginEvent.setId(buddy.getId());
-      buddyListObjects.add(loginEvent);
-    }
-    List<LoginEvent> activeUser =
-        new ArrayList<>(participantRepository.getActiveSessions().values());
-
-    for (LoginEvent loginEvent : buddyListObjects)
-      if (activeUser.contains(loginEvent)) {
-        loginEvent.setOnline(true);
-      }
-    return buddyListObjects;
+    return userAccountDao.retrieveBuddyList(userName, true);
   }
 }
