@@ -44,7 +44,6 @@ import java.util.Objects;
 @Configuration
 @EnableWebSocketMessageBroker
 @EnableScheduling
-@Import(BCryptPasswordEncoder.class)
 public class WebSocketConfig
         extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
 
