@@ -988,7 +988,11 @@
                 <div class="message-input">
                     <div class="wrap">
                         <input type="text" placeholder="Write your message..."/>
-                        <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                      <!--  <i class="fa fa-paperclip attachment" aria-hidden="true"></i>-->
+                        <span class="input-group-btn">
+                            <button class="btn btn-warning btn-sm" id="btn-chat">
+                                Send</button>
+                        </span>
                         <!-- <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>-->
                     </div>
                     <a href="#" data-toggle="modal" data-target="#modal-end-conversation"
@@ -1036,10 +1040,10 @@
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label"
-                               for="inputEmail3">Email</label>
+                               for="inputEmail">Email</label>
                         <div class="col-sm-10">
                             <input type="sender" class="form-control"
-                                   id="inputEmail3" placeholder="Email"/>
+                                   id="inputEmail" placeholder="Email"/>
                         </div>
                     </div>
                 </form>

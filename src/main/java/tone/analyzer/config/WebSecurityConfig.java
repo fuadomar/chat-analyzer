@@ -75,7 +75,7 @@ import java.util.*;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     implements AuthorizationServerConfigurer {
 
-  public static final String LIVE_CHAT_URI = "/live-chat";
+  public static final String LIVE_CHAT_URI = "/chat";
 
   public static final String LOGIN_GOOGLE_URI = "/login/google";
 

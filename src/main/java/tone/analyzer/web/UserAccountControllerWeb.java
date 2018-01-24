@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.IEmailInvitationService;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
+import tone.analyzer.capcha.service.ICaptchaService;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.BuddyDetails;
@@ -36,7 +37,7 @@ import java.util.*;
 
 /** Created by mozammal on 4/18/17. */
 @Controller
-public class AccountWebController {
+public class UserAccountControllerWeb {
 
   public static final String ERROR_ATTRIBUTED = "error";
 
@@ -64,7 +65,7 @@ public class AccountWebController {
 
   public static final String USER_REGISTRATION_URI = "/user-registration";
 
-  public static final String LIVE_CHAT_URI = "/live-chat";
+  public static final String LIVE_CHAT_URI = "/chat";
 
   public static final String ROOT_URI = "/";
 
@@ -84,6 +85,9 @@ public class AccountWebController {
 
   @Autowired
   private ToneAnalyzerUtility toneAnalyzerUtility;
+
+  @Autowired
+  private ICaptchaService captchaService;
 
   @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
   public String adminPanel(Model model) {
@@ -107,13 +111,19 @@ public class AccountWebController {
       Model model,
       HttpServletRequest request,
       HttpServletResponse response,
-      RedirectAttributes redirectAttributes) {
+      RedirectAttributes redirectAttributes) throws Exception {
+
+
 
     accountValidator.validate(accountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
       return USERS_REGISTRATION_VIEW;
     }
+
+    String googleReCapcha = request.getParameter("g-recaptcha-response");
+    captchaService.processResponse(googleReCapcha);
+
 
     String plainTextPassword = accountForm.getPassword();
     userService.save(accountForm);
@@ -122,7 +132,7 @@ public class AccountWebController {
     Account user = userService.findByName(auth.getName());
     redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
 
-    return "redirect:/live-chat";
+    return "redirect:/chat";
   }
 
   @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -141,8 +151,6 @@ public class AccountWebController {
   public String chat(Model model) {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Object details = auth.getDetails();
-    String name = auth.getName();
     String principalNameFromAuthentication = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
     model.addAttribute("username", principalNameFromAuthentication);
     return CHAT_VIEW;
