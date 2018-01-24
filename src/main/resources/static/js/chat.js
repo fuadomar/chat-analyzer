@@ -193,16 +193,17 @@ $(document).ready(function () {
           var messageArray = JSON.parse(data.body);
 
           var queryString = window.location.search.replace("?", '');
-          console.log("query string: " + queryString);
+
+          console.log("query string: " + qStringArray);
           var sender = null;
           if (queryString.indexOf("=") != -1) {
             var qStringArray = queryString.split("=");
 
             if (qStringArray.length == 2) {
-              sender = qStringArray[1];
+              sender = decodeURIComponent(qStringArray[1]);
             }
           }
-
+          console.log("sender: " + sender);
           for (var i = 0; i < messageArray.length; i++) {
 
             console.log("user list: " + messageArray[i].userName)
@@ -285,7 +286,7 @@ $(document).ready(function () {
         type: 'get',
         url: '/invitation-email',
         dataType: "text",
-        data: 'sender=' + userName + "&email=" + email,
+        data: "email=" + email,
         success: function (data) {
           $('#myModalHorizontal').modal('hide');
           $("#success-msg-mail-send").show();
@@ -309,9 +310,9 @@ $(document).ready(function () {
             name: 'An amazing tone analyzer that can read your mind',
             link: 'http://dev.myhost.com:8080/login',
             picture: hidUrl,
-            caption: 'your friends tone is: ',
+            caption: 'want to your friends tone! ',
             description: "learn more about machine learning with tone analyzer",
-            message: "Hello machine learning"
+            message: "tone analyzer- machine learning in action"
           });
     });
 

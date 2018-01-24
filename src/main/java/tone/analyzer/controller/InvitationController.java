@@ -1,9 +1,12 @@
 package tone.analyzer.controller;
 
+import java.security.Principal;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +20,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import tone.analyzer.utility.ToneAnalyzerUtility;
 
 /** Created by user on 1/8/2018. */
 @RestController
@@ -32,7 +36,7 @@ public class InvitationController {
 
   @Autowired private String rabbitmqQueue;
 
-  private String SUBJECT = "Hi %s, a friend on nascenia invited you to join toneAnalyzer";
+  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
 
   public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
@@ -43,10 +47,11 @@ public class InvitationController {
 
   @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
   public String inviteUserByEmail(
-      @RequestParam("sender") String sender,
-      @RequestParam("email") String email,
-      HttpServletRequest request)
+      @RequestParam("email") String email, HttpServletRequest request, Principal principal)
       throws MalformedURLException {
+
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String sender = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
 
     if (org.apache.commons.lang3.StringUtils.isBlank(sender)
         || org.apache.commons.lang3.StringUtils.isBlank(email)) return "Error";

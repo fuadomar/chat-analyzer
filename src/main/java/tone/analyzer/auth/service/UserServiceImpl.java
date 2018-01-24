@@ -15,11 +15,10 @@ public class UserServiceImpl implements UserService {
 
   @Autowired private AccountRepository userRepository;
 
-  @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
-
   @Override
   public Account save(Account user) {
-    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+    user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
     user.setEnabled(true);
     Role role = new Role("ROLE_USER");
     user.setRole(Arrays.asList(role));

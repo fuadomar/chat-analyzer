@@ -200,8 +200,6 @@ public class AccountWebController {
 
     String password = (String) userPassword;
     Account account = new Account(token.getReceiver(), password.trim());
-
-
     userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(
         token, account);
 
