@@ -224,6 +224,6 @@ public class UserAccountControllerWeb {
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account user = userService.findByName(auth.getName());
     redir.addFlashAttribute(USER_NAME, user.getName());
-    return "redirect:/live-chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
+    return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
   }
 }

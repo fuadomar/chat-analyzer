@@ -176,11 +176,13 @@ $(document).ready(function () {
     console.log(frame);
     console.log("userName " + userName);
     var sessionName = userName;
+    var profileImageBuddy;
+    var profileImageLoggedInUser;
 
     stompClient.subscribe("/user/queue/receive-message",
         function (data) {
           var payload = JSON.parse(data.body);
-          receiveMessage(payload.message, payload.sender)
+          receiveMessage(payload.message, payload.sender, profileImageBuddy)
           console.log("received message: " + payload);
         });
 
@@ -323,7 +325,8 @@ $(document).ready(function () {
     $("#contacts-uli").on("click", "li", function (event) {
       console.log('clicked ' + $(this).attr('id'));
       $('#ul-messages').html('');
-      var profileImageLoggedInUser = $('.wrap img').attr('src');
+      profileImageLoggedInUser = $('.wrap img').attr('src');
+      profileImageBuddy = $("#"+$(this).attr('id')+" .wrap img").attr('src');
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
@@ -348,7 +351,7 @@ $(document).ready(function () {
 
               if (item.sender === userName) {
 
-                $('<li class="sent"><img src=' + profileImageLoggedInUser
+                $('<li class="sent"><img src="' + profileImageLoggedInUser
                     + '" alt="" /> <p>' + item.content + '</p></li>').appendTo(
                     $('.messages ul'));
                 $('.message-input input').val(null);
@@ -358,7 +361,7 @@ $(document).ready(function () {
                     "fast");
               }
               else {
-                receiveMessage(item.content, item.sender)
+                receiveMessage(item.content, item.sender, profileImageBuddy)
               }
             })
           }
@@ -429,14 +432,17 @@ $(document).ready(function () {
           }
         });
 
-    function receiveMessage(message, sender) {
+    function receiveMessage(message, sender, profileImageBuddy ) {
 
       if ($.trim(message) == '') {
         return false;
       }
 
-      $('<li class="replies"><p>' + message + '</p></li>').appendTo(
-          $('.messages ul'));
+      if( typeof profileImageBuddy === 'undefined' || profileImageBuddy === null ){
+        $('<li class="replies"> <p>' + message + '</p></li>').appendTo(
+            $('.messages ul'));
+      }
+      else $('<li class="replies"><img src="' + profileImageBuddy  + '" alt="" /> <p>' + message + '</p></li>').appendTo($('.messages ul'));
       $('.message-input input').val(null);
       $('.contact.online .preview').html('<span>You: </span>' + message);
       $(".messages").animate({scrollTop: $(document).height()}, "fast");
@@ -454,8 +460,10 @@ $(document).ready(function () {
         'topic': "message", 'message': message,
         'recipient': recipientId
       }));
-      $('<li class="sent"><p>' + message + '</p></li>').appendTo(
-          $('.messages ul'));
+      if( typeof profileImageLoggedInUser === 'undefined' || profileImageLoggedInUser === null ){
+        $('<li class="sent"><p>' + message + '</p></li>').appendTo($('.messages ul'))
+      }
+      else  $('<li class="sent"> <img src="' + profileImageLoggedInUser  + '" alt="" /> <p>' + message + '</p></li>').appendTo($('.messages ul'));
       $('.message-input input').val(null);
       $('.contact.online .preview').html('<span>You: </span>' + message);
       $(".messages").animate({scrollTop: $(document).height()}, "fast");
