@@ -1,7 +1,5 @@
 package tone.analyzer.config;
 
-import java.util.Map.Entry;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +9,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -45,15 +41,12 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.savedrequest.NullRequestCache;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.filter.CompositeFilter;
-import org.springframework.web.filter.CorsFilter;
 import tone.analyzer.auth.service.UserService;
-import tone.analyzer.auth.service.UserServiceImpl;
 import tone.analyzer.domain.entity.Account;
-import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.UserAccountRepository;
 import tone.analyzer.service.token.TokenService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
@@ -117,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   private final ClientDetailsService clientDetailsService;
 
-  @Autowired private AccountRepository userRepository;
+  @Autowired private UserAccountRepository userRepository;
 
   @Autowired private UserService userService;
 

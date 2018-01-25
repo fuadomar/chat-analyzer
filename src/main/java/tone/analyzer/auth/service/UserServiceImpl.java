@@ -5,7 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import tone.analyzer.domain.entity.Role;
 import tone.analyzer.domain.entity.Account;
-import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.UserAccountRepository;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ import java.util.Arrays;
 @Service
 public class UserServiceImpl implements UserService {
 
-  @Autowired private AccountRepository userRepository;
+  @Autowired private UserAccountRepository userRepository;
 
   @Override
   public Account save(Account user) {

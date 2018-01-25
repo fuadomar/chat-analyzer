@@ -6,7 +6,7 @@ import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.entity.Conversation;
 import tone.analyzer.domain.entity.Message;
-import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.UserAccountRepository;
 import tone.analyzer.domain.repository.ConversationRepository;
 import tone.analyzer.domain.repository.MessageRepository;
 import tone.analyzer.websocket.ChatMessageProducer;
@@ -23,7 +23,7 @@ public class ChatServiceImpl implements ChatService {
 
   @Autowired private MessageRepository messageRepository;
 
-  @Autowired private AccountRepository accountRepository;
+  @Autowired private UserAccountRepository accountRepository;
 
   @Override
   public void sendMessageTo(ChatMessage chatMessage) {

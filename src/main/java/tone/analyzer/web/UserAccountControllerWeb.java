@@ -1,7 +1,12 @@
 package tone.analyzer.web;
 
+import java.io.IOException;
+import java.io.InputStream;
+import javax.servlet.ServletContext;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,11 +25,8 @@ import tone.analyzer.auth.service.UserService;
 import tone.analyzer.capcha.service.ICaptchaService;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
-import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.entity.EmailInvitation;
-import tone.analyzer.domain.repository.AccountRepository;
-import tone.analyzer.domain.repository.ParticipantRepository;
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.repository.UserAccountRepository;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 import tone.analyzer.validator.AccountValidator;
@@ -83,11 +85,13 @@ public class UserAccountControllerWeb {
 
   @Autowired private UserAccountDao userAccountDao;
 
-  @Autowired
-  private ToneAnalyzerUtility toneAnalyzerUtility;
+  @Autowired private UserAccountRepository userAccountRepository;
 
-  @Autowired
-  private ICaptchaService captchaService;
+  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
+
+  @Autowired private ICaptchaService captchaService;
+
+  @Autowired private ServletContext servletContext;
 
   @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
   public String adminPanel(Model model) {
@@ -111,9 +115,8 @@ public class UserAccountControllerWeb {
       Model model,
       HttpServletRequest request,
       HttpServletResponse response,
-      RedirectAttributes redirectAttributes) throws Exception {
-
-
+      RedirectAttributes redirectAttributes)
+      throws Exception {
 
     accountValidator.validate(accountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
@@ -123,7 +126,6 @@ public class UserAccountControllerWeb {
 
     String googleReCapcha = request.getParameter("g-recaptcha-response");
     captchaService.processResponse(googleReCapcha);
-
 
     String plainTextPassword = accountForm.getPassword();
     userService.save(accountForm);
@@ -148,11 +150,19 @@ public class UserAccountControllerWeb {
     value = {ROOT_URI, LIVE_CHAT_URI},
     method = RequestMethod.GET
   )
-  public String chat(Model model) {
+  public String chat(Model model, HttpServletResponse response) throws IOException {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    String principalNameFromAuthentication = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
-    model.addAttribute("username", principalNameFromAuthentication);
+    String loggedInUserName = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
+    Account loggedInUser = userAccountRepository.findByName(loggedInUserName);
+
+    model.addAttribute("username", loggedInUserName);
+    String fileLocation =
+        loggedInUser.getDocumentMetaData() != null
+            ? loggedInUser.getDocumentMetaData().getName()
+            : null;
+    model.addAttribute("userAvatar", fileLocation);
+
     return CHAT_VIEW;
   }
 
@@ -208,8 +218,7 @@ public class UserAccountControllerWeb {
 
     String password = (String) userPassword;
     Account account = new Account(token.getReceiver(), password.trim());
-    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(
-        token, account);
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(token, account);
 
     securityService.autoLogin(account.getName(), password, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();

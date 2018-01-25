@@ -935,7 +935,7 @@
                         <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
                         <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
                                 th:src="@{/images/images.png}"/>-->
-                        <img th:src="@{/images/default-avatar.png}" alt="memorynotfound logo" class="online"
+                        <img th:src="@{${'/profiles/images/'+ userAvatar}}" alt="memorynotfound logo" class="online"
                              alt=""/>
                         <p th:text="${username}"></p>
                         <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>

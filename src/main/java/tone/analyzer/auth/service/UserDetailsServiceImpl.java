@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Role;
-import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.UserAccountRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  @Autowired private AccountRepository userRepository;
+  @Autowired private UserAccountRepository userRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

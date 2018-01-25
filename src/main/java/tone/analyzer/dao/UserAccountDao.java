@@ -14,7 +14,7 @@ import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.entity.EmailInvitation;
-import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.UserAccountRepository;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.event.PresenceEventListener;
 
@@ -28,7 +28,7 @@ public class UserAccountDao {
 
   @Autowired private PresenceEventListener presenceEventListener;
 
-  @Autowired private AccountRepository accountRepository;
+  @Autowired private UserAccountRepository accountRepository;
 
   @Autowired SimpUserRegistry simpUserRegistry;
 

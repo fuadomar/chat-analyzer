@@ -109,7 +109,7 @@ public class ToneAnalyzerUtility {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private AccountRepository accountRepository;
+    private UserAccountRepository accountRepository;
 
 
     public String findPrincipalNameFromAuthentication(org.springframework.security.core.Authentication authentication) {
