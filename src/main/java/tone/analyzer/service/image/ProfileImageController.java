@@ -1,17 +1,19 @@
 package tone.analyzer.service.image;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.Principal;
-import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,28 +26,34 @@ import tone.analyzer.utility.ToneAnalyzerUtility;
 @RestController
 public class ProfileImageController {
 
-  @Autowired private ServletContext servletContext;
+  @Value("${file.repository}")
+  private String fileRepository;
 
-  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
-
-  @Autowired private UserAccountRepository userAccountRepository;
-
-  @RequestMapping(value = "profiles/images/{image}", method = RequestMethod.GET)
-  public void getImageAsByteArray(@PathVariable("image")  String image, HttpServletResponse response, Principal principal)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @RequestMapping(value = "/profiles/images/{image}", method = RequestMethod.GET)
+  public void getImageAsByteArray(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      @PathVariable("image") String image,
+      Principal principal)
       throws IOException {
 
-    String loggedInUserName =
-        toneAnalyzerUtility.findPrincipalNameFromAuthentication((OAuth2Authentication) principal);
-    Account loggedInUser = userAccountRepository.findByName(loggedInUserName);
+    String fullFilePath = fileRepository + "/" + image;
+    String mimeType = request.getServletContext().getMimeType(image);
+    File profileImage = new File(fullFilePath);
 
-    String fileLocation =
-        loggedInUser.getDocumentMetaData() != null
-            ? loggedInUser.getDocumentMetaData().getFileLocation()
-                + loggedInUser.getDocumentMetaData().getName()
-            : null;
+    response.setContentType(mimeType);
+    response.setContentLength((int) profileImage.length());
 
-    final InputStream in = servletContext.getResourceAsStream(fileLocation);
-    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-    IOUtils.copy(in, response.getOutputStream());
+    FileInputStream fileInputStream = new FileInputStream(profileImage);
+    OutputStream outputStream = response.getOutputStream();
+
+    byte[] buf = new byte[1024];
+    int count = 0;
+    while ((count = fileInputStream.read(buf)) >= 0) {
+      outputStream.write(buf, 0, count);
+    }
+    outputStream.close();
+    fileInputStream.close();
   }
 }

@@ -32,6 +32,8 @@ public class UserAccountDao {
 
   @Autowired SimpUserRegistry simpUserRegistry;
 
+  @Autowired private UserAccountRepository userAccountRepository;
+
   public void processEmailInvitationAndUpdateBuddyListIfAbsent(
       EmailInvitation token, Account account) {
 
@@ -59,7 +61,8 @@ public class UserAccountDao {
     userService.addBudyyToUser(userEmailInvitationSender, receiverAccount);
   }
 
-  public List<LoginEvent> retrieveBuddyList(String userName, boolean completeBuddyListWithOnlinePresence) {
+  public List<LoginEvent> retrieveBuddyList(
+      String userName, boolean completeBuddyListWithOnlinePresence) {
 
     Account userAccount = accountRepository.findByName(userName);
     List<LoginEvent> buddyListObjects = new ArrayList<>();
@@ -70,7 +73,12 @@ public class UserAccountDao {
 
     for (BuddyDetails buddy : buddyList) {
       LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+      Account friendAccount = userAccountRepository.findByName(buddy.getName());
       loginEvent.setId(buddy.getId());
+      loginEvent.setProfileImage(
+          friendAccount.getDocumentMetaData() != null
+              ? friendAccount.getDocumentMetaData().getName()
+              : "");
       buddyListObjects.add(loginEvent);
     }
 

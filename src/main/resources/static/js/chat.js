@@ -1,7 +1,6 @@
-function createChatList(user) {
-
+function createChatList(user, host) {
   var chatListDiv = '<li class="contact" id="mgs-li-' + user.id
-      + '"> <div class="wrap">';
+      + '"> <div class="wrap"><img src="' + host +"/profiles/images/"+ user.profileImage + '" alt="" />';
 
   if (user.online === true) {
     chatListDiv = chatListDiv + '<span class="contact-status online"/>';
@@ -183,7 +182,6 @@ $(document).ready(function () {
           var payload = JSON.parse(data.body);
           receiveMessage(payload.message, payload.sender)
           console.log("received message: " + payload);
-
         });
 
     stompClient.subscribe("/app/chat.participants",
@@ -214,7 +212,7 @@ $(document).ready(function () {
             } else if (sender == messageArray[i].userName) {
               sender = messageArray[i].id;
             }
-            chatList.append(createChatList(messageArray[i]));
+            chatList.append(createChatList(messageArray[i], host));
           }
           if ($.trim(sender)) {
             $("#mgs-li-" + sender).click();
@@ -224,7 +222,6 @@ $(document).ready(function () {
               window.history.replaceState({}, document.title, clean_uri);
             }
           }
-
         });
 
     stompClient.subscribe("/user/queue/chat.login",
@@ -326,6 +323,7 @@ $(document).ready(function () {
     $("#contacts-uli").on("click", "li", function (event) {
       console.log('clicked ' + $(this).attr('id'));
       $('#ul-messages').html('');
+      var profileImageLoggedInUser = $('.wrap img').attr('src');
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
@@ -350,7 +348,8 @@ $(document).ready(function () {
 
               if (item.sender === userName) {
 
-                $('<li class="sent"><p>' + item.content + '</p></li>').appendTo(
+                $('<li class="sent"><img src=' + profileImageLoggedInUser
+                    + '" alt="" /> <p>' + item.content + '</p></li>').appendTo(
                     $('.messages ul'));
                 $('.message-input input').val(null);
                 $('.contact.online .preview').html(

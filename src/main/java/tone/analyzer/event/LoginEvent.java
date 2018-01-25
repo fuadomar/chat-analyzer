@@ -13,6 +13,8 @@ public class LoginEvent {
 
   private String id;
 
+  private String profileImage;
+
   public LoginEvent(String username) {
     this.userName = username;
     this.time = new Date();
@@ -28,7 +30,7 @@ public class LoginEvent {
   @Override
   public int hashCode() {
     int result = userName.hashCode();
-    result = 31 * result ;
+    result = 31 * result;
     return result;
   }
 
@@ -69,5 +71,13 @@ public class LoginEvent {
 
   public void setId(String id) {
     this.id = id;
+  }
+
+  public String getProfileImage() {
+    return profileImage;
+  }
+
+  public void setProfileImage(String profileImage) {
+    this.profileImage = profileImage;
   }
 }

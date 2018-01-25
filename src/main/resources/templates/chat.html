@@ -15,6 +15,7 @@
     <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}" />
     <link rel="shortcut icon" type="image/x-icon"
           href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"/>
     <link rel="mask-icon" type=""
@@ -911,6 +912,7 @@
 <div class="container">
 
     <div class="row">
+
         <div class="button-container">
             <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
                 Invite Friends
@@ -1161,7 +1163,7 @@
        th:name="${_csrf.parameterName}"
        th:value="${_csrf.token}"/>
 
-
+<script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ ''; </script>
 <script
         src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
 <script>$(".messages").animate({scrollTop: $(document).height()}, "fast");
@@ -1189,23 +1191,6 @@ window.fbAsyncInit = function () {
 
 // FB Share with custom OG data.
 (function ($) {
-
-    /* $('#share_button').click(function (e) {
-     e.preventDefault();
-     $("#tone-analyzer-charts").modal('hide');
-     var hidUrl = $("#generate-image-tone-analysis").val();
-     console.log("hidden url: " + hidUrl);
-     FB.ui(
-     {
-     method: 'feed',
-     name: 'This is the tone analyzer',
-     link: 'http://dev.myhost.com:8080/login',
-     picture: hidUrl,
-     caption: 'your friends tone is: ',
-     description: "learn more about machine learning with tone analyzer",
-     message: "Hello machine learning"
-     });
-     });*/
 
     $('#share_button').on('click', function (event) {
         event.preventDefault();
