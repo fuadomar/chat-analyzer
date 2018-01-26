@@ -1,6 +1,7 @@
 function createChatList(user, host) {
   var chatListDiv = '<li class="contact" id="mgs-li-' + user.id
-      + '"> <div class="wrap"><img src="' + host +"/profiles/images/"+ user.profileImage + '" alt="" />';
+      + '"> <div class="wrap"><img src="' + host + "/profiles/images/"
+      + user.profileImage + '" alt="" />';
 
   if (user.online === true) {
     chatListDiv = chatListDiv + '<span class="contact-status online"/>';
@@ -10,44 +11,10 @@ function createChatList(user, host) {
   }
   chatListDiv = chatListDiv + '<div class="meta"><p class="name" id="' + user.id
       + '">' + user.userName
-      + '</p> <p class="preview">You just got LITT up, Mike.</p> </div> </div> </li>';
+      + '</p> <p class="preview">You just got LITT up</p> </div> </div> </li>';
   //chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
   console.log(chatListDiv);
   return chatListDiv;
-}
-
-function drawChart() {
-
-  Highcharts.chart({
-
-    chart: {
-      renderTo: 'canvas'
-    },
-
-    title: {
-      text: ''
-    },
-
-    xAxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
-        'Sep', 'Oct', 'Nov', 'Dec']
-    },
-
-    series: [{
-      data: [29.9, 71.5, 106.4, 129.2, 144.0, 176.0, 135.6, 148.5, 216.4, 194.1,
-        95.6, 54.4]
-    }],
-
-    navigation: {
-      buttonOptions: {
-        align: 'center'
-      }
-    }
-  });
-
-  canvg(document.getElementById('canvas'), chart.getSVG())
-  var canvas = document.getElementById("canvas");
-  $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
 }
 
 function clearGraphDdiv() {
@@ -57,12 +24,13 @@ function clearGraphDdiv() {
 
 function drawDonut(dataPoint, div, title) {
 
+  var counter = 0;
   $('#canvas').remove();
   var newCanvas = $('<canvas/>', {
     id: 'canvas'
   }).prop({
-    width: 600,
-    height: 600
+    width: 500,
+    height: 500
   });
   $('#render-div').empty();
   $('#render-div').append(newCanvas);
@@ -89,14 +57,13 @@ function drawDonut(dataPoint, div, title) {
     subtitle: {
       text: '3D donut'
     },
-    plotOptions: {
-      pie: {
-        innerSize: 100,
-        depth: 45
-      }
-    },
     series: [{
       name: 'Tone',
+      dataLabels: {
+        formatter: function () {
+          return '<b>' + this.point.name + '<br />' + (this.y * 100) + '%</b>: '
+        }
+      },
       data: dataPoint
     }]
   });
@@ -104,7 +71,7 @@ function drawDonut(dataPoint, div, title) {
   canvg(document.getElementById('canvas'), chart.getSVG())
   var canvas = document.getElementById("canvas");
   var img = canvas.toDataURL("image/png");
-  $('#canvas').replaceWith('<img height="400" width="400" src="' + img + '"/>');
+  $('#canvas').replaceWith('<img height="500" width="500" src="' + img + '"/>');
 
   var token = $("meta[name='_csrf']").attr("content");
   var header = $("meta[name='_csrf_header']").attr("content");
@@ -134,11 +101,11 @@ function normalizedDataToneAnalyzer(data) {
       if (data[key] < 0.2) {
         continue
       }
-      console.log(key + " -> " + data[key]);
       var arr = [];
       var number = data[key];
       arr.push(key);
       arr.push(parseFloat(number.toFixed(2)));
+      console.log(key + " -> " + number.toFixed(2));
       series.push(arr)
     }
   }
@@ -271,7 +238,8 @@ $(document).ready(function () {
           var series = normalizedDataToneAnalyzer(data);
           console.log(series);
           clearGraphDdiv();
-          drawDonut(series, "graph", "tone analyzer for people")
+          drawDonut(series, "graph", "tone analyzer for people");
+          jQuery.event.trigger("ajaxStop");
         }
       });
     });
@@ -326,7 +294,8 @@ $(document).ready(function () {
       console.log('clicked ' + $(this).attr('id'));
       $('#ul-messages').html('');
       profileImageLoggedInUser = $('.wrap img').attr('src');
-      profileImageBuddy = $("#"+$(this).attr('id')+" .wrap img").attr('src');
+      profileImageBuddy = $("#" + $(this).attr('id') + " .wrap img").attr(
+          'src');
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
@@ -406,6 +375,7 @@ $(document).ready(function () {
               + "' width='100' height='100' style='display: inline-block;'>");
           setTimeout(function () {
             $('#uploadModal').modal('hide');
+            location.reload();
           }, 2000);
         }
       });
@@ -432,17 +402,22 @@ $(document).ready(function () {
           }
         });
 
-    function receiveMessage(message, sender, profileImageBuddy ) {
+    function receiveMessage(message, sender, profileImageBuddy) {
 
       if ($.trim(message) == '') {
         return false;
       }
 
-      if( typeof profileImageBuddy === 'undefined' || profileImageBuddy === null ){
+      if (typeof profileImageBuddy === 'undefined' || profileImageBuddy
+          === null) {
         $('<li class="replies"> <p>' + message + '</p></li>').appendTo(
             $('.messages ul'));
       }
-      else $('<li class="replies"><img src="' + profileImageBuddy  + '" alt="" /> <p>' + message + '</p></li>').appendTo($('.messages ul'));
+      else {
+        $('<li class="replies"><img src="' + profileImageBuddy
+            + '" alt="" /> <p>' + message + '</p></li>').appendTo(
+            $('.messages ul'));
+      }
       $('.message-input input').val(null);
       $('.contact.online .preview').html('<span>You: </span>' + message);
       $(".messages").animate({scrollTop: $(document).height()}, "fast");
@@ -460,10 +435,16 @@ $(document).ready(function () {
         'topic': "message", 'message': message,
         'recipient': recipientId
       }));
-      if( typeof profileImageLoggedInUser === 'undefined' || profileImageLoggedInUser === null ){
-        $('<li class="sent"><p>' + message + '</p></li>').appendTo($('.messages ul'))
+      if (typeof profileImageLoggedInUser === 'undefined'
+          || profileImageLoggedInUser === null) {
+        $('<li class="sent"><p>' + message + '</p></li>').appendTo(
+            $('.messages ul'))
       }
-      else  $('<li class="sent"> <img src="' + profileImageLoggedInUser  + '" alt="" /> <p>' + message + '</p></li>').appendTo($('.messages ul'));
+      else {
+        $('<li class="sent"> <img src="' + profileImageLoggedInUser
+            + '" alt="" /> <p>' + message + '</p></li>').appendTo(
+            $('.messages ul'));
+      }
       $('.message-input input').val(null);
       $('.contact.online .preview').html('<span>You: </span>' + message);
       $(".messages").animate({scrollTop: $(document).height()}, "fast");
