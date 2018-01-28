@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.*;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Message;
-import tone.analyzer.domain.repository.UserAccountRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.domain.repository.MessageRepository;
 import tone.analyzer.event.LoginEvent;
-import tone.analyzer.gateway.ChatGateway;
+import tone.analyzer.gateway.InstantMessagingGateway;
 import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
@@ -33,9 +33,9 @@ public class InstantMessagingController {
 
   private static final Logger LOG = LoggerFactory.getLogger(InstantMessagingController.class);
 
-  @Autowired private ChatGateway chatGateway;
+  @Autowired private InstantMessagingGateway chatGateway;
 
-  @Autowired private UserAccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
   @Autowired private MessageRepository messageRepository;
 

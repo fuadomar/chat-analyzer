@@ -7,7 +7,7 @@ import tone.analyzer.domain.entity.Account;
 import java.util.List;
 
 /** Created by mozammal on 4/18/17. */
-public interface UserAccountRepository extends MongoRepository<Account, String> {
+public interface AccountRepository extends MongoRepository<Account, String> {
 
   public Account findByName(String username);
 

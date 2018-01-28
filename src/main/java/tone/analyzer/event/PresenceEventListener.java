@@ -16,7 +16,7 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
-import tone.analyzer.domain.repository.UserAccountRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.domain.repository.ParticipantRepository;
 
 /**
@@ -43,7 +43,7 @@ public class PresenceEventListener {
 
   private Map<String, String> sessionToUserIdMap;
 
-  @Autowired private UserAccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
   @Autowired private UserAccountDao userAccountDao;
 

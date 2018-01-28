@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Role;
-import tone.analyzer.domain.repository.UserAccountRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 
 @EnableOAuth2Client
 @SpringBootApplication
@@ -28,7 +28,7 @@ public class ToneAnalyzerApplication {
 
   public static final String ROLE_ACTUATOR = "ROLE_ACTUATOR";
 
-  @Autowired private UserAccountRepository accountRepository;
+  @Autowired private AccountRepository accountRepository;
 
   @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 

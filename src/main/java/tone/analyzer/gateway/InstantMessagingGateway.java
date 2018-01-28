@@ -7,7 +7,7 @@ import tone.analyzer.service.chat.ChatService;
 
 /** Created by mozammal on 4/11/17. */
 @Component
-public class ChatGateway {
+public class InstantMessagingGateway {
 
   @Autowired private ChatService chatService;
 

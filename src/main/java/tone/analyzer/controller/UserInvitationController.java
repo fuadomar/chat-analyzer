@@ -24,26 +24,13 @@ import tone.analyzer.utility.ToneAnalyzerUtility;
 
 /** Created by user on 1/8/2018. */
 @RestController
-public class InvitationController {
-
-  @Autowired private JavaMailSender mailSender;
-
-  @Autowired private EmailInvitationRepository emailInvitationRepository;
+public class UserInvitationController {
 
   @Autowired private RabbitTemplate rabbitTemplate;
-
-  @Autowired private Environment environment;
 
   @Autowired private String rabbitmqQueue;
 
   @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
-
-  public String getURLBase(HttpServletRequest request) throws MalformedURLException {
-
-    URL requestURL = new URL(request.getRequestURL().toString());
-    String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-    return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
-  }
 
   @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
   public String inviteUserByEmail(
@@ -57,7 +44,7 @@ public class InvitationController {
         || org.apache.commons.lang3.StringUtils.isBlank(email)) return "Error";
 
     String token = UUID.randomUUID().toString();
-    String url = getURLBase(request) + "/confirmation-email";
+    String url = toneAnalyzerUtility.retrieveRootHostUrl(request) + "/confirmation-email";
 
     String subject = "Hi " + email + ", " + "a friend on nascenia invited you to join toneAnalyzer";
     String confirmationUrl = url + "?token=" + token + "&sender=" + sender + "&receiver=" + email;

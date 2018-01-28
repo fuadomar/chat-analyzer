@@ -1,12 +1,10 @@
 package tone.analyzer.web;
 
 import java.io.IOException;
-import java.io.InputStream;
 import javax.servlet.ServletContext;
-import org.apache.commons.compress.utils.IOUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,7 +24,7 @@ import tone.analyzer.capcha.service.ICaptchaService;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.EmailInvitation;
-import tone.analyzer.domain.repository.UserAccountRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 import tone.analyzer.validator.AccountValidator;
@@ -85,7 +83,7 @@ public class UserAccountControllerWeb {
 
   @Autowired private UserAccountDao userAccountDao;
 
-  @Autowired private UserAccountRepository userAccountRepository;
+  @Autowired private AccountRepository userAccountRepository;
 
   @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
 

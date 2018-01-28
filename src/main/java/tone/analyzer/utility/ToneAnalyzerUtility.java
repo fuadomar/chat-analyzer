@@ -28,9 +28,12 @@ import tone.analyzer.domain.entity.*;
 import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.repository.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 /**
@@ -97,9 +100,6 @@ public class ToneAnalyzerUtility {
     private String meaningcloudLicenceKey;
 
     @Autowired
-    private ConversationRepository conversationRepository;
-
-    @Autowired
     private MessageRepository messageRepository;
 
     @Autowired
@@ -109,8 +109,14 @@ public class ToneAnalyzerUtility {
     private ReviewRepository reviewRepository;
 
     @Autowired
-    private UserAccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
+    public String retrieveRootHostUrl(HttpServletRequest request) throws MalformedURLException {
+
+        URL requestURL = new URL(request.getRequestURL().toString());
+        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+    }
 
     public String findPrincipalNameFromAuthentication(org.springframework.security.core.Authentication authentication) {
 

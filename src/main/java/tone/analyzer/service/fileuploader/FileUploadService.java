@@ -12,23 +12,24 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Encoder;
-import tone.analyzer.dao.DocumentFileSystemRepository;
+import tone.analyzer.dao.ImageRepository;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.DocumentMetaData;
 import tone.analyzer.domain.model.Document;
-import tone.analyzer.domain.repository.UserAccountRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
 /** Created by Dell on 1/17/2018. */
 @Service
 public class FileUploadService {
 
-  @Value("${file.repository}")
-  private String fileStorageLocation;
+  @Value("${profile.image.repository}")
+  private String profileImageStorageLocation;
 
-  @Autowired DocumentFileSystemRepository documentFileSystemRepository;
+  @Autowired
+  ImageRepository documentFileSystemRepository;
 
-  @Autowired private UserAccountRepository userAccountRepository;
+  @Autowired private AccountRepository userAccountRepository;
 
   public String upload(MultipartFile file) throws IOException {
 
@@ -47,8 +48,8 @@ public class FileUploadService {
     Date currentDate = new Date();
     Document document = new Document(fileName, content);
     DocumentMetaData documentMetaData =
-        new DocumentMetaData(fileName, fileStorageLocation, currentDate);
-    documentFileSystemRepository.add(document);
+        new DocumentMetaData(fileName, profileImageStorageLocation, currentDate);
+    documentFileSystemRepository.add(document, false);
 
     Account loggedInUserAccount = userAccountRepository.findByName(loggedInUser);
     loggedInUserAccount.setDocumentMetaData(documentMetaData);

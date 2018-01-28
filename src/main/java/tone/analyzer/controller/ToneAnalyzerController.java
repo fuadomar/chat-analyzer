@@ -1,7 +1,6 @@
 package tone.analyzer.controller;
 
 import io.indico.api.utils.IndicoException;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -19,13 +18,10 @@ import org.springframework.web.bind.annotation.*;
 import tone.analyzer.domain.DTO.*;
 import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.gateway.ToneAnalyzerGateway;
-import tone.analyzer.utility.ToneAnalyzerUtility;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -39,7 +35,7 @@ public class ToneAnalyzerController {
 
   @Autowired private ToneAnalyzerGateway toneAnalyzerGateway;
 
-  private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerController.class);
 
   public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
@@ -67,7 +63,7 @@ public class ToneAnalyzerController {
     try {
 
       String token = UUID.randomUUID().toString();
-      log.info("image base64:  {}", image);
+      LOG.info("image base64:  {}", image);
       String delimiter = "data:image/png;base64,";
       int imageLength = image.length();
       String bse64Image = image.substring(delimiter.length(), imageLength - 2);

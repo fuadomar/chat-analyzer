@@ -46,7 +46,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CompositeFilter;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.Account;
-import tone.analyzer.domain.repository.UserAccountRepository;
+import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.service.token.TokenService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
@@ -110,7 +110,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   private final ClientDetailsService clientDetailsService;
 
-  @Autowired private UserAccountRepository userRepository;
+  @Autowired private AccountRepository userRepository;
 
   @Autowired private UserService userService;
 

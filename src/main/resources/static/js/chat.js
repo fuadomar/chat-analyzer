@@ -61,7 +61,7 @@ function drawDonut(dataPoint, div, title) {
       name: 'Tone',
       dataLabels: {
         formatter: function () {
-          return '<b>' + this.point.name + '<br />' + (this.y * 100) + '%</b>: '
+          return '<b>' + this.point.name + '<br />' + (this.y ) + '%</b>: '
         }
       },
       data: dataPoint
@@ -81,13 +81,12 @@ function drawDonut(dataPoint, div, title) {
 
   $.post({
     type: 'post',
-    url: '/upload/images',
+    url: '/tone_analyzer/upload/images',
     data: 'image=' + encodeURIComponent(img),
     success: function (data) {
       console.log(data);
       $("#tone-analyzer-charts").modal('show');
-      var urlJson = JSON.parse(data);
-      $('#generate-image-tone-analysis').val(urlJson.url);
+      $('#generate-image-tone-analysis').val(data);
       jQuery.event.trigger("ajaxStop");
 
     }
@@ -102,7 +101,7 @@ function normalizedDataToneAnalyzer(data) {
         continue
       }
       var arr = [];
-      var number = data[key];
+      var number = data[key]*100;
       arr.push(key);
       arr.push(parseFloat(number.toFixed(2)));
       console.log(key + " -> " + number.toFixed(2));
@@ -239,7 +238,7 @@ $(document).ready(function () {
           console.log(series);
           clearGraphDdiv();
           drawDonut(series, "graph", "tone analyzer for people");
-          jQuery.event.trigger("ajaxStop");
+         //jQuery.event.trigger("ajaxStop");
         }
       });
     });
@@ -266,25 +265,7 @@ $(document).ready(function () {
         }
       });
     });
-
-    $('#share_button').click(function (e) {
-
-      e.preventDefault();
-      $("#tone-analyzer-charts").modal('hide');
-      var hidUrl = $("#generate-image-tone-analysis").val();
-      console.log("hidden url: " + hidUrl);
-      FB.ui(
-          {
-            method: 'feed',
-            name: 'An amazing tone analyzer that can read your mind',
-            link: 'http://dev.myhost.com:8080/login',
-            picture: hidUrl,
-            caption: 'want to your friends tone! ',
-            description: "learn more about machine learning with tone analyzer",
-            message: "tone analyzer- machine learning in action"
-          });
-    });
-
+    
     $("#myModal").on("show.bs.modal", function (e) {
       var link = $(e.relatedTarget);
       $(this).find(".modal-body").load(link.attr("href"));
