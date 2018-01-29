@@ -98,11 +98,6 @@ public class ToneAnalyzerChartImageController {
 
             byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
 
-            BufferedImage img = ImageIO.read(new ByteArrayInputStream(imageBytes));
-
-            File outputImageFile = new File(imageName);
-            ImageIO.write(img, "png", outputImageFile);
-
             Document document = new Document(imageName, imageBytes);
             DocumentMetaData documentMetaData =
                     new DocumentMetaData(imageName, toneAnalyzerImageStorageLocation, new Date());

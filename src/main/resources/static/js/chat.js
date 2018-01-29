@@ -1,7 +1,20 @@
 function createChatList(user, host) {
+
   var chatListDiv = '<li class="contact" id="mgs-li-' + user.id
-      + '"> <div class="wrap"><img src="' + host + "/profiles/images/"
-      + user.profileImage + '" alt="" />';
+      + '">';
+
+  if (typeof user.profileImage === 'undefined' || user.profileImage
+      === null || user.profileImage === "") {
+    chatListDiv = chatListDiv
+        + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" />';
+    //alert(user.profileImage + " " + user.userName);
+
+  }
+  else {
+    chatListDiv = chatListDiv + '<div class="wrap"><img src="'
+        + '/profiles/images/'
+        + user.profileImage + '" alt="" />';
+  }
 
   if (user.online === true) {
     chatListDiv = chatListDiv + '<span class="contact-status online"/>';
@@ -88,7 +101,6 @@ function drawDonut(dataPoint, div, title) {
       $("#tone-analyzer-charts").modal('show');
       $('#generate-image-tone-analysis').val(data);
       jQuery.event.trigger("ajaxStop");
-
     }
   });
 
@@ -101,7 +113,7 @@ function normalizedDataToneAnalyzer(data) {
         continue
       }
       var arr = [];
-      var number = data[key]*100;
+      var number = data[key] * 100;
       arr.push(key);
       arr.push(parseFloat(number.toFixed(2)));
       console.log(key + " -> " + number.toFixed(2));
@@ -144,11 +156,22 @@ $(document).ready(function () {
     var sessionName = userName;
     var profileImageBuddy;
     var profileImageLoggedInUser;
+    var userClickedOnWhcihBuddyMessageBox = $("#user-is-on-messagebox").val();
 
     stompClient.subscribe("/user/queue/receive-message",
         function (data) {
           var payload = JSON.parse(data.body);
-          receiveMessage(payload.message, payload.sender, profileImageBuddy)
+          console.log("pay load: " + payload);
+          if (typeof userClickedOnWhcihBuddyMessageBox !== 'undefined'
+              || userClickedOnWhcihBuddyMessageBox
+              !== null || userClickedOnWhcihBuddyMessageBox !== "") {
+            if (userClickedOnWhcihBuddyMessageBox) {
+              if (userClickedOnWhcihBuddyMessageBox == payload.sender) {
+                receiveMessage(payload.message, payload.sender,
+                    profileImageBuddy)
+              }
+            }
+          }
           console.log("received message: " + payload);
         });
 
@@ -238,7 +261,7 @@ $(document).ready(function () {
           console.log(series);
           clearGraphDdiv();
           drawDonut(series, "graph", "tone analyzer for people");
-         //jQuery.event.trigger("ajaxStop");
+          jQuery.event.trigger("ajaxStop");
         }
       });
     });
@@ -280,6 +303,10 @@ $(document).ready(function () {
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
+      //$("#user-is-on-messagebox").val(re);
+      userClickedOnWhcihBuddyMessageBox = $(
+          "#" + $(this).attr('id') + " .wrap .meta .name").text();
+      //$("#user-is-on-messagebox").val( $("#"+(this).attr('id') + " .wrap .meta .name").text());
       $(this).css({'background': 'gray'});
       $("#contacts-uli li").each(function () {
         if (receiverId !== $(this).attr('id').replace("mgs-li-", "")) {
@@ -391,7 +418,8 @@ $(document).ready(function () {
 
       if (typeof profileImageBuddy === 'undefined' || profileImageBuddy
           === null) {
-        $('<li class="replies"> <p>' + message + '</p></li>').appendTo(
+        $('<li class="replies"><img src="/images/default-avatar.png" alt="" /> <p>'
+            + message + '</p></li>').appendTo(
             $('.messages ul'));
       }
       else {
@@ -416,16 +444,16 @@ $(document).ready(function () {
         'topic': "message", 'message': message,
         'recipient': recipientId
       }));
-      if (typeof profileImageLoggedInUser === 'undefined'
-          || profileImageLoggedInUser === null) {
-        $('<li class="sent"><p>' + message + '</p></li>').appendTo(
-            $('.messages ul'))
-      }
-      else {
-        $('<li class="sent"> <img src="' + profileImageLoggedInUser
-            + '" alt="" /> <p>' + message + '</p></li>').appendTo(
-            $('.messages ul'));
-      }
+      /* if (typeof profileImageLoggedInUser === 'undefined'
+       || profileImageLoggedInUser === null) {
+       $('<li class="sent"><p>' + message + '</p></li>').appendTo(
+       $('.messages ul'))
+       }*/
+      /* else {*/
+      $('<li class="sent"> <img src="' + profileImageLoggedInUser
+          + '" alt="" /> <p>' + message + '</p></li>').appendTo(
+          $('.messages ul'));
+      /*}*/
       $('.message-input input').val(null);
       $('.contact.online .preview').html('<span>You: </span>' + message);
       $(".messages").animate({scrollTop: $(document).height()}, "fast");
