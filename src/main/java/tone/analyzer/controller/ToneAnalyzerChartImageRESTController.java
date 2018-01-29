@@ -19,12 +19,8 @@ import tone.analyzer.domain.repository.ToneAnalyzerChartImageDetailsRepository;
 import tone.analyzer.gateway.ProfileImageGateway;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -36,9 +32,9 @@ import java.util.UUID;
  */
 
 @RestController
-public class ToneAnalyzerChartImageController {
+public class ToneAnalyzerChartImageRESTController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerChartImageController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerChartImageRESTController.class);
 
     @Autowired
     private ToneAnalyzerUtility toneAnalyzerUtility;

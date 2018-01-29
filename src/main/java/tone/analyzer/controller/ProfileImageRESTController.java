@@ -20,7 +20,7 @@ import java.security.Principal;
 
 /** Created by user on 1/28/2018. */
 @RestController
-public class ProfileImageController {
+public class ProfileImageRESTController {
 
   @Autowired private ProfileImageGateway profileImageGateway;
 

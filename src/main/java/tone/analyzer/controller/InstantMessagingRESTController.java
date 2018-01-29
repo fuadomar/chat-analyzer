@@ -1,5 +1,7 @@
 package tone.analyzer.controller;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +11,13 @@ import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import tone.analyzer.dao.UserAccountDao;
+import tone.analyzer.domain.DTO.AwaitingMessagesNotificationDetailsDTO;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Message;
 import tone.analyzer.domain.repository.AccountRepository;
@@ -21,6 +25,7 @@ import tone.analyzer.domain.repository.MessageRepository;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.gateway.InstantMessagingGateway;
 import tone.analyzer.domain.model.ChatMessage;
+import tone.analyzer.redis.service.RedisNotificationStorageService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
 import java.security.Principal;
@@ -29,9 +34,9 @@ import java.util.List;
 
 /** Created by mozammal on 4/11/17. */
 @RestController
-public class InstantMessagingController {
+public class InstantMessagingRESTController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(InstantMessagingController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(InstantMessagingRESTController.class);
 
   @Autowired private InstantMessagingGateway chatGateway;
 
@@ -41,7 +46,10 @@ public class InstantMessagingController {
 
   @Autowired private UserAccountDao userAccountDao;
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @Autowired private RedisNotificationStorageService redisNotificationStorageService;
+
+  @Autowired private SimpMessagingTemplate template;
+
   @RequestMapping(
     value = "/fetch/messages",
     method = RequestMethod.GET,
@@ -75,9 +83,17 @@ public class InstantMessagingController {
     String sender = headerAccessor.getUser().getName();
     chatMessage.setSender(sender);
     chatGateway.sendMessageTo(chatMessage);
+
+    AwaitingMessagesNotificationDetailsDTO awaitingMessagesNotificationDetailsDTO =
+        new AwaitingMessagesNotificationDetailsDTO(
+            chatMessage.getRecipient(), new HashSet<>(Arrays.asList(chatMessage.getSender())));
+    redisNotificationStorageService.cacheUserAwaitingMessagesNotification(
+        chatMessage.getRecipient(), awaitingMessagesNotificationDetailsDTO);
+
     return "Ok";
   }
 
+  @PreAuthorize("hasRole('ROLE_USER')")
   @SubscribeMapping("/chat.participants")
   public Collection<LoginEvent> retrieveLoggedInUserBuddyListWithOnlineStatus(
       SimpMessageHeaderAccessor headerAccessor) {
@@ -86,5 +102,17 @@ public class InstantMessagingController {
 
     String userName = headerAccessor.getUser().getName();
     return userAccountDao.retrieveBuddyList(userName, true);
+  }
+
+  @MessageExceptionHandler
+  @MessageMapping("/unseen.messages")
+  public AwaitingMessagesNotificationDetailsDTO sendAwaitingMessagesNotificationsToLoggedInUser(
+      SimpMessageHeaderAccessor headerAccessor) {
+
+    String sender = headerAccessor.getUser().getName();
+
+    AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
+        redisNotificationStorageService.findCachedUserAwaitingMessagesNotifications(sender);
+    return cachedUserAwaitingMessagesNotifications;
   }
 }

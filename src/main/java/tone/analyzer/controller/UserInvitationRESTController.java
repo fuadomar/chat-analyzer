@@ -24,7 +24,7 @@ import tone.analyzer.utility.ToneAnalyzerUtility;
 
 /** Created by user on 1/8/2018. */
 @RestController
-public class UserInvitationController {
+public class UserInvitationRESTController {
 
   @Autowired private RabbitTemplate rabbitTemplate;
 

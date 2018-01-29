@@ -895,6 +895,126 @@
     color: #fff;
     left: -150px;
   }
+
+  /*ul {
+    display: block;
+    background: #45619D;
+    list-style: none;
+    margin: 0;
+    padding: 12px 10px;
+    height: 21px;
+  }
+
+  ul li {
+    float: left;
+    font: 13px helvetica;
+    font-weight: bold;
+    margin: 3px 0;
+  }
+
+  ul li a {
+    color: #FFF;
+    text-decoration: none;
+    padding: 6px 15px;
+    cursor: pointer;
+  }
+
+  ul li a:hover {
+    background: #425B90;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  #noti_Container {
+    position: relative;
+  }
+
+  !* A CIRCLE LIKE BUTTON IN THE TOP MENU. *!
+  #noti_Button {
+    width: 22px;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    background: #FFF;
+    margin: -3px 10px 0 10px;
+    cursor: pointer;
+  }
+
+  !* THE POPULAR RED NOTIFICATIONS COUNTER. *!
+  #noti_Counter {
+    display: block;
+    position: absolute;
+    background: #E1141E;
+    color: #FFF;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 1px 3px;
+    margin: -8px 0 0 25px;
+    border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+    z-index: 1;
+  }
+
+  !* THE NOTIFICAIONS WINDOW. THIS REMAINS HIDDEN WHEN THE PAGE LOADS. *!
+  #notifications {
+    display: none;
+    width: 430px;
+    position: absolute;
+    top: 30px;
+    left: 0;
+    background: #FFF;
+    border: solid 1px rgba(100, 100, 100, .20);
+    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .20);
+    z-index: 0;
+  }
+
+  !* AN ARROW LIKE STRUCTURE JUST OVER THE NOTIFICATIONS WINDOW *!
+  #notifications:before {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    color: transparent;
+    border: 10px solid #CCC;
+    border-color: transparent transparent #FFF;
+    margin-top: -20px;
+    margin-left: 10px;
+  }
+
+  h3 {
+    display: block;
+    color: #333;
+    background: #FFF;
+    font-weight: bold;
+    font-size: 13px;
+    padding: 8px;
+    margin: 0;
+    border-bottom: solid 1px rgba(100, 100, 100, .30);
+  }
+
+  .seeAll {
+    background: #F6F7F8;
+    padding: 8px;
+    font-size: 12px;
+    font-weight: bold;
+    border-top: solid 1px rgba(100, 100, 100, .30);
+    text-align: center;
+  }
+
+  .seeAll a {
+    color: #3b5998;
+  }
+
+  .seeAll a:hover {
+    background: #F6F7F8;
+    color: #3b5998;
+    text-decoration: underline;
+  }*/
+
+
   </style>
 
   <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
@@ -936,6 +1056,28 @@
         </button>
       </form>
     </div>
+
+<!--    <div class="notification-unseen-mesages">
+      <div>
+        <ul>
+          <li id="noti_Container">
+            <div id="noti_Counter"></div>   &lt;!&ndash;SHOW NOTIFICATIONS COUNT.&ndash;&gt;
+
+            &lt;!&ndash;A CIRCLE LIKE BUTTON TO DISPLAY NOTIFICATION DROPDOWN.&ndash;&gt;
+            <div id="noti_Button"></div>
+
+            &lt;!&ndash;THE NOTIFICAIONS DROPDOWN BOX.&ndash;&gt;
+            <div id="notifications">
+              <h3>Notifications</h3>
+              <div style="height:300px;"></div>
+              <div class="seeAll"><a href="#">See All</a></div>
+            </div>
+          </li>
+          <li><a href="#">Messages</a></li>
+        </ul>
+      </div>
+    </div>-->
+
     <div id="success-msg-mail-send">
       The mail has been sent successfully!
     </div>
@@ -952,9 +1094,11 @@
             <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
             <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
                     th:src="@{/images/images.png}"/>-->
-            <img th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}" alt="memorynotfound logo"
-                 class="online"
-                 alt=""/>
+            <img
+                th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
+                alt="memorynotfound logo"
+                class="online"
+                alt=""/>
             <p th:text="${username}"></p>
             <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
             <div id="status-options">

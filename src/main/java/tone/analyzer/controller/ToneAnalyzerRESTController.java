@@ -31,11 +31,11 @@ import java.util.UUID;
 
 /** Created by mozammal on 4/11/17. */
 @RestController
-public class ToneAnalyzerController {
+public class ToneAnalyzerRESTController {
 
   @Autowired private ToneAnalyzerGateway toneAnalyzerGateway;
 
-  private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerRESTController.class);
 
   public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 

@@ -175,6 +175,14 @@ $(document).ready(function () {
           console.log("received message: " + payload);
         });
 
+    stompClient.subscribe("/app/unseen.messages",
+        function (data) {
+          alert(data);
+          var payload = JSON.parse(data.body);
+          alert(payload);
+          console.log("pay load: " + payload);
+        });
+
     stompClient.subscribe("/app/chat.participants",
         function (data) {
 
