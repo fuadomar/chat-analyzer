@@ -93,7 +93,6 @@ public class InstantMessagingRESTController {
     return "Ok";
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
   @SubscribeMapping("/chat.participants")
   public Collection<LoginEvent> retrieveLoggedInUserBuddyListWithOnlineStatus(
       SimpMessageHeaderAccessor headerAccessor) {
@@ -104,15 +103,16 @@ public class InstantMessagingRESTController {
     return userAccountDao.retrieveBuddyList(userName, true);
   }
 
-  @MessageExceptionHandler
-  @MessageMapping("/unseen.messages")
+  @SubscribeMapping("/unseen.messages")
   public AwaitingMessagesNotificationDetailsDTO sendAwaitingMessagesNotificationsToLoggedInUser(
       SimpMessageHeaderAccessor headerAccessor) {
+
 
     String sender = headerAccessor.getUser().getName();
 
     AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
         redisNotificationStorageService.findCachedUserAwaitingMessagesNotifications(sender);
+    LOG.info("unseen messages method fired {}", cachedUserAwaitingMessagesNotifications);
     return cachedUserAwaitingMessagesNotifications;
   }
 }

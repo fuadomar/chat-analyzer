@@ -6,14 +6,14 @@ function createChatList(user, host) {
   if (typeof user.profileImage === 'undefined' || user.profileImage
       === null || user.profileImage === "") {
     chatListDiv = chatListDiv
-        + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" />';
+        + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" height="40" width="40"/>';
     //alert(user.profileImage + " " + user.userName);
 
   }
   else {
     chatListDiv = chatListDiv + '<div class="wrap"><img src="'
         + '/profiles/images/'
-        + user.profileImage + '" alt="" />';
+        + user.profileImage + '" alt="" height="40" width="40"/>';
   }
 
   if (user.online === true) {
@@ -177,9 +177,12 @@ $(document).ready(function () {
 
     stompClient.subscribe("/app/unseen.messages",
         function (data) {
-          alert(data);
           var payload = JSON.parse(data.body);
-          alert(payload);
+          for (var i = 0; i < payload.sender.length; i++) {
+            var sender = payload.sender[i];
+            console.log(sender);
+          }
+          alert(payload.sender);
           console.log("pay load: " + payload);
         });
 
