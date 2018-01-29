@@ -2,1040 +2,1129 @@
 <html class='' xmlns:th="http://www.w3.org/1999/xhtml">
 
 <head>
-  <!-- <script src='//production-assets.codepen.io/assets/editor/live/console_runner-079c09a0e3b9ff743e39ee2d5637b9216b3545af0de366d4b9aad9dc87e26bfd.js'>
-   </script><script src='//production-assets.codepen.io/assets/editor/live/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js'></script>
-   <script src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-2c0dc5167d60a5af3ee189d570b1835129687ea2a61bee3513dee3a50c115a77.js'></script>-->
-  <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
-  <meta charset='UTF-8'>
-  <meta name="robots" content="noindex">
-  <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
-  <meta property="og:type" content="website"/>
-  <meta property="og:title" content="tone analyzer"/>
-  <meta property="og:description" content="we use machine learning"/>
+    <!-- <script src='//production-assets.codepen.io/assets/editor/live/console_runner-079c09a0e3b9ff743e39ee2d5637b9216b3545af0de366d4b9aad9dc87e26bfd.js'>
+     </script><script src='//production-assets.codepen.io/assets/editor/live/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js'></script>
+     <script src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-2c0dc5167d60a5af3ee189d570b1835129687ea2a61bee3513dee3a50c115a77.js'></script>-->
+    <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
+    <meta charset='UTF-8'>
+    <meta name="robots" content="noindex">
+    <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:title" content="tone analyzer"/>
+    <meta property="og:description" content="we use machine learning"/>
 
-  <meta name="_csrf" th:content="${_csrf.token}"/>
-  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-  <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}"/>
-  <link rel="shortcut icon" type="image/x-icon"
-        href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"/>
-  <link rel="mask-icon" type=""
-        href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg"
-        color="#111"/>
-  <link rel="canonical"
-        href="https://codepen.io/emilcarlsson/pen/ZOQZaV?limit=all&page=74&q=contact+"/>
-  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300'
-        rel='stylesheet'
-        type='text/css'>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}"/>
+    <link rel="shortcut icon" type="image/x-icon"
+          href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"/>
+    <link rel="mask-icon" type=""
+          href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg"
+          color="#111"/>
+    <link rel="canonical"
+          href="https://codepen.io/emilcarlsson/pen/ZOQZaV?limit=all&page=74&q=contact+"/>
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300'
+          rel='stylesheet'
+          type='text/css'>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
 
-  <script>try {
-    Typekit.load({async: true});
-  } catch (e) {
-  }</script>
-  <link rel='stylesheet prefetch'
-        href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
-  <link rel='stylesheet prefetch'
-        href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
-  <style class="cp-pen-styles">body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: #27ae60;
-    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
-    font-size: 1em;
-    letter-spacing: 0.1px;
-    color: #32465a;
-    text-rendering: optimizeLegibility;
-    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
-    -webkit-font-smoothing: antialiased;
-  }
+    <script>try {
+        Typekit.load({async: true});
+    } catch (e) {
+    }</script>
+    <link rel='stylesheet prefetch'
+          href='https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css'>
+    <link rel='stylesheet prefetch'
+          href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
+    <style class="cp-pen-styles">body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        background: #27ae60;
+        font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+        font-size: 1em;
+        letter-spacing: 0.1px;
+        color: #32465a;
+        text-rendering: optimizeLegibility;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+        -webkit-font-smoothing: antialiased;
+    }
 
-  #frame {
-    width: 95%;
-    margin-top: 100px;
-    min-width: 360px;
-    max-width: 1000px;
-    height: 92vh;
-    min-height: 300px;
-    max-height: 720px;
-    background: #E6EAEA;
-  }
-
-  @media screen and (max-width: 360px) {
     #frame {
-      width: 100%;
-      height: 100vh;
+        width: 95%;
+        margin-top: 100px;
+        min-width: 360px;
+        max-width: 1000px;
+        height: 92vh;
+        min-height: 300px;
+        max-height: 720px;
+        background: #E6EAEA;
     }
-  }
 
-  #frame #sidepanel {
-    float: left;
-    min-width: 280px;
-    max-width: 340px;
-    width: 40%;
-    height: 100%;
-    background: #2c3e50;
-    color: #f5f5f5;
-    overflow: hidden;
-    position: relative;
-  }
+    @media screen and (max-width: 360px) {
+        #frame {
+            width: 100%;
+            height: 100vh;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel {
-      width: 58px;
-      min-width: 58px;
+        float: left;
+        min-width: 280px;
+        max-width: 340px;
+        width: 40%;
+        height: 100%;
+        background: #2c3e50;
+        color: #f5f5f5;
+        overflow: hidden;
+        position: relative;
     }
-  }
 
-  #frame #sidepanel #profile {
-    width: 80%;
-    margin: 25px auto;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel {
+            width: 58px;
+            min-width: 58px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile {
-      width: 100%;
-      margin: 0 auto;
-      padding: 5px 0 0 0;
-      background: #32465a;
+        width: 80%;
+        margin: 25px auto;
     }
-  }
 
-  #frame #sidepanel #profile.expanded .wrap {
-    height: 210px;
-    line-height: initial;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile {
+            width: 100%;
+            margin: 0 auto;
+            padding: 5px 0 0 0;
+            background: #32465a;
+        }
+    }
 
-  #frame #sidepanel #profile.expanded .wrap p {
-    margin-top: 20px;
-  }
+    #frame #sidepanel #profile.expanded .wrap {
+        height: 210px;
+        line-height: initial;
+    }
 
-  #frame #sidepanel #profile.expanded .wrap i.expand-button {
-    -moz-transform: scaleY(-1);
-    -o-transform: scaleY(-1);
-    -webkit-transform: scaleY(-1);
-    transform: scaleY(-1);
-    filter: FlipH;
-    -ms-filter: "FlipH";
-  }
+    #frame #sidepanel #profile.expanded .wrap p {
+        margin-top: 20px;
+    }
 
-  #frame #sidepanel #profile .wrap {
-    height: 60px;
-    line-height: 60px;
-    overflow: hidden;
-    -moz-transition: 0.3s height ease;
-    -o-transition: 0.3s height ease;
-    -webkit-transition: 0.3s height ease;
-    transition: 0.3s height ease;
-  }
+    #frame #sidepanel #profile.expanded .wrap i.expand-button {
+        -moz-transform: scaleY(-1);
+        -o-transform: scaleY(-1);
+        -webkit-transform: scaleY(-1);
+        transform: scaleY(-1);
+        filter: FlipH;
+        -ms-filter: "FlipH";
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap {
-      height: 55px;
+        height: 60px;
+        line-height: 60px;
+        overflow: hidden;
+        -moz-transition: 0.3s height ease;
+        -o-transition: 0.3s height ease;
+        -webkit-transition: 0.3s height ease;
+        transition: 0.3s height ease;
     }
-  }
 
-  #frame #sidepanel #profile .wrap img {
-    width: 50px;
-    border-radius: 50%;
-    padding: 3px;
-    border: 2px solid #e74c3c;
-    height: auto;
-    float: left;
-    cursor: pointer;
-    -moz-transition: 0.3s border ease;
-    -o-transition: 0.3s border ease;
-    -webkit-transition: 0.3s border ease;
-    transition: 0.3s border ease;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap {
+            height: 55px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap img {
-      width: 40px;
-      margin-left: 4px;
+        width: 50px;
+        border-radius: 50%;
+        padding: 3px;
+        border: 2px solid #e74c3c;
+        height: auto;
+        float: left;
+        cursor: pointer;
+        -moz-transition: 0.3s border ease;
+        -o-transition: 0.3s border ease;
+        -webkit-transition: 0.3s border ease;
+        transition: 0.3s border ease;
     }
-  }
 
-  #frame #sidepanel #profile .wrap img.online {
-    border: 2px solid #2ecc71;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap img {
+            width: 40px;
+            margin-left: 4px;
+        }
+    }
 
-  #frame #sidepanel #profile .wrap img.away {
-    border: 2px solid #f1c40f;
-  }
+    #frame #sidepanel #profile .wrap img.online {
+        border: 2px solid #2ecc71;
+    }
 
-  #frame #sidepanel #profile .wrap img.busy {
-    border: 2px solid #e74c3c;
-  }
+    #frame #sidepanel #profile .wrap img.away {
+        border: 2px solid #f1c40f;
+    }
 
-  #frame #sidepanel #profile .wrap img.offline {
-    border: 2px solid #95a5a6;
-  }
+    #frame #sidepanel #profile .wrap img.busy {
+        border: 2px solid #e74c3c;
+    }
 
-  #frame #sidepanel #profile .wrap p {
-    float: left;
-    margin-left: 15px;
-  }
+    #frame #sidepanel #profile .wrap img.offline {
+        border: 2px solid #95a5a6;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap p {
-      display: none;
+        float: left;
+        margin-left: 15px;
     }
-  }
 
-  #frame #sidepanel #profile .wrap i.expand-button {
-    float: right;
-    margin-top: 23px;
-    font-size: 0.8em;
-    cursor: pointer;
-    color: #435f7a;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap p {
+            display: none;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap i.expand-button {
-      display: none;
+        float: right;
+        margin-top: 23px;
+        font-size: 0.8em;
+        cursor: pointer;
+        color: #435f7a;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options {
-    position: absolute;
-    opacity: 0;
-    visibility: hidden;
-    width: 150px;
-    margin: 70px 0 0 0;
-    border-radius: 6px;
-    z-index: 99;
-    line-height: initial;
-    background: #435f7a;
-    -moz-transition: 0.3s all ease;
-    -o-transition: 0.3s all ease;
-    -webkit-transition: 0.3s all ease;
-    transition: 0.3s all ease;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap i.expand-button {
+            display: none;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options {
-      width: 58px;
-      margin-top: 57px;
+        position: absolute;
+        opacity: 0;
+        visibility: hidden;
+        width: 150px;
+        margin: 70px 0 0 0;
+        border-radius: 6px;
+        z-index: 99;
+        line-height: initial;
+        background: #435f7a;
+        -moz-transition: 0.3s all ease;
+        -o-transition: 0.3s all ease;
+        -webkit-transition: 0.3s all ease;
+        transition: 0.3s all ease;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options.online {
-    opacity: 1;
-    visibility: visible;
-    margin: 75px 0 0 0;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options {
+            width: 58px;
+            margin-top: 57px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options.online {
-      margin-top: 62px;
+        opacity: 1;
+        visibility: visible;
+        margin: 75px 0 0 0;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options:before {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-left: 6px solid transparent;
-    border-right: 6px solid transparent;
-    border-bottom: 8px solid #435f7a;
-    margin: -8px 0 0 24px;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options.online {
+            margin-top: 62px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options:before {
-      margin-left: 23px;
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-left: 6px solid transparent;
+        border-right: 6px solid transparent;
+        border-bottom: 8px solid #435f7a;
+        margin: -8px 0 0 24px;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options ul {
-    overflow: hidden;
-    border-radius: 6px;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options:before {
+            margin-left: 23px;
+        }
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li {
-    padding: 15px 0 30px 18px;
-    display: block;
-    cursor: pointer;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul {
+        overflow: hidden;
+        border-radius: 6px;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options ul li {
-      padding: 15px 0 35px 22px;
+        padding: 15px 0 30px 18px;
+        display: block;
+        cursor: pointer;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options ul li:hover {
-    background: #496886;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options ul li {
+            padding: 15px 0 35px 22px;
+        }
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 5px 0 0 0;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li:hover {
+        background: #496886;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
-      width: 14px;
-      height: 14px;
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin: 5px 0 0 0;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options ul li span.status-circle:before {
-    content: '';
-    position: absolute;
-    width: 14px;
-    height: 14px;
-    margin: -3px 0 0 -3px;
-    background: transparent;
-    border-radius: 50%;
-    z-index: 0;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
+            width: 14px;
+            height: 14px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options ul li span.status-circle:before {
-      height: 18px;
-      width: 18px;
+        content: '';
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        margin: -3px 0 0 -3px;
+        background: transparent;
+        border-radius: 50%;
+        z-index: 0;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options ul li p {
-    padding-left: 12px;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options ul li span.status-circle:before {
+            height: 18px;
+            width: 18px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #profile .wrap #status-options ul li p {
-      display: none;
+        padding-left: 12px;
     }
-  }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-online span.status-circle {
-    background: #2ecc71;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #profile .wrap #status-options ul li p {
+            display: none;
+        }
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-online.online span.status-circle:before {
-    border: 1px solid #2ecc71;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-online span.status-circle {
+        background: #2ecc71;
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-away span.status-circle {
-    background: #f1c40f;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-online.online span.status-circle:before {
+        border: 1px solid #2ecc71;
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-away.online span.status-circle:before {
-    border: 1px solid #f1c40f;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-away span.status-circle {
+        background: #f1c40f;
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-busy span.status-circle {
-    background: #e74c3c;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-away.online span.status-circle:before {
+        border: 1px solid #f1c40f;
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-busy.online span.status-circle:before {
-    border: 1px solid #e74c3c;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-busy span.status-circle {
+        background: #e74c3c;
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-offline span.status-circle {
-    background: #95a5a6;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-busy.online span.status-circle:before {
+        border: 1px solid #e74c3c;
+    }
 
-  #frame #sidepanel #profile .wrap #status-options ul li#status-offline.online span.status-circle:before {
-    border: 1px solid #95a5a6;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-offline span.status-circle {
+        background: #95a5a6;
+    }
 
-  #frame #sidepanel #profile .wrap #expanded {
-    padding: 100px 0 0 0;
-    display: block;
-    line-height: initial !important;
-  }
+    #frame #sidepanel #profile .wrap #status-options ul li#status-offline.online span.status-circle:before {
+        border: 1px solid #95a5a6;
+    }
 
-  #frame #sidepanel #profile .wrap #expanded label {
-    float: left;
-    clear: both;
-    margin: 0 8px 5px 0;
-    padding: 5px 0;
-  }
+    #frame #sidepanel #profile .wrap #expanded {
+        padding: 100px 0 0 0;
+        display: block;
+        line-height: initial !important;
+    }
 
-  #frame #sidepanel #profile .wrap #expanded input {
-    border: none;
-    margin-bottom: 6px;
-    background: #32465a;
-    border-radius: 3px;
-    color: #f5f5f5;
-    padding: 7px;
-    width: calc(100% - 43px);
-  }
+    #frame #sidepanel #profile .wrap #expanded label {
+        float: left;
+        clear: both;
+        margin: 0 8px 5px 0;
+        padding: 5px 0;
+    }
 
-  #frame #sidepanel #profile .wrap #expanded input:focus {
-    outline: none;
-    background: #435f7a;
-  }
+    #frame #sidepanel #profile .wrap #expanded input {
+        border: none;
+        margin-bottom: 6px;
+        background: #32465a;
+        border-radius: 3px;
+        color: #f5f5f5;
+        padding: 7px;
+        width: calc(100% - 43px);
+    }
 
-  #frame #sidepanel #search {
-    border-top: 1px solid #32465a;
-    border-bottom: 1px solid #32465a;
-    font-weight: 300;
-  }
+    #frame #sidepanel #profile .wrap #expanded input:focus {
+        outline: none;
+        background: #435f7a;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #search {
-      display: none;
+        border-top: 1px solid #32465a;
+        border-bottom: 1px solid #32465a;
+        font-weight: 300;
     }
-  }
 
-  #frame #sidepanel #search label {
-    position: absolute;
-    margin: 10px 0 0 20px;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #search {
+            display: none;
+        }
+    }
 
-  #frame #sidepanel #search input {
-    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
-    padding: 10px 0 10px 46px;
-    width: calc(100% - 25px);
-    border: none;
-    background: #32465a;
-    color: #f5f5f5;
-  }
+    #frame #sidepanel #search label {
+        position: absolute;
+        margin: 10px 0 0 20px;
+    }
 
-  #frame #sidepanel #search input:focus {
-    outline: none;
-    background: #435f7a;
-  }
+    #frame #sidepanel #search input {
+        font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+        padding: 10px 0 10px 46px;
+        width: calc(100% - 25px);
+        border: none;
+        background: #32465a;
+        color: #f5f5f5;
+    }
 
-  #frame #sidepanel #search input::-webkit-input-placeholder {
-    color: #f5f5f5;
-  }
+    #frame #sidepanel #search input:focus {
+        outline: none;
+        background: #435f7a;
+    }
 
-  #frame #sidepanel #search input::-moz-placeholder {
-    color: #f5f5f5;
-  }
+    #frame #sidepanel #search input::-webkit-input-placeholder {
+        color: #f5f5f5;
+    }
 
-  #frame #sidepanel #search input:-ms-input-placeholder {
-    color: #f5f5f5;
-  }
+    #frame #sidepanel #search input::-moz-placeholder {
+        color: #f5f5f5;
+    }
 
-  #frame #sidepanel #search input:-moz-placeholder {
-    color: #f5f5f5;
-  }
+    #frame #sidepanel #search input:-ms-input-placeholder {
+        color: #f5f5f5;
+    }
 
-  #frame #sidepanel #contacts {
-    height: calc(100% - 177px);
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
+    #frame #sidepanel #search input:-moz-placeholder {
+        color: #f5f5f5;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #contacts {
-      height: calc(100% - 149px);
-      overflow-y: scroll;
-      overflow-x: hidden;
+        height: calc(100% - 177px);
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #contacts {
+            height: calc(100% - 149px);
+            overflow-y: scroll;
+            overflow-x: hidden;
+        }
+
+        #frame #sidepanel #contacts::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    #frame #sidepanel #contacts.expanded {
+        height: calc(100% - 334px);
     }
 
     #frame #sidepanel #contacts::-webkit-scrollbar {
-      display: none;
+        width: 8px;
+        background: #2c3e50;
     }
-  }
 
-  #frame #sidepanel #contacts.expanded {
-    height: calc(100% - 334px);
-  }
+    #frame #sidepanel #contacts::-webkit-scrollbar-thumb {
+        background-color: #243140;
+    }
 
-  #frame #sidepanel #contacts::-webkit-scrollbar {
-    width: 8px;
-    background: #2c3e50;
-  }
-
-  #frame #sidepanel #contacts::-webkit-scrollbar-thumb {
-    background-color: #243140;
-  }
-
-  #frame #sidepanel #contacts ul li.contact {
-    position: relative;
-    padding: 10px 0 15px 0;
-    font-size: 0.9em;
-    cursor: pointer;
-  }
-
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #contacts ul li.contact {
-      padding: 6px 0 46px 8px;
+        position: relative;
+        padding: 10px 0 15px 0;
+        font-size: 0.9em;
+        cursor: pointer;
     }
-  }
 
-  #frame #sidepanel #contacts ul li.contact:hover {
-    background: #32465a;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #contacts ul li.contact {
+            padding: 6px 0 46px 8px;
+        }
+    }
 
-  #frame #sidepanel #contacts ul li.contact.online {
-    background: #32465a;
-    border-right: 5px solid #435f7a;
-  }
+    #frame #sidepanel #contacts ul li.contact:hover {
+        background: #32465a;
+    }
 
-  #frame #sidepanel #contacts ul li.contact.online span.contact-status {
-    border: 2px solid #32465a !important;
-  }
+    #frame #sidepanel #contacts ul li.contact.online {
+        background: #32465a;
+        border-right: 5px solid #435f7a;
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap {
-    width: 88%;
-    margin: 0 auto;
-    position: relative;
-  }
+    #frame #sidepanel #contacts ul li.contact.online span.contact-status {
+        border: 2px solid #32465a !important;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #contacts ul li.contact .wrap {
-      width: 100%;
+        width: 88%;
+        margin: 0 auto;
+        position: relative;
     }
-  }
 
-  #frame #sidepanel #contacts ul li.contact .wrap span {
-    position: absolute;
-    left: 0;
-    margin: -2px 0 0 -2px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    border: 2px solid #2c3e50;
-    background: #95a5a6;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #contacts ul li.contact .wrap {
+            width: 100%;
+        }
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap span.online {
-    background: #2ecc71;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap span {
+        position: absolute;
+        left: 0;
+        margin: -2px 0 0 -2px;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        border: 2px solid #2c3e50;
+        background: #95a5a6;
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap span.away {
-    background: #f1c40f;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap span.online {
+        background: #2ecc71;
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap span.busy {
-    background: #e74c3c;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap span.away {
+        background: #f1c40f;
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap img {
-    width: 40px;
-    border-radius: 50%;
-    float: left;
-    margin-right: 10px;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap span.busy {
+        background: #e74c3c;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #contacts ul li.contact .wrap img {
-      margin-right: 0px;
+        width: 40px;
+        border-radius: 50%;
+        float: left;
+        margin-right: 10px;
     }
-  }
 
-  #frame #sidepanel #contacts ul li.contact .wrap .meta {
-    padding: 5px 0 0 0;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #contacts ul li.contact .wrap img {
+            margin-right: 0px;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #contacts ul li.contact .wrap .meta {
-      display: none;
+        padding: 5px 0 0 0;
     }
-  }
 
-  #frame #sidepanel #contacts ul li.contact .wrap .meta .name {
-    font-weight: 600;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #contacts ul li.contact .wrap .meta {
+            display: none;
+        }
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap .meta .preview {
-    margin: 5px 0 0 0;
-    padding: 0 0 1px;
-    font-weight: 400;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    -moz-transition: 1s all ease;
-    -o-transition: 1s all ease;
-    -webkit-transition: 1s all ease;
-    transition: 1s all ease;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap .meta .name {
+        font-weight: 600;
+    }
 
-  #frame #sidepanel #contacts ul li.contact .wrap .meta .preview span {
-    position: initial;
-    border-radius: initial;
-    background: none;
-    border: none;
-    padding: 0 2px 0 0;
-    margin: 0 0 0 1px;
-    opacity: .5;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap .meta .preview {
+        margin: 5px 0 0 0;
+        padding: 0 0 1px;
+        font-weight: 400;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        -moz-transition: 1s all ease;
+        -o-transition: 1s all ease;
+        -webkit-transition: 1s all ease;
+        transition: 1s all ease;
+    }
 
-  #frame #sidepanel #bottom-bar {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-  }
+    #frame #sidepanel #contacts ul li.contact .wrap .meta .preview span {
+        position: initial;
+        border-radius: initial;
+        background: none;
+        border: none;
+        padding: 0 2px 0 0;
+        margin: 0 0 0 1px;
+        opacity: .5;
+    }
 
-  #frame #sidepanel #bottom-bar button {
-    float: left;
-    border: none;
-    width: 50%;
-    padding: 10px 0;
-    background: #32465a;
-    color: #f5f5f5;
-    cursor: pointer;
-    font-size: 0.85em;
-    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
-  }
+    #frame #sidepanel #bottom-bar {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #bottom-bar button {
-      float: none;
-      width: 100%;
-      padding: 15px 0;
+        float: left;
+        border: none;
+        width: 50%;
+        padding: 10px 0;
+        background: #32465a;
+        color: #f5f5f5;
+        cursor: pointer;
+        font-size: 0.85em;
+        font-family: "proxima-nova", "Source Sans Pro", sans-serif;
     }
-  }
 
-  #frame #sidepanel #bottom-bar button:focus {
-    outline: none;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #bottom-bar button {
+            float: none;
+            width: 100%;
+            padding: 15px 0;
+        }
+    }
 
-  #frame #sidepanel #bottom-bar button:nth-child(1) {
-    border-right: 1px solid #2c3e50;
-  }
+    #frame #sidepanel #bottom-bar button:focus {
+        outline: none;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #bottom-bar button:nth-child(1) {
-      border-right: none;
-      border-bottom: 1px solid #2c3e50;
+        border-right: 1px solid #2c3e50;
     }
-  }
 
-  #frame #sidepanel #bottom-bar button:hover {
-    background: #435f7a;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #bottom-bar button:nth-child(1) {
+            border-right: none;
+            border-bottom: 1px solid #2c3e50;
+        }
+    }
 
-  #frame #sidepanel #bottom-bar button i {
-    margin-right: 3px;
-    font-size: 1em;
-  }
+    #frame #sidepanel #bottom-bar button:hover {
+        background: #435f7a;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame #sidepanel #bottom-bar button i {
-      font-size: 1.3em;
+        margin-right: 3px;
+        font-size: 1em;
     }
-  }
 
-  @media screen and (max-width: 735px) {
-    #frame #sidepanel #bottom-bar button span {
-      display: none;
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #bottom-bar button i {
+            font-size: 1.3em;
+        }
     }
-  }
 
-  #frame .content {
-    float: right;
-    width: 60%;
-    height: 100%;
-    overflow: hidden;
-    position: relative;
-  }
+    @media screen and (max-width: 735px) {
+        #frame #sidepanel #bottom-bar button span {
+            display: none;
+        }
+    }
 
-  @media screen and (max-width: 735px) {
     #frame .content {
-      width: calc(100% - 58px);
-      min-width: 300px !important;
+        float: right;
+        width: 60%;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
     }
-  }
 
-  @media screen and (min-width: 900px) {
-    #frame .content {
-      width: calc(100% - 340px);
+    @media screen and (max-width: 735px) {
+        #frame .content {
+            width: calc(100% - 58px);
+            min-width: 300px !important;
+        }
     }
-  }
 
-  #frame .content .contact-profile {
-    width: 100%;
-    height: 60px;
-    line-height: 60px;
-    background: #f5f5f5;
-  }
+    @media screen and (min-width: 900px) {
+        #frame .content {
+            width: calc(100% - 340px);
+        }
+    }
 
-  #frame .content .contact-profile img {
-    width: 40px;
-    border-radius: 50%;
-    float: left;
-    margin: 9px 12px 0 9px;
-  }
+    #frame .content .contact-profile {
+        width: 100%;
+        height: 60px;
+        line-height: 60px;
+        background: #f5f5f5;
+    }
 
-  #frame .content .contact-profile p {
-    float: left;
-  }
+    #frame .content .contact-profile img {
+        width: 40px;
+        border-radius: 50%;
+        float: left;
+        margin: 9px 12px 0 9px;
+    }
 
-  #frame .content .contact-profile .social-media {
-    float: right;
-  }
+    #frame .content .contact-profile p {
+        float: left;
+    }
 
-  #frame .content .contact-profile .social-media i {
-    margin-left: 14px;
-    cursor: pointer;
-  }
+    #frame .content .contact-profile .social-media {
+        float: right;
+    }
 
-  #frame .content .contact-profile .social-media i:nth-last-child(1) {
-    margin-right: 20px;
-  }
+    #frame .content .contact-profile .social-media i {
+        margin-left: 14px;
+        cursor: pointer;
+    }
 
-  #frame .content .contact-profile .social-media i:hover {
-    color: #435f7a;
-  }
+    #frame .content .contact-profile .social-media i:nth-last-child(1) {
+        margin-right: 20px;
+    }
 
-  #frame .content .messages {
-    height: auto;
-    min-height: calc(100% - 93px);
-    max-height: calc(100% - 93px);
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
+    #frame .content .contact-profile .social-media i:hover {
+        color: #435f7a;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame .content .messages {
-      max-height: calc(100% - 105px);
+        height: auto;
+        min-height: calc(100% - 93px);
+        max-height: calc(100% - 93px);
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
-  }
 
-  #frame .content .messages::-webkit-scrollbar {
-    width: 8px;
-    background: transparent;
-  }
+    @media screen and (max-width: 735px) {
+        #frame .content .messages {
+            max-height: calc(100% - 105px);
+        }
+    }
 
-  #frame .content .messages::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.3);
-  }
+    #frame .content .messages::-webkit-scrollbar {
+        width: 8px;
+        background: transparent;
+    }
 
-  #frame .content .messages ul li {
-    display: inline-block;
-    clear: both;
-    float: left;
-    margin: 15px 15px 5px 15px;
-    width: calc(100% - 25px);
-    font-size: 0.9em;
-  }
+    #frame .content .messages::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
 
-  #frame .content .messages ul li:nth-last-child(1) {
-    margin-bottom: 20px;
-  }
+    #frame .content .messages ul li {
+        display: inline-block;
+        clear: both;
+        float: left;
+        margin: 15px 15px 5px 15px;
+        width: calc(100% - 25px);
+        font-size: 0.9em;
+    }
 
-  #frame .content .messages ul li.sent img {
-    margin: 6px 8px 0 0;
-  }
+    #frame .content .messages ul li:nth-last-child(1) {
+        margin-bottom: 20px;
+    }
 
-  #frame .content .messages ul li.sent p {
-    background: #435f7a;
-    color: #f5f5f5;
-  }
+    #frame .content .messages ul li.sent img {
+        margin: 6px 8px 0 0;
+    }
 
-  #frame .content .messages ul li.replies img {
-    float: right;
-    margin: 6px 0 0 8px;
-  }
+    #frame .content .messages ul li.sent p {
+        background: #435f7a;
+        color: #f5f5f5;
+    }
 
-  #frame .content .messages ul li.replies p {
-    background: #f5f5f5;
-    float: right;
-  }
+    #frame .content .messages ul li.replies img {
+        float: right;
+        margin: 6px 0 0 8px;
+    }
 
-  #frame .content .messages ul li img {
-    width: 22px;
-    border-radius: 50%;
-    float: left;
-  }
+    #frame .content .messages ul li.replies p {
+        background: #f5f5f5;
+        float: right;
+    }
 
-  #frame .content .messages ul li p {
-    display: inline-block;
-    padding: 10px 15px;
-    border-radius: 20px;
-    max-width: 205px;
-    line-height: 130%;
-  }
+    #frame .content .messages ul li img {
+        width: 22px;
+        border-radius: 50%;
+        float: left;
+    }
 
-  @media screen and (min-width: 735px) {
     #frame .content .messages ul li p {
-      max-width: 300px;
+        display: inline-block;
+        padding: 10px 15px;
+        border-radius: 20px;
+        max-width: 205px;
+        line-height: 130%;
     }
-  }
 
-  #frame .content .message-input {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    z-index: 99;
-  }
+    @media screen and (min-width: 735px) {
+        #frame .content .messages ul li p {
+            max-width: 300px;
+        }
+    }
 
-  #frame .content .message-input .wrap {
-    position: relative;
-  }
+    #frame .content .message-input {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        z-index: 99;
+    }
 
-  #frame .content .message-input .wrap input {
-    font-family: "proxima-nova", "Source Sans Pro", sans-serif;
-    float: left;
-    border: none;
-    width: calc(100% - 90px);
-    padding: 11px 32px 10px 8px;
-    font-size: 0.8em;
-    color: #32465a;
-  }
+    #frame .content .message-input .wrap {
+        position: relative;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame .content .message-input .wrap input {
-      padding: 15px 32px 16px 8px;
+        font-family: "proxima-nova", "Source Sans Pro", sans-serif;
+        float: left;
+        border: none;
+        width: calc(100% - 90px);
+        padding: 11px 32px 10px 8px;
+        font-size: 0.8em;
+        color: #32465a;
     }
-  }
 
-  #frame .content .message-input .wrap input:focus {
-    outline: none;
-  }
+    @media screen and (max-width: 735px) {
+        #frame .content .message-input .wrap input {
+            padding: 15px 32px 16px 8px;
+        }
+    }
 
-  #frame .content .message-input .wrap .attachment {
-    position: absolute;
-    right: 60px;
-    z-index: 4;
-    margin-top: 10px;
-    font-size: 1.1em;
-    color: #435f7a;
-    opacity: .5;
-    cursor: pointer;
-  }
+    #frame .content .message-input .wrap input:focus {
+        outline: none;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame .content .message-input .wrap .attachment {
-      margin-top: 17px;
-      right: 65px;
+        position: absolute;
+        right: 60px;
+        z-index: 4;
+        margin-top: 10px;
+        font-size: 1.1em;
+        color: #435f7a;
+        opacity: .5;
+        cursor: pointer;
     }
-  }
 
-  #frame .content .message-input .wrap .attachment:hover {
-    opacity: 1;
-  }
+    @media screen and (max-width: 735px) {
+        #frame .content .message-input .wrap .attachment {
+            margin-top: 17px;
+            right: 65px;
+        }
+    }
 
-  #frame .content .message-input .wrap button {
-    float: right;
-    border: none;
-    width: 50px;
-    padding: 12px 0;
-    cursor: pointer;
-    background: #32465a;
-    color: #f5f5f5;
-  }
+    #frame .content .message-input .wrap .attachment:hover {
+        opacity: 1;
+    }
 
-  @media screen and (max-width: 735px) {
     #frame .content .message-input .wrap button {
-      padding: 16px 0;
+        float: right;
+        border: none;
+        width: 50px;
+        padding: 12px 0;
+        cursor: pointer;
+        background: #32465a;
+        color: #f5f5f5;
     }
-  }
 
-  #frame .content .message-input .wrap button:hover {
-    background: #435f7a;
-  }
+    @media screen and (max-width: 735px) {
+        #frame .content .message-input .wrap button {
+            padding: 16px 0;
+        }
+    }
 
-  #frame .content .message-input .wrap button:focus {
-    outline: none;
-  }
+    #frame .content .message-input .wrap button:hover {
+        background: #435f7a;
+    }
 
-  .center {
-    margin-top: 50px;
-  }
+    #frame .content .message-input .wrap button:focus {
+        outline: none;
+    }
 
-  .modal-header {
-    padding-bottom: 5px;
-  }
+    .center {
+        margin-top: 50px;
+    }
 
-  .modal-footer {
-    padding: 0;
-  }
+    .modal-header {
+        padding-bottom: 5px;
+    }
 
-  .modal-footer .btn-group button {
-    height: 40px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    border: none;
-    border-right: 1px solid #ddd;
-  }
+    .modal-footer {
+        padding: 0;
+    }
 
-  .modal-footer .btn-group:last-child > button {
-    border-right: 0;
-  }
+    .modal-footer .btn-group button {
+        height: 40px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        border: none;
+        border-right: 1px solid #ddd;
+    }
 
-  .modal-body .form-horizontal .col-sm-2,
-  .modal-body .form-horizontal .col-sm-10 {
-    width: 100%
-  }
+    .modal-footer .btn-group:last-child > button {
+        border-right: 0;
+    }
 
-  .modal-body .form-horizontal .control-label {
-    text-align: left;
-  }
+    .modal-body .form-horizontal .col-sm-2,
+    .modal-body .form-horizontal .col-sm-10 {
+        width: 100%
+    }
 
-  .modal-body .form-horizontal .col-sm-offset-2 {
-    margin-left: 15px;
-  }
+    .modal-body .form-horizontal .control-label {
+        text-align: left;
+    }
 
-  .button-container {
-    float: right;
-    margin-left: 10px;
-  }
+    .modal-body .form-horizontal .col-sm-offset-2 {
+        margin-left: 15px;
+    }
 
-  #invitation-modal {
-    background-image: url('images/cafe.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    height: 400px;
-  }
+    .button-container {
+        float: right;
+        margin-left: 10px;
+    }
 
-  #success-msg-mail-send {
-    display: none;
-  }
+    #invitation-modal {
+        background-image: url('images/cafe.jpg');
+        background-repeat: no-repeat;
+        background-size: cover;
+        height: 400px;
+    }
 
-  .datalabelInside {
-    position: absolute;
+    #success-msg-mail-send {
+        display: none;
+    }
 
-  }
+    .datalabelInside {
+        position: absolute;
 
-  #datalabelInside1 {
-    color: #fff;
-    left: -150px;
-  }
+    }
 
-  /*ul {
-    display: block;
-    background: #45619D;
-    list-style: none;
-    margin: 0;
-    padding: 12px 10px;
-    height: 21px;
-  }
+    #datalabelInside1 {
+        color: #fff;
+        left: -150px;
+    }
 
-  ul li {
-    float: left;
-    font: 13px helvetica;
-    font-weight: bold;
-    margin: 3px 0;
-  }
+     #noti_Button {
+         display: none;
+         width: 22px;
+         height: 22px;
+         line-height: 22px;
+         border-radius: 50%;
+         -moz-border-radius: 50%;
+         -webkit-border-radius: 50%;
+         background: #FFF;
+         margin: -3px 10px 0 10px;
+         cursor: pointer;
+     }
 
-  ul li a {
-    color: #FFF;
-    text-decoration: none;
-    padding: 6px 15px;
-    cursor: pointer;
-  }
 
-  ul li a:hover {
-    background: #425B90;
-    text-decoration: none;
-    cursor: pointer;
-  }
+     #noti_Counter {
+         display: none;
+         position: absolute;
+         background: #E1141E;
+         color: #FFF;
+         font-size: 12px;
+         font-weight: normal;
+         padding: 1px 3px;
+         margin: -8px 0 0 25px;
+         border-radius: 2px;
+         -moz-border-radius: 2px;
+         -webkit-border-radius: 2px;
+         z-index: 1;
+     }
 
-  #noti_Container {
-    position: relative;
-  }
+    /* ul {
+       display: block;
+       background: #45619D;
+       list-style: none;
+       margin: 0;
+       padding: 12px 10px;
+       height: 21px;
+     }*/
 
-  !* A CIRCLE LIKE BUTTON IN THE TOP MENU. *!
-  #noti_Button {
-    width: 22px;
-    height: 22px;
-    line-height: 22px;
-    border-radius: 50%;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-    background: #FFF;
-    margin: -3px 10px 0 10px;
-    cursor: pointer;
-  }
+    /*ul li {
+        float: left;
+        font: 13px helvetica;
+        font-weight: bold;
+        margin: 3px 0;
+    }
 
-  !* THE POPULAR RED NOTIFICATIONS COUNTER. *!
-  #noti_Counter {
-    display: block;
-    position: absolute;
-    background: #E1141E;
-    color: #FFF;
-    font-size: 12px;
-    font-weight: normal;
-    padding: 1px 3px;
-    margin: -8px 0 0 25px;
-    border-radius: 2px;
-    -moz-border-radius: 2px;
-    -webkit-border-radius: 2px;
-    z-index: 1;
-  }
+    ul li a {
+        color: #FFF;
+        text-decoration: none;
+        padding: 6px 15px;
+        cursor: pointer;
+    }
 
-  !* THE NOTIFICAIONS WINDOW. THIS REMAINS HIDDEN WHEN THE PAGE LOADS. *!
-  #notifications {
-    display: none;
-    width: 430px;
-    position: absolute;
-    top: 30px;
-    left: 0;
-    background: #FFF;
-    border: solid 1px rgba(100, 100, 100, .20);
-    -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .20);
-    z-index: 0;
-  }
+    ul li a:hover {
+        background: #425B90;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
-  !* AN ARROW LIKE STRUCTURE JUST OVER THE NOTIFICATIONS WINDOW *!
-  #notifications:before {
-    content: '';
-    display: block;
-    width: 0;
-    height: 0;
-    color: transparent;
-    border: 10px solid #CCC;
-    border-color: transparent transparent #FFF;
-    margin-top: -20px;
-    margin-left: 10px;
-  }
+    #noti_Container {
+        position: relative;
+    }
 
-  h3 {
-    display: block;
-    color: #333;
-    background: #FFF;
-    font-weight: bold;
-    font-size: 13px;
-    padding: 8px;
-    margin: 0;
-    border-bottom: solid 1px rgba(100, 100, 100, .30);
-  }
+    !* A CIRCLE LIKE BUTTON IN THE TOP MENU. *!
+    #noti_Button {
+        display: none;
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+        border-radius: 50%;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        background: #FFF;
+        margin: -3px 10px 0 10px;
+        cursor: pointer;
+    }
 
-  .seeAll {
-    background: #F6F7F8;
-    padding: 8px;
-    font-size: 12px;
-    font-weight: bold;
-    border-top: solid 1px rgba(100, 100, 100, .30);
-    text-align: center;
-  }
+    !* THE POPULAR RED NOTIFICATIONS COUNTER. *!
+    #noti_Counter {
+        display: none;
+        position: absolute;
+        background: #E1141E;
+        color: #FFF;
+        font-size: 12px;
+        font-weight: normal;
+        padding: 1px 3px;
+        margin: -8px 0 0 25px;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        z-index: 1;
+    }
 
-  .seeAll a {
-    color: #3b5998;
-  }
+    !* THE NOTIFICAIONS WINDOW. THIS REMAINS HIDDEN WHEN THE PAGE LOADS. *!
+    #notifications {
+        display: none;
+        width: 430px;
+        position: absolute;
+        top: 30px;
+        left: 0;
+        background: #FFF;
+        border: solid 1px rgba(100, 100, 100, .20);
+        -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .20);
+        z-index: 0;
+    }
 
-  .seeAll a:hover {
-    background: #F6F7F8;
-    color: #3b5998;
-    text-decoration: underline;
-  }*/
-  .notification-count{
-    height:30px;
-    line-height:30px;
-    padding:5px 7px;
-    background-color:red;
-    color:white;
-    border-radius:4px;
-  }
+    !* AN ARROW LIKE STRUCTURE JUST OVER THE NOTIFICATIONS WINDOW *!
+    #notifications:before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        color: transparent;
+        border: 10px solid #CCC;
+        border-color: transparent transparent #FFF;
+        margin-top: -20px;
+        margin-left: 10px;
+    }
 
-  </style>
+    h3 {
+        display: block;
+        color: #333;
+        background: #FFF;
+        font-weight: bold;
+        font-size: 13px;
+        padding: 8px;
+        margin: 0;
+        border-bottom: solid 1px rgba(100, 100, 100, .30);
+    }
 
-  <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/sockjs-0.3.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
-  <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
-  <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
-  <script type="text/javascript" th:src="@{/js/hoy3lrg.js}"></script>
-  <!-- <script type="text/javascript" src="https//connect.facebook.net/en_US/sdk.js"></script>-->
-  <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
-  <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
-  <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
+    .seeAll {
+        background: #F6F7F8;
+        padding: 8px;
+        font-size: 12px;
+        font-weight: bold;
+        border-top: solid 1px rgba(100, 100, 100, .30);
+        text-align: center;
+    }
+
+    .seeAll a {
+        color: #3b5998;
+    }
+
+    .seeAll a:hover {
+        background: #F6F7F8;
+        color: #3b5998;
+        text-decoration: underline;
+    }
+
+    .notification-count {
+        height: 30px;
+        line-height: 30px;
+        padding: 5px 7px;
+        background-color: red;
+        color: white;
+        border-radius: 4px;
+    }
+
+    .dropdown {
+        display: inline-block;
+        margin-left: 20px;
+        padding: 10px;
+    }
+
+    .glyphicon-bell {
+
+        font-size: 1.5rem;
+    }
+
+    .notifications {
+        min-width: 420px;
+    }
+
+    .notifications-wrapper {
+        overflow: auto;
+        max-height: 250px;
+    }
+
+    .menu-title {
+        color: #ff7788;
+        font-size: 1.5rem;
+        display: inline-block;
+    }
+
+    .glyphicon-circle-arrow-right {
+        margin-left: 10px;
+    }
+
+    .notification-heading, .notification-footer {
+        padding: 2px 10px;
+    }
+
+    .dropdown-menu.divider {
+        margin: 5px 0;
+    }
+
+    .item-title {
+
+        font-size: 1.3rem;
+        color: #000;
+
+    }
+
+    .notifications a.content {
+        text-decoration: none;
+        background: #ccc;
+
+    }
+
+    .notification-item {
+        padding: 10px;
+        margin: 5px;
+        background: #ccc;
+        border-radius: 4px;
+    }*/
+
+    </style>
+
+    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/sockjs-0.3.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+    <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
+    <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+    <script type="text/javascript" th:src="@{/js/hoy3lrg.js}"></script>
+    <!-- <script type="text/javascript" src="https//connect.facebook.net/en_US/sdk.js"></script>-->
+    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
 </head>
 <body>
 
@@ -1043,236 +1132,297 @@
 <div id="fb-root"></div>
 
 <div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
-  <img src="https://www.drupal.org/files/issues/ajax-loader.gif"></img>
+    <img src="https://www.drupal.org/files/issues/ajax-loader.gif"></img>
 </div>
 
 <div class="container">
 
-  <div class="row">
+    <div class="row">
 
-    <div class="button-container">
-      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
-        Invite Friends
-      </button>
-      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">
-        Upload Profile Photo
-      </button>
-      <form th:action="@{/logout}" method="get">
-        <button class="btn btn-md btn-danger btn-block" name="registration"
-                type="Submit">Logout
-        </button>
-      </form>
+        <div class="button-container">
+            <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
+                Invite Friends
+            </button>
+            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">
+                Upload Profile Photo
+            </button>
+            <form th:action="@{/logout}" method="get">
+                <button class="btn btn-md btn-danger btn-block" name="registration"
+                        type="Submit">Logout
+                </button>
+            </form>
+        </div>
+
+        <!--    <div class="notification-unseen-mesages">
+              <div>
+                <ul>
+                  <li id="noti_Container">
+                    <div id="noti_Counter"></div>   &lt;!&ndash;SHOW NOTIFICATIONS COUNT.&ndash;&gt;
+
+                    &lt;!&ndash;A CIRCLE LIKE BUTTON TO DISPLAY NOTIFICATION DROPDOWN.&ndash;&gt;
+                    <div id="noti_Button"></div>
+
+                    &lt;!&ndash;THE NOTIFICAIONS DROPDOWN BOX.&ndash;&gt;
+                    <div id="notifications">
+                      <h3>Notifications</h3>
+                      <div style="height:300px;"></div>
+                      <div class="seeAll"><a href="#">See All</a></div>
+                    </div>
+                  </li>
+                  <li><a href="#">Messages</a></li>
+                </ul>
+              </div>
+            </div>-->
+
+        <div id="success-msg-mail-send">
+            The mail has been sent successfully!
+        </div>
     </div>
 
-<!--    <div class="notification-unseen-mesages">
-      <div>
-        <ul>
-          <li id="noti_Container">
-            <div id="noti_Counter"></div>   &lt;!&ndash;SHOW NOTIFICATIONS COUNT.&ndash;&gt;
+    <!--<div class="row">
 
-            &lt;!&ndash;A CIRCLE LIKE BUTTON TO DISPLAY NOTIFICATION DROPDOWN.&ndash;&gt;
-            <div id="noti_Button"></div>
+        <div class="dropdown">
+            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
+                <i class="glyphicon glyphicon-bell"></i>
+            </a>
 
-            &lt;!&ndash;THE NOTIFICAIONS DROPDOWN BOX.&ndash;&gt;
-            <div id="notifications">
-              <h3>Notifications</h3>
-              <div style="height:300px;"></div>
-              <div class="seeAll"><a href="#">See All</a></div>
-            </div>
-          </li>
-          <li><a href="#">Messages</a></li>
-        </ul>
-      </div>
+            <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
+
+                <div class="notification-heading"><h4 class="menu-title">Notifications</h4><h4
+                        class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i>
+                </h4>
+                </div>
+                <li class="divider"></li>
+                <div class="notifications-wrapper">
+                    <a class="content" href="#">
+
+                        <div class="notification-item">
+                            <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
+                            <p class="item-info">Marketing 101, Video Assignment</p>
+                        </div>
+
+                    </a>
+                    <a class="content" href="#">
+                        <div class="notification-item">
+                            <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
+                            <p class="item-info">Marketing 101, Video Assignment</p>
+                        </div>
+                    </a>
+                    <a class="content" href="#">
+                        <div class="notification-item">
+                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+                            <p class="item-info">Marketing 101, Video Assignment</p>
+                        </div>
+                    </a>
+                    <a class="content" href="#">
+                        <div class="notification-item">
+                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+                            <p class="item-info">Marketing 101, Video Assignment</p>
+                        </div>
+
+                    </a>
+                    <a class="content" href="#">
+                        <div class="notification-item">
+                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+                            <p class="item-info">Marketing 101, Video Assignment</p>
+                        </div>
+                    </a>
+                    <a class="content" href="#">
+                        <div class="notification-item">
+                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
+                            <p class="item-info">Marketing 101, Video Assignment</p>
+                        </div>
+                    </a>
+
+                </div>
+                <li class="divider"></li>
+                <div class="notification-footer"><h4 class="menu-title">View all<i
+                        class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
+            </ul>
+        </div>
     </div>-->
 
-    <div id="success-msg-mail-send">
-      The mail has been sent successfully!
+
+    <div class="row">
+
+        <div id="noti_Container">
+            <div id="noti_Counter"></div>   <!--SHOW NOTIFICATIONS COUNT.-->
+
+            <!--A CIRCLE LIKE BUTTON TO DISPLAY NOTIFICATION DROPDOWN.-->
+            <div id="noti_Button"></div>
+
+            <!--THE NOTIFICAIONS DROPDOWN BOX.-->
+            <!-- <div id="notifications">
+                 <h3>Notifications</h3>
+                 <div style="height:300px;"></div>
+                 <div class="seeAll"><a href="#">See All</a></div>
+             </div>-->
+        </div>
     </div>
-  </div>
-  <div class="row">
 
+    <div class="row">
 
-    <li class="dropdown ">
-      <a data-target="business" href="/business" class="dropdown-toggle" data-toggle="dropdown"><span class="notification-count">3 messages</span><b class="caret"></b></a>
-      <ul class="dropdown-menu" style="width:250px;">
-        <li>
-          <a href="/economy"><span class="badge pull-right">today: 2</span>Economy</a>
-        </li>
-        <li>
-          <a href="/financials"><span class="badge pull-right">today: 78</span>Financial Reports</a>
-        </li>
-        <li>
-          <a href="/interest">Interest Rates </a>
-        </li>
-      </ul>
-    </li>
-  </div>
+        <input type="hidden" id="user-is-on-messagebox" name="user-is-on-messagebox"
+               value=""/>
+        <div id="frame">
 
+            <div id="sidepanel">
+                <div id="profile">
+                    <div class="wrap">
+                        <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
+                        <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
+                                th:src="@{/images/images.png}"/>-->
+                        <img
+                                th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
+                                alt="memorynotfound logo"
+                                class="online"
+                                alt=""/>
+                        <p th:text="${username}"></p>
+                        <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
+                        <div id="status-options">
+                            <ul>
+                                <li id="status-online" class="online"><span class="status-circle"></span>
+                                    <p>Online</p></li>
+                                <li id="status-away"><span class="status-circle"></span>
+                                    <p>Away</p></li>
+                                <li id="status-busy"><span class="status-circle"></span>
+                                    <p>Busy</p></li>
+                                <li id="status-offline"><span class="status-circle"></span>
+                                    <p>Offline</p></li>
+                            </ul>
+                        </div>
+                        <div id="expanded">
+                            <label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
+                            <input name="twitter" type="text" value="mikeross"/>
+                            <label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
+                            <input name="twitter" type="text" value="ross81"/>
+                            <label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
+                            <input name="twitter" type="text" value="mike.ross"/>
+                        </div>
+                    </div>
+                </div>
+                <div id="search">
+                    <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
+                    <input type="text" placeholder="Search contacts..."/>
+                </div>
+                <div id="contacts">
+                    <ul id="contacts-uli">
+                    </ul>
+                </div>
 
-
-  <div class="row">
-
-    <input type="hidden" id="user-is-on-messagebox" name="user-is-on-messagebox"
-           value=""/>
-    <div id="frame">
-
-      <div id="sidepanel">
-        <div id="profile">
-          <div class="wrap">
-            <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
-            <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
-                    th:src="@{/images/images.png}"/>-->
-            <img
-                th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
-                alt="memorynotfound logo"
-                class="online"
-                alt=""/>
-            <p th:text="${username}"></p>
-            <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
-            <div id="status-options">
-              <ul>
-                <li id="status-online" class="online"><span class="status-circle"></span>
-                  <p>Online</p></li>
-                <li id="status-away"><span class="status-circle"></span>
-                  <p>Away</p></li>
-                <li id="status-busy"><span class="status-circle"></span>
-                  <p>Busy</p></li>
-                <li id="status-offline"><span class="status-circle"></span>
-                  <p>Offline</p></li>
-              </ul>
             </div>
-            <div id="expanded">
-              <label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>
-              <input name="twitter" type="text" value="mikeross"/>
-              <label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>
-              <input name="twitter" type="text" value="ross81"/>
-              <label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>
-              <input name="twitter" type="text" value="mike.ross"/>
-            </div>
-          </div>
-        </div>
-        <div id="search">
-          <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-          <input type="text" placeholder="Search contacts..."/>
-        </div>
-        <div id="contacts">
-          <ul id="contacts-uli">
-          </ul>
-        </div>
-
-      </div>
-      <div class="content">
-        <!-- <div class="contact-profile">
-             <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-             <p>Harvey Specter</p>
-             <div class="social-media">
-                 <i class="fa fa-facebook" aria-hidden="true"></i>
-                 <i class="fa fa-twitter" aria-hidden="true"></i>
-                 <i class="fa fa-instagram" aria-hidden="true"></i>
-             </div>
-         </div>-->
-        <div class="messages" id="messages">
-          <ul id="ul-messages">
-          </ul>
-        </div>
-        <div class="message-input">
-          <div class="wrap">
-            <input type="text" placeholder="Write your message..."/>
-            <!--  <i class="fa fa-paperclip attachment" aria-hidden="true"></i>-->
+            <div class="content">
+                <!-- <div class="contact-profile">
+                     <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+                     <p>Harvey Specter</p>
+                     <div class="social-media">
+                         <i class="fa fa-facebook" aria-hidden="true"></i>
+                         <i class="fa fa-twitter" aria-hidden="true"></i>
+                         <i class="fa fa-instagram" aria-hidden="true"></i>
+                     </div>
+                 </div>-->
+                <div class="messages" id="messages">
+                    <ul id="ul-messages">
+                    </ul>
+                </div>
+                <div class="message-input">
+                    <div class="wrap">
+                        <input type="text" placeholder="Write your message..."/>
+                        <!--  <i class="fa fa-paperclip attachment" aria-hidden="true"></i>-->
             <span class="input-group-btn">
                             <button class="btn btn-warning btn-sm" id="btn-chat">
                                 Send</button>
                         </span>
-            <!-- <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>-->
-          </div>
-          <a href="#" data-toggle="modal" data-target="#modal-end-conversation"
-             id="anchor-tone-anlysis"><i
-              class="fa fa-paper-plane" aria-hidden="true"> End Chat and see your partner's mood</i></a>
-          <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
-        </div>
+                        <!-- <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>-->
+                    </div>
+                    <a href="#" data-toggle="modal" data-target="#modal-end-conversation"
+                       id="anchor-tone-anlysis"><i
+                            class="fa fa-paper-plane" aria-hidden="true"> End Chat and see your partner's mood</i></a>
+                    <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
+                </div>
 
-      </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 
 <!-- Modal -->
 <div class="modal fade" id="myModalHorizontal" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <button type="button" class="close"
-                data-dismiss="modal">
-          <span aria-hidden="true">&times;</span>
-          <span class="sr-only">Close</span>
-        </button>
-        <h4 class="modal-title">
-          Send Inviation to friends & family
-        </h4>
-      </div>
-
-      <!-- Modal Body -->
-      <div class="modal-body" id="invitation-modal">
-
-        <form class="form-horizontal" role="form" id="invitation-form">
-
-          <div class="form-group">
-            <label class="col-sm-2 control-label"
-                   for="text3">Name</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control"
-                     id="text3" placeholder="Name"/>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <button type="button" class="close"
+                        data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title">
+                    Send Inviation to friends & family
+                </h4>
             </div>
-          </div>
 
-          <div class="form-group">
-            <label class="col-sm-2 control-label"
-                   for="inputEmail">Email</label>
-            <div class="col-sm-10">
-              <input type="sender" class="form-control"
-                     id="inputEmail" placeholder="Email"/>
+            <!-- Modal Body -->
+            <div class="modal-body" id="invitation-modal">
+
+                <form class="form-horizontal" role="form" id="invitation-form">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="text3">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control"
+                                   id="text3" placeholder="Name"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"
+                               for="inputEmail">Email</label>
+                        <div class="col-sm-10">
+                            <input type="sender" class="form-control"
+                                   id="inputEmail" placeholder="Email"/>
+                        </div>
+                    </div>
+                </form>
             </div>
-          </div>
-        </form>
-      </div>
 
-      <!-- Modal Footer -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default"
-                data-dismiss="modal" id="cancel">
-          Cancel
-        </button>
-        <button type="button" class="btn btn-primary" id="send-invitation-modal">
-          Send
-        </button>
-      </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        data-dismiss="modal" id="cancel">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="send-invitation-modal">
+                    Send
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!-- Default bootstrap modal example -->
 <div class="modal fade" id="modal-end-conversation" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel"
      aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"></h4>
-      </div>
-      <div class="modal-body">
-        Your conversation will end.
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" id="conversation-end-ok">Ok</button>
-      </div>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                Your conversation will end.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="conversation-end-ok">Ok</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 
@@ -1280,67 +1430,67 @@
 <div class="modal fade" id="tone-analyzer-charts" tabindex="-1" role="dialog"
      aria-labelledby="toneAnalyzerModal"
      aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-            aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="tone-analyzer-charts-title"></h4>
-      </div>
-      <div class="modal-body">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="tone-analyzer-charts-title"></h4>
+            </div>
+            <div class="modal-body">
 
-        <div id="render-div">
-          <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
-        </div>
-        <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis"
-               value=""/>
-        <!--<img src = "share_button.png" id = "share_button"/>-->
-        <div class="fb-share-button"
-             data-href="http://http://dev.myhost.com:8080/login"
-             data-layout="button_count">
-          <img th:height="50" id="share_button" th:width="180"
-               th:src="@{/images/share_button.png}"/>
-        </div>
-        <!-- <img th:height="50" id = "share_button" th:width="180"
-              th:src="@{/images/share_button.png}"/>-->
-      </div>
+                <div id="render-div">
+                    <canvas id="canvas" style="height: 600px; width: 600px"></canvas>
+                </div>
+                <input type="hidden" id="generate-image-tone-analysis" name="generate-image-tone-analysis"
+                       value=""/>
+                <!--<img src = "share_button.png" id = "share_button"/>-->
+                <div class="fb-share-button"
+                     data-href="http://http://dev.myhost.com:8080/login"
+                     data-layout="button_count">
+                    <img th:height="50" id="share_button" th:width="180"
+                         th:src="@{/images/share_button.png}"/>
+                </div>
+                <!-- <img th:height="50" id = "share_button" th:width="180"
+                      th:src="@{/images/share_button.png}"/>-->
+            </div>
 
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal"
-                id="conversation-share-cxancel">Cancel
-        </button>
-        <button type="button" class="btn btn-primary" id="conversation-share-ok">Ok</button>
-      </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="conversation-share-cxancel">Cancel
+                </button>
+                <button type="button" class="btn btn-primary" id="conversation-share-ok">Ok</button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 <!--<button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">Upload file</button>-->
 
 <!-- Modal -->
 <div id="uploadModal" class="modal fade" role="dialog">
-  <div class="modal-dialog">
+    <div class="modal-dialog">
 
-    <!-- Modal content-->
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">File upload form</h4>
-      </div>
-      <div class="modal-body">
-        <!-- Form -->
-        <form method='post' action='' enctype="multipart/form-data">
-          Select file : <input type='file' name='file' id='file' class='form-control'><br>
-          <input type='button' class='btn btn-info' value='Upload' id='upload'>
-        </form>
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">File upload form</h4>
+            </div>
+            <div class="modal-body">
+                <!-- Form -->
+                <form method='post' action='' enctype="multipart/form-data">
+                    Select file : <input type='file' name='file' id='file' class='form-control'><br>
+                    <input type='button' class='btn btn-info' value='Upload' id='upload'>
+                </form>
 
-        <!-- Preview-->
-        <div id='preview'></div>
-      </div>
+                <!-- Preview-->
+                <div id='preview'></div>
+            </div>
+
+        </div>
 
     </div>
-
-  </div>
 </div>
 
 
@@ -1353,101 +1503,125 @@
 
 <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ ''; </script>
 <script
-    src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
+        src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
 <script>$(".messages").animate({scrollTop: $(document).height()}, "fast");
 
 // this loads the Facebook API
 (function (d, s, id) {
-  var js, fjs = d.getElementsByTagName(s)[0];
-  if (d.getElementById(id)) {
-    return;
-  }
-  js = d.createElement(s);
-  js.id = id;
-  js.src = "//connect.facebook.net/en_US/sdk.js";
-  fjs.parentNode.insertBefore(js, fjs);
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) {
+        return;
+    }
+    js = d.createElement(s);
+    js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
 
 window.fbAsyncInit = function () {
-  var appId = '160871787875627';
-  FB.init({
-    appId: appId,
-    xfbml: true,
-    version: 'v2.9'
-  });
+    var appId = '160871787875627';
+    FB.init({
+        appId: appId,
+        xfbml: true,
+        version: 'v2.9'
+    });
 };
 
 // FB Share with custom OG data.
 (function ($) {
 
-  $('#share_button').on('click', function (event) {
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
-    $("#tone-analyzer-charts").modal('hide');
-    var hidUrl = $("#generate-image-tone-analysis").val();
-    console.log("hidden url: " + hidUrl);
+    $('#share_button').on('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        $("#tone-analyzer-charts").modal('hide');
+        var hidUrl = $("#generate-image-tone-analysis").val();
+        console.log("hidden url: " + hidUrl);
 
-    // Dynamically gather and set the FB share data.
-    var FBDesc = 'learn more about machine learning with tone analyzer';
-    var FBTitle = 'This is the tone analyzer';
-    var FBLink = 'http://dev.myhost.com:8080/login';
-    var FBPic = hidUrl;
+        // Dynamically gather and set the FB share data.
+        var FBDesc = 'learn more about machine learning with tone analyzer';
+        var FBTitle = 'This is the tone analyzer';
+        var FBLink = 'http://dev.myhost.com:8080/login';
+        var FBPic = hidUrl;
 
-    // Open FB share popup
-    FB.ui({
-          method: 'share_open_graph',
-          action_type: 'og.shares',
-          action_properties: JSON.stringify({
-            object: {
-              'og:url': FBLink,
-              'og:title': FBTitle,
-              'og:description': FBDesc,
-              'og:image': FBPic
-            }
-          })
-        },
-        function (response) {
-          // Action after response
-        })
-  })
+        // Open FB share popup
+        FB.ui({
+                    method: 'share_open_graph',
+                    action_type: 'og.shares',
+                    action_properties: JSON.stringify({
+                        object: {
+                            'og:url': FBLink,
+                            'og:title': FBTitle,
+                            'og:description': FBDesc,
+                            'og:image': FBPic
+                        }
+                    })
+                },
+                function (response) {
+                    // Action after response
+                })
+    })
 
 })(jQuery);
 
 $("#profile-img").click(function () {
-  $("#status-options").toggleClass("online");
+    $("#status-options").toggleClass("online");
 });
 
 $(".expand-button").click(function () {
-  $("#profile").toggleClass("expanded");
-  $("#contacts").toggleClass("expanded");
+    $("#profile").toggleClass("expanded");
+    $("#contacts").toggleClass("expanded");
 });
 
 $("#status-options ul li").click(function () {
-  $("#profile-img").removeClass();
-  $("#status-online").removeClass("online");
-  $("#status-away").removeClass("online");
-  $("#status-busy").removeClass("online");
-  $("#status-offline").removeClass("online");
-  $(this).addClass("online");
-
-  if ($("#status-online").hasClass("online")) {
-    $("#profile-img").addClass("online");
-  } else if ($("#status-away").hasClass("online")) {
-    $("#profile-img").addClass("away");
-  } else if ($("#status-busy").hasClass("online")) {
-    $("#profile-img").addClass("busy");
-  } else if ($("#status-offline").hasClass("online")) {
-    $("#profile-img").addClass("offline");
-  } else {
     $("#profile-img").removeClass();
-  }
-  ;
+    $("#status-online").removeClass("online");
+    $("#status-away").removeClass("online");
+    $("#status-busy").removeClass("online");
+    $("#status-offline").removeClass("online");
+    $(this).addClass("online");
 
-  $("#status-options").removeClass("online");
+    if ($("#status-online").hasClass("online")) {
+        $("#profile-img").addClass("online");
+    } else if ($("#status-away").hasClass("online")) {
+        $("#profile-img").addClass("away");
+    } else if ($("#status-busy").hasClass("online")) {
+        $("#profile-img").addClass("busy");
+    } else if ($("#status-offline").hasClass("online")) {
+        $("#profile-img").addClass("offline");
+    } else {
+        $("#profile-img").removeClass();
+    }
+    ;
+
+    $("#status-options").removeClass("online");
 });
 
 </script>
+
+<script>
+    $(document).ready(function () {
+
+        // ANIMATEDLY DISPLAY THE NOTIFICATION COUNTER.
+
+
+        // HIDE NOTIFICATIONS WHEN CLICKED ANYWHERE ON THE PAGE.
+        $(document).click(function () {
+            $('#notifications').hide();
+
+            // CHECK IF NOTIFICATION COUNTER IS HIDDEN.
+            if ($('#noti_Counter').is(':hidden')) {
+                // CHANGE BACKGROUND COLOR OF THE BUTTON.
+                $('#noti_Button').css('background-color', '#2E467C');
+            }
+        });
+
+        $('#notifications').click(function () {
+            return false;       // DO NOTHING WHEN CONTAINER IS CLICKED.
+        });
+    });
+</script>
+
 <script type="text/javascript" th:src="@{/js/chat.js}"></script>
 </body>
 </html>
