@@ -266,7 +266,7 @@ $(document).ready(function () {
       $("#ajax_loader").show();
     });
 
-    $('#noti_Button').click(function () {
+    function hideNotificationPanel() {
 
       // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
       $('#notifications').fadeToggle('fast', 'linear', function () {
@@ -278,6 +278,25 @@ $(document).ready(function () {
         }        // CHANGE BACKGROUND COLOR OF THE BUTTON.
       });
 
+      $('#noti_Counter').fadeOut('slow');
+      $('#noti_Button').hide();
+      // HIDE THE COUNTER.
+
+      return false;
+    }
+
+    $('#noti_Button').click(function () {
+
+      // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
+      /* $('#notifications').fadeToggle('fast', 'linear', function () {
+       if ($('#notifications').is(':hidden')) {
+       $('#noti_Button').css('background-color', '#2E467C');
+       }
+       else {
+       $('#noti_Button').css('background-color', '#FFF');
+       }        // CHANGE BACKGROUND COLOR OF THE BUTTON.
+       });*/
+      hideNotificationPanel();
       $.get({
         type: 'get',
         url: '/dispose_message_notification',
@@ -285,9 +304,7 @@ $(document).ready(function () {
           jQuery.event.trigger("ajaxStop");
         }
       });
-      $('#noti_Counter').fadeOut('slow');                 // HIDE THE COUNTER.
 
-      return false;
     });
 
     $("#conversation-end-ok").click(function () {
@@ -349,7 +366,16 @@ $(document).ready(function () {
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
-      //$("#user-is-on-messagebox").val(re);
+
+      hideNotificationPanel();
+      $.get({
+        type: 'get',
+        url: '/dispose_message_notification',
+        success: function (data) {
+          jQuery.event.trigger("ajaxStop");
+        }
+      });
+
       userClickedOnWhcihBuddyMessageBox = $(
           "#" + $(this).attr('id') + " .wrap .meta .name").text();
       //$("#user-is-on-messagebox").val( $("#"+(this).attr('id') + " .wrap .meta .name").text());
