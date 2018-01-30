@@ -32,7 +32,7 @@ public class RedisNotificationStorageService {
         return null;
     }
 
-    public void cacheUserAwaitingMessagesNotification(
+    public AwaitingMessagesNotificationDetailsDTO cacheUserAwaitingMessagesNotification(
             String key, AwaitingMessagesNotificationDetailsDTO notificationDetailsDTO) {
 
         AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
@@ -46,8 +46,10 @@ public class RedisNotificationStorageService {
                     new AwaitingMessagesNotificationDetailsDTO(
                             notificationDetailsDTO.getReceiver(), notificationDetailsDTO.getSender());
         }
+        genericDTORedisTemplate.delete(key);
         genericDTORedisTemplate.opsForSet().add(key, cachedUserAwaitingMessagesNotifications);
 
+        return cachedUserAwaitingMessagesNotifications;
     }
 
     public void deleteAwaitingMessageNotificationByUser(

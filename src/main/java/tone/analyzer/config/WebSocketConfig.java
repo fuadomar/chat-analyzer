@@ -3,7 +3,10 @@ package tone.analyzer.config;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -52,6 +55,13 @@ public class WebSocketConfig
 
     @Value("${app.relay.port}")
     private Integer relayPort;
+
+   /* @Bean
+    public TopicExchange streamingExchange(@Qualifier("admin") final RabbitAdmin rabbitAdmin) {
+        TopicExchange topicExchange = new TopicExchange("test-exchange", true, false);
+        topicExchange.setAdminsThatShouldDeclare(rabbitAdmin);
+        return topicExchange;
+    }*/
 
     @Override
     protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
