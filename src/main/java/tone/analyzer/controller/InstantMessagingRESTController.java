@@ -42,8 +42,6 @@ public class InstantMessagingRESTController {
 
   @Autowired private InstantMessagingGateway chatGateway;
 
-  @Autowired private AccountRepository accountRepository;
-
   @Autowired private MessageRepository messageRepository;
 
   @Autowired private UserAccountDao userAccountDao;
@@ -51,6 +49,8 @@ public class InstantMessagingRESTController {
   @Autowired private RedisNotificationStorageService redisNotificationStorageService;
 
   @Autowired private SimpMessagingTemplate simpMessagingTemplate;
+
+  @Autowired private AccountRepository accountRepository;
 
   @Value("${app.user.unseen.message.topic}")
   private String unseenMessageTopic;
@@ -89,9 +89,18 @@ public class InstantMessagingRESTController {
     chatMessage.setSender(sender);
     chatGateway.sendMessageTo(chatMessage);
 
+    LoginEvent loginEvent = new LoginEvent(chatMessage.getRecipient(), false);
+    Account friendAccount = accountRepository.findByName(chatMessage.getSender());
+    loginEvent.setId(friendAccount.getId());
+    loginEvent.setUserName(friendAccount.getName());
+    loginEvent.setProfileImage(
+        friendAccount.getDocumentMetaData() != null
+            ? friendAccount.getDocumentMetaData().getName()
+            : "");
+
     AwaitingMessagesNotificationDetailsDTO awaitingMessagesNotificationDetailsDTO =
         new AwaitingMessagesNotificationDetailsDTO(
-            chatMessage.getRecipient(), new HashSet<>(Arrays.asList(chatMessage.getSender())));
+            chatMessage.getRecipient(), new HashSet<>(Arrays.asList(loginEvent)));
     awaitingMessagesNotificationDetailsDTO =
         redisNotificationStorageService.cacheUserAwaitingMessagesNotification(
             chatMessage.getRecipient(), awaitingMessagesNotificationDetailsDTO);
@@ -139,12 +148,11 @@ public class InstantMessagingRESTController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
-      value = "/dispose_message_notification",
-      method = RequestMethod.GET,
-      produces = MediaType.APPLICATION_JSON_VALUE
+    value = "/dispose_message_notification",
+    method = RequestMethod.GET,
+    produces = MediaType.APPLICATION_JSON_VALUE
   )
-  public String DisposeAwaitingMessageNotificationForLoggedInUser(
-      Principal principal) {
+  public String DisposeAwaitingMessageNotificationForLoggedInUser(Principal principal) {
 
     String sender;
     if (principal instanceof OAuth2Authentication)

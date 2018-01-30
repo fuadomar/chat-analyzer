@@ -1,9 +1,10 @@
 package tone.analyzer.event;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /** Created by mozammal on 4/12/17. */
-public class LoginEvent {
+public class LoginEvent implements Serializable {
 
   private String userName;
 
@@ -14,6 +15,8 @@ public class LoginEvent {
   private String id;
 
   private String profileImage;
+
+  public LoginEvent() {}
 
   public LoginEvent(String username) {
     this.userName = username;

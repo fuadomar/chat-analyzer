@@ -286,16 +286,6 @@ $(document).ready(function () {
     }
 
     $('#noti_Button').click(function () {
-
-      // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
-      /* $('#notifications').fadeToggle('fast', 'linear', function () {
-       if ($('#notifications').is(':hidden')) {
-       $('#noti_Button').css('background-color', '#2E467C');
-       }
-       else {
-       $('#noti_Button').css('background-color', '#FFF');
-       }        // CHANGE BACKGROUND COLOR OF THE BUTTON.
-       });*/
       hideNotificationPanel();
       $.get({
         type: 'get',
@@ -304,7 +294,6 @@ $(document).ready(function () {
           jQuery.event.trigger("ajaxStop");
         }
       });
-
     });
 
     $("#conversation-end-ok").click(function () {

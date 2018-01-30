@@ -22,8 +22,7 @@ public class RedisNotificationStorageService {
         Set<AwaitingMessagesNotificationDetailsDTO> cachedAggregateUserAwaitingMessagesNotifications =
                 genericDTORedisTemplate.opsForSet().members(key);
 
-        if (cachedAggregateUserAwaitingMessagesNotifications != null
-                && cachedAggregateUserAwaitingMessagesNotifications.size() > 0) {
+        if (cachedAggregateUserAwaitingMessagesNotifications != null) {
             for (AwaitingMessagesNotificationDetailsDTO userAwaitingMessageNotifcation :
                     cachedAggregateUserAwaitingMessagesNotifications) {
                 return userAwaitingMessageNotifcation;
@@ -35,6 +34,7 @@ public class RedisNotificationStorageService {
     public AwaitingMessagesNotificationDetailsDTO cacheUserAwaitingMessagesNotification(
             String key, AwaitingMessagesNotificationDetailsDTO notificationDetailsDTO) {
 
+        /*genericDTORedisTemplate.delete(key);*/
         AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
                 findCachedUserAwaitingMessagesNotifications(key);
         if (cachedUserAwaitingMessagesNotifications != null)
