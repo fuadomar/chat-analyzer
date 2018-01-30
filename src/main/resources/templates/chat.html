@@ -896,34 +896,33 @@
         left: -150px;
     }
 
-     #noti_Button {
-         display: none;
-         width: 22px;
-         height: 22px;
-         line-height: 22px;
-         border-radius: 50%;
-         -moz-border-radius: 50%;
-         -webkit-border-radius: 50%;
-         background: #FFF;
-         margin: -3px 10px 0 10px;
-         cursor: pointer;
-     }
+    #noti_Button {
+        display: none;
+        width: 22px;
+        height: 22px;
+        line-height: 22px;
+        border-radius: 50%;
+        -moz-border-radius: 50%;
+        -webkit-border-radius: 50%;
+        background: #FFF;
+        margin: -3px 10px 0 10px;
+        cursor: pointer;
+    }
 
-
-     #noti_Counter {
-         display: none;
-         position: absolute;
-         background: #E1141E;
-         color: #FFF;
-         font-size: 12px;
-         font-weight: normal;
-         padding: 1px 3px;
-         margin: -8px 0 0 25px;
-         border-radius: 2px;
-         -moz-border-radius: 2px;
-         -webkit-border-radius: 2px;
-         z-index: 1;
-     }
+    #noti_Counter {
+        display: none;
+        position: absolute;
+        background: #E1141E;
+        color: #FFF;
+        font-size: 12px;
+        font-weight: normal;
+        padding: 1px 3px;
+        margin: -8px 0 0 25px;
+        border-radius: 2px;
+        -moz-border-radius: 2px;
+        -webkit-border-radius: 2px;
+        z-index: 1;
+    }
 
     .notifications {
         min-width: 420px;
@@ -936,16 +935,14 @@
 
     #notifications {
         display: none;
-        width: 430px;
+        width: 300px;
         position: absolute;
         top: 30px;
-        left: 0;
         background: #FFF;
         border: solid 1px rgba(100, 100, 100, .20);
         -webkit-box-shadow: 0 3px 8px rgba(0, 0, 0, .20);
         z-index: 0;
     }
-
 
     /* ul {
        display: block;
@@ -1201,70 +1198,6 @@
         </div>
     </div>
 
-    <!--<div class="row">
-
-        <div class="dropdown">
-            <a id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">
-                <i class="glyphicon glyphicon-bell"></i>
-            </a>
-
-            <ul class="dropdown-menu notifications" role="menu" aria-labelledby="dLabel">
-
-                <div class="notification-heading"><h4 class="menu-title">Notifications</h4><h4
-                        class="menu-title pull-right">View all<i class="glyphicon glyphicon-circle-arrow-right"></i>
-                </h4>
-                </div>
-                <li class="divider"></li>
-                <div class="notifications-wrapper">
-                    <a class="content" href="#">
-
-                        <div class="notification-item">
-                            <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
-                            <p class="item-info">Marketing 101, Video Assignment</p>
-                        </div>
-
-                    </a>
-                    <a class="content" href="#">
-                        <div class="notification-item">
-                            <h4 class="item-title">Evaluation Deadline 1 · day ago</h4>
-                            <p class="item-info">Marketing 101, Video Assignment</p>
-                        </div>
-                    </a>
-                    <a class="content" href="#">
-                        <div class="notification-item">
-                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-                            <p class="item-info">Marketing 101, Video Assignment</p>
-                        </div>
-                    </a>
-                    <a class="content" href="#">
-                        <div class="notification-item">
-                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-                            <p class="item-info">Marketing 101, Video Assignment</p>
-                        </div>
-
-                    </a>
-                    <a class="content" href="#">
-                        <div class="notification-item">
-                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-                            <p class="item-info">Marketing 101, Video Assignment</p>
-                        </div>
-                    </a>
-                    <a class="content" href="#">
-                        <div class="notification-item">
-                            <h4 class="item-title">Evaluation Deadline 1 • day ago</h4>
-                            <p class="item-info">Marketing 101, Video Assignment</p>
-                        </div>
-                    </a>
-
-                </div>
-                <li class="divider"></li>
-                <div class="notification-footer"><h4 class="menu-title">View all<i
-                        class="glyphicon glyphicon-circle-arrow-right"></i></h4></div>
-            </ul>
-        </div>
-    </div>-->
-
-
     <div class="row">
 
         <div id="noti_Container">
@@ -1274,11 +1207,9 @@
             <div id="noti_Button"></div>
 
             <!--THE NOTIFICAIONS DROPDOWN BOX.-->
-             <div id="notifications">
-                 <h3>Notifications</h3>
-                 <div style="height:300px;"></div>
-                 <div class="seeAll"><a href="#">See All</a></div>
-             </div>
+            <div id="notifications">
+                <h3>Just happening</h3>
+            </div>
         </div>
     </div>
 
@@ -1629,7 +1560,8 @@ $("#status-options ul li").click(function () {
 
         // HIDE NOTIFICATIONS WHEN CLICKED ANYWHERE ON THE PAGE.
         $(document).click(function () {
-            $('#notifications').hide();
+            //$('#notifications').hide();
+
 
             // CHECK IF NOTIFICATION COUNTER IS HIDDEN.
             if ($('#noti_Counter').is(':hidden')) {

@@ -44,11 +44,16 @@ public class FileUploadService {
     String sha256hex =
         Hashing.sha256().hashString(loggedInUserSignature, StandardCharsets.UTF_8).toString();
     String fileName = sha256hex + file.getOriginalFilename();
+    String thumNail = sha256hex + "thumnail" + file.getOriginalFilename();
+
     byte[] content = file.getBytes();
     Date currentDate = new Date();
     Document document = new Document(fileName, content);
+    document.setThumbNail(thumNail);
+
     DocumentMetaData documentMetaData =
         new DocumentMetaData(fileName, profileImageStorageLocation, currentDate);
+    documentMetaData.setThumbNail(thumNail);
     documentFileSystemRepository.add(document, false);
 
     Account loggedInUserAccount = userAccountRepository.findByName(loggedInUser);

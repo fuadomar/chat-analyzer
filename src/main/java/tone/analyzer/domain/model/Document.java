@@ -10,6 +10,8 @@ public class Document {
 
   private String name;
 
+  private String thumbNail;
+
   public Document(String name, byte[] content) {
     this.setContent(content);
     this.setName(name);
@@ -29,5 +31,13 @@ public class Document {
 
   public String getName() {
     return name;
+  }
+
+  public String getThumbNail() {
+    return thumbNail;
+  }
+
+  public void setThumbNail(String thumbNail) {
+    this.thumbNail = thumbNail;
   }
 }

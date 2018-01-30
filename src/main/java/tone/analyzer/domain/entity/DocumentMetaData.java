@@ -20,6 +20,8 @@ public class DocumentMetaData implements Serializable {
 
   private String fileLocation;
 
+  private String thumbNail;
+
   public DocumentMetaData() {
   }
 
@@ -50,7 +52,15 @@ public class DocumentMetaData implements Serializable {
     return name;
   }
 
-  public String getFileLocation() {
+  public String getFileLocation()  {
     return fileLocation;
+  }
+
+  public String getThumbNail() {
+    return thumbNail;
+  }
+
+  public void setThumbNail(String thumbNail) {
+    this.thumbNail = thumbNail;
   }
 }

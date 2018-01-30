@@ -157,7 +157,7 @@ public class UserAccountControllerWeb {
     model.addAttribute("username", loggedInUserName);
     String fileLocation =
         loggedInUser.getDocumentMetaData() != null
-            ? loggedInUser.getDocumentMetaData().getName()
+            ? loggedInUser.getDocumentMetaData().getThumbNail()
             : null;
     model.addAttribute("userAvatar", fileLocation);
 

@@ -77,7 +77,7 @@ public class UserAccountDao {
       loginEvent.setId(buddy.getId());
       loginEvent.setProfileImage(
           friendAccount.getDocumentMetaData() != null
-              ? friendAccount.getDocumentMetaData().getName()
+              ? friendAccount.getDocumentMetaData().getThumbNail()
               : "");
       buddyListObjects.add(loginEvent);
     }

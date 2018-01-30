@@ -34,134 +34,149 @@ import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 @RestController
 public class InstantMessagingRESTController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(InstantMessagingRESTController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(InstantMessagingRESTController.class);
 
-  @Autowired private InstantMessagingGateway chatGateway;
+    @Autowired
+    private InstantMessagingGateway chatGateway;
 
-  @Autowired private MessageRepository messageRepository;
+    @Autowired
+    private MessageRepository messageRepository;
 
-  @Autowired private UserAccountDao userAccountDao;
+    @Autowired
+    private UserAccountDao userAccountDao;
 
-  @Autowired private RedisNotificationStorageService redisNotificationStorageService;
+    @Autowired
+    private RedisNotificationStorageService redisNotificationStorageService;
 
-  @Autowired private SimpMessagingTemplate simpMessagingTemplate;
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
 
-  @Autowired private AccountRepository accountRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
-  @Value("${app.user.unseen.message.topic}")
-  private String unseenMessageTopic;
+    @Value("${app.user.unseen.message.topic}")
+    private String unseenMessageTopic;
 
-  @RequestMapping(
-    value = "/fetch/messages",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  public List<Message> fetchAllMessagesBetweenTwoBuddy(
-      @RequestParam("receiver") String receiver, Principal principal) {
+    @RequestMapping(
+            value = "/fetch/messages",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public List<Message> fetchAllMessagesBetweenTwoBuddy(
+            @RequestParam("receiver") String receiver, Principal principal) {
 
-    String sender;
+        String sender;
 
-    if (principal instanceof OAuth2Authentication)
-      sender =
-          new ToneAnalyzerUtility()
-              .findPrincipalNameFromAuthentication((OAuth2Authentication) principal);
-    else sender = principal.getName();
+        if (principal instanceof OAuth2Authentication)
+            sender =
+                    new ToneAnalyzerUtility()
+                            .findPrincipalNameFromAuthentication((OAuth2Authentication) principal);
+        else sender = principal.getName();
 
-    Account recipent = accountRepository.findOne(receiver.trim());
-    if (recipent == null) return null;
+        Account recipent = accountRepository.findOne(receiver.trim());
+        if (recipent == null) return null;
 
-    Sort sort = new Sort(Sort.Direction.ASC, "createdTime");
-    List<Message> messagesBySenderAndReceiver =
-        messageRepository.findMessagesBySenderAndReceiver(sender, recipent.getName(), sort);
-    return messagesBySenderAndReceiver;
-  }
+        Sort sort = new Sort(Sort.Direction.ASC, "createdTime");
+        List<Message> messagesBySenderAndReceiver =
+                messageRepository.findMessagesBySenderAndReceiver(sender, recipent.getName(), sort);
+        return messagesBySenderAndReceiver;
+    }
 
-  @MessageExceptionHandler
-  @MessageMapping("/send.message")
-  public String sendChatMessageFromSenderToReceiver(
-      @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    @MessageExceptionHandler
+    @MessageMapping("/send.message")
+    public String sendChatMessageFromSenderToReceiver(
+            @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
 
-    String sender = headerAccessor.getUser().getName();
-    chatMessage.setSender(sender);
-    chatGateway.sendMessageTo(chatMessage);
+        String sender = headerAccessor.getUser().getName();
+        chatMessage.setSender(sender);
+        chatGateway.sendMessageTo(chatMessage);
 
-    LoginEvent loginEvent = new LoginEvent(chatMessage.getRecipient(), false);
-    Account friendAccount = accountRepository.findByName(chatMessage.getSender());
-    loginEvent.setId(friendAccount.getId());
-    loginEvent.setUserName(friendAccount.getName());
-    loginEvent.setProfileImage(
-        friendAccount.getDocumentMetaData() != null
-            ? friendAccount.getDocumentMetaData().getName()
-            : "");
+        LoginEvent loginEvent = new LoginEvent(chatMessage.getRecipient(), false);
+        Account friendAccount = accountRepository.findByName(chatMessage.getSender());
+        loginEvent.setId(friendAccount.getId());
+        loginEvent.setUserName(friendAccount.getName());
+        loginEvent.setProfileImage(
+                friendAccount.getDocumentMetaData() != null
+                        ? friendAccount.getDocumentMetaData().getThumbNail()
+                        : "");
 
-    AwaitingMessagesNotificationDetailsDTO awaitingMessagesNotificationDetailsDTO =
-        new AwaitingMessagesNotificationDetailsDTO(
-            chatMessage.getRecipient(), new HashSet<>(Arrays.asList(loginEvent)));
-    awaitingMessagesNotificationDetailsDTO =
-        redisNotificationStorageService.cacheUserAwaitingMessagesNotification(
-            chatMessage.getRecipient(), awaitingMessagesNotificationDetailsDTO);
+        AwaitingMessagesNotificationDetailsDTO awaitingMessagesNotificationDetailsDTO =
+                new AwaitingMessagesNotificationDetailsDTO(
+                        chatMessage.getRecipient(), new HashSet<>(Arrays.asList(loginEvent)));
+        awaitingMessagesNotificationDetailsDTO =
+                redisNotificationStorageService.cacheUserAwaitingMessagesNotification(
+                        chatMessage.getRecipient(), awaitingMessagesNotificationDetailsDTO);
 
-    simpMessagingTemplate.convertAndSendToUser(
-        chatMessage.getRecipient(), unseenMessageTopic, awaitingMessagesNotificationDetailsDTO);
+        simpMessagingTemplate.convertAndSendToUser(
+                chatMessage.getRecipient(), unseenMessageTopic, awaitingMessagesNotificationDetailsDTO);
 
-    return "Ok";
-  }
+        return "Ok";
+    }
 
-  @SubscribeMapping("/chat.participants")
-  public Collection<LoginEvent> retrieveLoggedInUserBuddyListWithOnlineStatus(
-      SimpMessageHeaderAccessor headerAccessor) {
+    @SubscribeMapping("/chat.participants")
+    public Collection<LoginEvent> retrieveLoggedInUserBuddyListWithOnlineStatus(
+            SimpMessageHeaderAccessor headerAccessor) {
 
-    LOG.info("retrieveParticipants method fired");
+        LOG.info("retrieveParticipants method fired");
 
-    String userName = headerAccessor.getUser().getName();
-    return userAccountDao.retrieveBuddyList(userName, true);
-  }
+        String userName = headerAccessor.getUser().getName();
+        return userAccountDao.retrieveBuddyList(userName, true);
+    }
 
-  @SubscribeMapping("/unseen.messages")
-  public AwaitingMessagesNotificationDetailsDTO sendAwaitingMessagesNotificationsToLoggedInUser(
-      SimpMessageHeaderAccessor headerAccessor) {
+    @SubscribeMapping("/unseen.messages")
+    public AwaitingMessagesNotificationDetailsDTO sendAwaitingMessagesNotificationsToLoggedInUser(
+            SimpMessageHeaderAccessor headerAccessor) {
 
-    String sender = headerAccessor.getUser().getName();
+        String sender = headerAccessor.getUser().getName();
 
-    AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
-        redisNotificationStorageService.findCachedUserAwaitingMessagesNotifications(sender);
-    LOG.info("unseen messages method fired {}", cachedUserAwaitingMessagesNotifications);
-    return cachedUserAwaitingMessagesNotifications;
-  }
+        AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
+                redisNotificationStorageService.findCachedUserAwaitingMessagesNotifications(sender);
+        LOG.info("unseen messages method fired {}", cachedUserAwaitingMessagesNotifications);
+        return cachedUserAwaitingMessagesNotifications;
+    }
 
-  /* @MessageMapping("/unseen.messages")
-  public AwaitingMessagesNotificationDetailsDTO
-      sendAwaitingMessagesNotificationsToLoggedInUserInRealtime(
-          SimpMessageHeaderAccessor headerAccessor) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(
+            value = "/dispose_all_message_notification",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    public String DisposeAwaitingMessageNotificationForLoggedInUser(Principal principal) {
 
-    String sender = headerAccessor.getUser().getName();
+        String sender;
+        if (principal instanceof OAuth2Authentication)
+            sender =
+                    new ToneAnalyzerUtility()
+                            .findPrincipalNameFromAuthentication((OAuth2Authentication) principal);
+        else sender = principal.getName();
 
-    AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
-        redisNotificationStorageService.findCachedUserAwaitingMessagesNotifications(sender);
-    LOG.info("unseen messages method fired {}", cachedUserAwaitingMessagesNotifications);
-    return cachedUserAwaitingMessagesNotifications;
-  }*/
+        redisNotificationStorageService.deleteAwaitingMessageNotificationByUser(sender, null);
+        return "Ok";
+    }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(
-    value = "/dispose_message_notification",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  public String DisposeAwaitingMessageNotificationForLoggedInUser(Principal principal) {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(
+            value = "/dispose_message_notification_by_user",
+            method = RequestMethod.POST
+    )
+    public String DisposeAwaitingMessageNotificationForLoggedInUserBuUser(@RequestBody LoginEvent loginEvent, Principal principal) {
 
-    String sender;
-    if (principal instanceof OAuth2Authentication)
-      sender =
-          new ToneAnalyzerUtility()
-              .findPrincipalNameFromAuthentication((OAuth2Authentication) principal);
-    else sender = principal.getName();
+        String sender;
 
-    redisNotificationStorageService.deleteAwaitingMessageNotificationByUser(sender);
-    return "Ok";
-  }
+        if (principal instanceof OAuth2Authentication)
+            sender =
+                    new ToneAnalyzerUtility()
+                            .findPrincipalNameFromAuthentication((OAuth2Authentication) principal);
+        else sender = principal.getName();
+
+        redisNotificationStorageService.deleteAwaitingMessageNotificationByUser(sender, loginEvent);
+        return "Ok";
+    }
+
 }

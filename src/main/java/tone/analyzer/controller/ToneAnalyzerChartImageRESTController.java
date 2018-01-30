@@ -99,18 +99,6 @@ public class ToneAnalyzerChartImageRESTController {
                     new DocumentMetaData(imageName, toneAnalyzerImageStorageLocation, new Date());
             imageRepository.add(document, true);
             toneAnalyzerChartImageDetailsRepository.save(new ToneAnalyzerChartImageDetails(loggedInUser, documentMetaData));
-
-           /* String s = image.substring(imageLength - 2);
-            HttpClient httpclient = HttpClients.createDefault();
-            HttpPost httppost = new HttpPost("http://data-uri-to-img-url.herokuapp.com/images.json");
-
-            List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-            params.add(new BasicNameValuePair("image[data_uri]", base64Image));
-            httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-            HttpResponse response = httpclient.execute(httppost);
-            HttpEntity entity = response.getEntity();
-            String responseString = EntityUtils.toString(entity, "UTF-8");*/
             return toneAnalyzerUtility.retrieveRootHostUrl(request) + "/tone_analyzer/images/" + document.getName();
 
         } catch (Exception e) {

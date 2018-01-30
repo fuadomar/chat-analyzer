@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProfileImageProviderService {
 
-    @Value("${profile.image.repository}")
+    @Value("${profile.thumb.image.repository}")
     private String profileImageStorageLocation;
 
     @Value("${tone.analyzer.image.repository}")
