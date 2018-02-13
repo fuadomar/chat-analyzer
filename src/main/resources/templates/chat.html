@@ -9,6 +9,11 @@
 </head>
 <body>
 <div class="main-window">
+  <form th:action="@{/logout}" method="get">
+    <button class="btn btn-md btn-danger btn-block" name="registration"
+            type="Submit">Logout
+    </button>
+  </form>
   <div class="main-panel">
     <div class="main-content">
       <div class="content-header">
@@ -25,14 +30,17 @@
               </div>
               <div class="form-group">
                 <label for="exampleInputEmail1">2. Invite through your friend's email</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="abc@test.com">
+                <input type="email" class="form-control" id="exampleInputEmail1"
+                       placeholder="abc@test.com">
               </div>
               <div class="form-group">
                 <label for="exampleInputFile">or copy and send link</label>
-                <a><img   th:src="@{/images/asset-add-icon.png}"></a>
+                <a><img th:src="@{/images/asset-add-icon.png}"></a>
               </div>
               <div class="form-group">
-                <button type="button" class="btn start-btn" data-toggle="modal" data-target="#myModal">Start Chat</button>
+                <button type="button" class="btn start-btn" data-toggle="modal"
+                        data-target="#myModal">Start Chat
+                </button>
               </div>
             </form>
           </div>
@@ -41,23 +49,27 @@
       <div class="content-footer">
         <p>
           <span>@ Nascenia Limited</span>
-          <span class="pull-right"> Develope using <a href="#">IBM Watson </a> and Ruby on Rails</span>
+          <span class="pull-right"> Develope using <a
+              href="#">IBM Watson </a> and Ruby on Rails</span>
         </p>
       </div>
 
 
-
-
-      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+           aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
           <div class="modal-content vanish-background">
             <div class="modal-body white-background">
               <p>Dear XYZ,</p>
-              <p>I have found a great chatting tool where they will sh Dear XYZ, I have found a great chatting tool where they will sh  Dear XYZ, I have found a great chatting tool where they will sh  Dear XYZ, I have found a great chatting tool where they will sh Dear XYZ, I have found a great chatting tool where they will sh</p>
+              <p>I have found a great chatting tool where they will sh Dear XYZ, I have found a
+                great chatting tool where they will sh Dear XYZ, I have found a great chatting tool
+                where they will sh Dear XYZ, I have found a great chatting tool where they will sh
+                Dear XYZ, I have found a great chatting tool where they will sh</p>
               <p>- Faruk</p>
             </div>
             <div class="modal-footer vanish-background keep-it-center">
-              <button type="button" class="btn btn-secondary start-btn" data-dismiss="modal">send</button>
+              <button type="button" class="btn btn-secondary start-btn" data-dismiss="modal">send
+              </button>
             </div>
           </div>
         </div>
