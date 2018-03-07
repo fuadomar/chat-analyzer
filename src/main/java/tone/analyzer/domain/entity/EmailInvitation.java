@@ -4,11 +4,14 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/** Created by user on 1/8/2018. */
+/**
+ * Created by user on 1/8/2018.
+ */
 @Document
-public class EmailInvitation implements Serializable{
+public class EmailInvitation implements Serializable {
 
-  @Id private String id;
+  @Id
+  private String id;
 
   private String sender;
 
@@ -16,7 +19,8 @@ public class EmailInvitation implements Serializable{
 
   private String token;
 
-  public EmailInvitation() {}
+  public EmailInvitation() {
+  }
 
   public EmailInvitation(String sender, String receiver, String token) {
     this.sender = sender;

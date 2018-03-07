@@ -17,11 +17,14 @@ import tone.analyzer.redis.MessagePublisher;
 import tone.analyzer.redis.RedisMessagePublisher;
 import tone.analyzer.redis.service.RedisMessageSubscriber;
 
-/** Created by Dell on 1/29/2018. */
+/**
+ * Created by Dell on 1/29/2018.
+ */
 @Configuration
 public class RedisConfig {
 
-  @Resource Environment environment;
+  @Resource
+  Environment environment;
 
   @Bean
   JedisConnectionFactory jedisConnectionFactory() {

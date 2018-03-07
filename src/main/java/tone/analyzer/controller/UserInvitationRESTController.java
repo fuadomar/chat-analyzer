@@ -22,15 +22,20 @@ import java.util.Map;
 import java.util.UUID;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
-/** Created by user on 1/8/2018. */
+/**
+ * Created by user on 1/8/2018.
+ */
 @RestController
 public class UserInvitationRESTController {
 
-  @Autowired private RabbitTemplate rabbitTemplate;
+  @Autowired
+  private RabbitTemplate rabbitTemplate;
 
-  @Autowired private String rabbitmqQueue;
+  @Autowired
+  private String rabbitmqQueue;
 
-  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
+  @Autowired
+  private ToneAnalyzerUtility toneAnalyzerUtility;
 
   @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
   public String inviteUserByEmail(
@@ -41,7 +46,9 @@ public class UserInvitationRESTController {
     String sender = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
 
     if (org.apache.commons.lang3.StringUtils.isBlank(sender)
-        || org.apache.commons.lang3.StringUtils.isBlank(email)) return "Error";
+        || org.apache.commons.lang3.StringUtils.isBlank(email)) {
+      return "Error";
+    }
 
     String token = UUID.randomUUID().toString();
     String url = toneAnalyzerUtility.retrieveRootHostUrl(request) + "/confirmation-email";

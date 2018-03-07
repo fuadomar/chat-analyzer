@@ -13,13 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 import tone.analyzer.domain.entity.Review;
 import tone.analyzer.gateway.ReviewGateway;
 
-/** Created by mozammal on 4/25/17. */
+/**
+ * Created by mozammal on 4/25/17.
+ */
 @RestController
 public class ReviewController {
 
   private static final Logger log = LoggerFactory.getLogger(ReviewController.class);
 
-  @Autowired private ReviewGateway reviewGateway;
+  @Autowired
+  private ReviewGateway reviewGateway;
 
   /*@PreAuthorize("hasRole('ROLE_USER')")*/
   @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = "application/json")

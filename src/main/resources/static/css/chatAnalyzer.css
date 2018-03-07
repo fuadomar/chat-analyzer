@@ -1,16 +1,18 @@
 * {
   font-family: 'Lato', sans-serif;
 }
+
 h2 {
   font-size: 35px;
   font-weight: 300;
-  color: rgb(84,95,128);
+  color: rgb(84, 95, 128);
   padding: 20px 0;
 }
+
 label {
   font-size: 16px;
   font-weight: 300;
-  color: rgb(84,95,128);
+  color: rgb(84, 95, 128);
 }
 
 .form-control {
@@ -20,6 +22,7 @@ label {
   width: 211px;
   height: 40px;
 }
+
 .start-btn {
   width: 173px;
   height: 40px;
@@ -30,6 +33,7 @@ label {
   font-size: 18px;
   font-weight: bold;
 }
+
 .pull-right {
   float: right;
 }
@@ -39,13 +43,15 @@ body {
   background-color: #efefef;
 
 }
+
 .main-panel {
-  width:760px;
-  height:700px;
+  width: 760px;
+  height: 700px;
   margin: 0 auto;
   margin-top: 50px;
 }
-.main-content{
+
+.main-content {
   position: relative;
   display: -webkit-box;
   display: -webkit-flex;
@@ -62,7 +68,8 @@ body {
   border-radius: 0;
   outline: 0;
 }
-.content-header{
+
+.content-header {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -78,7 +85,8 @@ body {
   padding: 15px;
   border-bottom: 1px solid #eceeef;
 }
-.content-body{
+
+.content-body {
   position: relative;
   -webkit-box-flex: 1;
   -webkit-flex: 1 1 auto;
@@ -90,8 +98,10 @@ body {
   background-position: center center;
   background-repeat: no-repeat;
   padding: 30px 20px;
+  width: 760px;
 }
-.content-footer{
+
+.content-footer {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -109,14 +119,25 @@ body {
   display: block;
   padding: 15px 30px;
 }
+
+.make-it-center {
+  text-align: center;
+}
+
+.margin-0-auto {
+  margin: 0 auto;
+}
+
 .vanish-background {
   background-color: transparent;
   border: 1px solid transparent;
 }
+
 .white-background {
   background-color: white;
   border-radius: 10px;
 }
+
 .keep-it-center {
   webkit-justify-content: center;
   justify-content: center;

@@ -14,7 +14,9 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter {
 

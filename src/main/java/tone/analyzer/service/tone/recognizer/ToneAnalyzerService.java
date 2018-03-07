@@ -7,7 +7,9 @@ import tone.analyzer.domain.model.ChatMessage;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 public interface ToneAnalyzerService {
 
   public ToneAnalyzerFeedBackDTO analyzerConversationalToneBetweenTwoUser(ChatMessage chatMessage);

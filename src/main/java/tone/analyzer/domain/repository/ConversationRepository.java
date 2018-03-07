@@ -6,12 +6,14 @@ import tone.analyzer.domain.entity.Conversation;
 
 import java.util.List;
 
-/** Created by user on 4/11/2017. */
+/**
+ * Created by user on 4/11/2017.
+ */
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
 
   @Query(
-    value =
-        "{ $or: [ { $and: [ {'sender' : ?0}, {'receiver' : ?1}  ] },  { $and: [ {'sender' : ?1}, {'receiver' : ?0}  ] } ]}"
+      value =
+          "{ $or: [ { $and: [ {'sender' : ?0}, {'receiver' : ?1}  ] },  { $and: [ {'sender' : ?1}, {'receiver' : ?0}  ] } ]}"
   )
   Conversation findConversationBySenderAndRecipient(String sender, String recipient);
 

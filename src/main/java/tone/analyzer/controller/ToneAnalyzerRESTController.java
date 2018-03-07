@@ -29,11 +29,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 @RestController
 public class ToneAnalyzerRESTController {
 
-  @Autowired private ToneAnalyzerGateway toneAnalyzerGateway;
+  @Autowired
+  private ToneAnalyzerGateway toneAnalyzerGateway;
 
   private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerRESTController.class);
 
@@ -58,7 +61,8 @@ public class ToneAnalyzerRESTController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/upload/images", method = RequestMethod.POST)
-  public @ResponseBody String uploadImage(
+  public @ResponseBody
+  String uploadImage(
       @RequestParam("image") String image, HttpServletRequest request) {
     try {
 

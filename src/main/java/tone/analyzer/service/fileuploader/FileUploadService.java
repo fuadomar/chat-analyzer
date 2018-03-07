@@ -19,7 +19,9 @@ import tone.analyzer.domain.model.Document;
 import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
-/** Created by Dell on 1/17/2018. */
+/**
+ * Created by Dell on 1/17/2018.
+ */
 @Service
 public class FileUploadService {
 
@@ -29,16 +31,19 @@ public class FileUploadService {
   @Autowired
   ImageRepository documentFileSystemRepository;
 
-  @Autowired private AccountRepository userAccountRepository;
+  @Autowired
+  private AccountRepository userAccountRepository;
 
   public String upload(MultipartFile file) throws IOException {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
     String loggedInUser;
-    if (auth instanceof OAuth2Authentication)
+    if (auth instanceof OAuth2Authentication) {
       loggedInUser = new ToneAnalyzerUtility().findPrincipalNameFromAuthentication(auth);
-    else loggedInUser = auth.getName();
+    } else {
+      loggedInUser = auth.getName();
+    }
 
     String loggedInUserSignature = loggedInUser + System.currentTimeMillis();
     String sha256hex =

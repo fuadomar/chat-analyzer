@@ -9,11 +9,14 @@ import tone.analyzer.domain.repository.TokenRepository;
 
 import java.util.Date;
 
-/** Created by mozammal on 5/4/17. */
+/**
+ * Created by mozammal on 5/4/17.
+ */
 @Component
 public class TokenService implements PersistentTokenRepository {
 
-  @Autowired TokenRepository repository;
+  @Autowired
+  TokenRepository repository;
 
   @Override
   public void createNewToken(PersistentRememberMeToken token) {

@@ -35,7 +35,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Controller
 public class UserAccountControllerWeb {
 
@@ -71,25 +73,35 @@ public class UserAccountControllerWeb {
 
   public static final String ACCOUNT_FORM = "accountForm";
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  @Autowired private SecurityService securityService;
+  @Autowired
+  private SecurityService securityService;
 
-  @Autowired private AccountValidator accountValidator;
+  @Autowired
+  private AccountValidator accountValidator;
 
-  @Autowired private AdminService adminService;
+  @Autowired
+  private AdminService adminService;
 
-  @Autowired private IEmailInvitationService emailInvitationService;
+  @Autowired
+  private IEmailInvitationService emailInvitationService;
 
-  @Autowired private UserAccountDao userAccountDao;
+  @Autowired
+  private UserAccountDao userAccountDao;
 
-  @Autowired private AccountRepository userAccountRepository;
+  @Autowired
+  private AccountRepository userAccountRepository;
 
-  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
+  @Autowired
+  private ToneAnalyzerUtility toneAnalyzerUtility;
 
-  @Autowired private ICaptchaService captchaService;
+  @Autowired
+  private ICaptchaService captchaService;
 
-  @Autowired private ServletContext servletContext;
+  @Autowired
+  private ServletContext servletContext;
 
   @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
   public String adminPanel(Model model) {
@@ -138,15 +150,19 @@ public class UserAccountControllerWeb {
   @RequestMapping(value = "/login", method = RequestMethod.GET)
   public String login(Model model, String error, String logout) {
 
-    if (error != null) model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
-    if (logout != null) model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
+    if (error != null) {
+      model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
+    }
+    if (logout != null) {
+      model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
+    }
     return LOGIN_VIEW;
   }
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
-    value = {ROOT_URI, LIVE_CHAT_URI},
-    method = RequestMethod.GET
+      value = {ROOT_URI, LIVE_CHAT_URI},
+      method = RequestMethod.GET
   )
   public String chat(Model model, HttpServletResponse response) throws IOException {
 
@@ -211,8 +227,9 @@ public class UserAccountControllerWeb {
     }
 
     Object userPassword = requestParams.get("password");
-    if (userPassword == null || StringUtils.isBlank((String) requestParams.get("password")))
+    if (userPassword == null || StringUtils.isBlank((String) requestParams.get("password"))) {
       return "redirect:confirm?token=" + requestParams.get("token");
+    }
 
     String password = (String) userPassword;
     Account account = new Account(token.getReceiver(), password.trim());

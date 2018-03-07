@@ -3,7 +3,9 @@ package tone.analyzer.redis;
 import java.util.Collection;
 import java.util.List;
 
-/** Created by Dell on 1/29/2018. */
+/**
+ * Created by Dell on 1/29/2018.
+ */
 public interface IHashRepository<V> {
 
   void put(V obj);

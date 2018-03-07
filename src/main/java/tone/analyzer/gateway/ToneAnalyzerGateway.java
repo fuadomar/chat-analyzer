@@ -10,11 +10,14 @@ import tone.analyzer.service.tone.recognizer.ToneAnalyzerService;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 @Component
 public class ToneAnalyzerGateway {
 
-  @Autowired private ToneAnalyzerService toneAnalyzerService;
+  @Autowired
+  private ToneAnalyzerService toneAnalyzerService;
 
   public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
 

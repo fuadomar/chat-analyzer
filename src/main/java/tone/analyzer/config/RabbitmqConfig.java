@@ -18,12 +18,15 @@ import org.springframework.messaging.handler.annotation.support.DefaultMessageHa
 
 import javax.annotation.Resource;
 
-/** Created by Dell on 1/15/2018. */
+/**
+ * Created by Dell on 1/15/2018.
+ */
 @Configuration
 @PropertySource("classpath:application.properties")
 public class RabbitmqConfig implements RabbitListenerConfigurer {
 
-  @Resource private Environment environment;
+  @Resource
+  private Environment environment;
 
   @Bean
   Queue queue() {

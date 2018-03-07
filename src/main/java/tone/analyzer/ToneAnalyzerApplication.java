@@ -28,9 +28,11 @@ public class ToneAnalyzerApplication {
 
   public static final String ROLE_ACTUATOR = "ROLE_ACTUATOR";
 
-  @Autowired private AccountRepository accountRepository;
+  @Autowired
+  private AccountRepository accountRepository;
 
-  @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
+  @Autowired
+  private BCryptPasswordEncoder bCryptPasswordEncoder;
 
   @Value("${app.admin.name}")
   private String adminName;
@@ -42,6 +44,8 @@ public class ToneAnalyzerApplication {
 
   public static void main(String[] args) {
     SpringApplication.run(ToneAnalyzerApplication.class, args);
+
+
   }
 
   @Bean
@@ -51,7 +55,8 @@ public class ToneAnalyzerApplication {
       if (admin == null) {
         String encodedPassword = bCryptPasswordEncoder.encode(plainTextPassword);
         admin = new Account(adminName, encodedPassword);
-        admin.setRole(Arrays.asList(new Role(ROLE_ADMIN), new Role(ROLE_USER), new Role(ROLE_ACTUATOR) ));
+        admin.setRole(
+            Arrays.asList(new Role(ROLE_ADMIN), new Role(ROLE_USER), new Role(ROLE_ACTUATOR)));
         accountRepository.save(admin);
       }
     };

@@ -18,45 +18,56 @@ import java.nio.charset.StandardCharsets;
 
 import org.thymeleaf.context.Context;
 
-/** Created by Dell on 1/15/2018. */
+/**
+ * Created by Dell on 1/15/2018.
+ */
 @Service
 public class MailService {
 
-  private static final Logger log = LoggerFactory.getLogger(MailService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MailService.class);
 
   @Value("${mail.from}")
   private String mailFrom;
 
-  @Autowired private JavaMailSender mailSender;
+  @Autowired
+  private JavaMailSender mailSender;
 
-  @Autowired private EmailInvitationRepository emailInvitationRepository;
+  @Autowired
+  private EmailInvitationRepository emailInvitationRepository;
 
-  @Autowired private SpringTemplateEngine templateEngine;
+  @Autowired
+  private SpringTemplateEngine templateEngine;
 
   public void sendMail(UserEmailInvitationNotification userInvitationNotification)
       throws MessagingException {
 
-    MimeMessage message = mailSender.createMimeMessage();
-    MimeMessageHelper helper =
-        new MimeMessageHelper(
-            message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+    try {
 
-    Context context = new Context();
-    context.setVariables(userInvitationNotification.getModel());
-    String html = templateEngine.process("email-invitation", context);
-    log.info("email content: {}", html);
+      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessageHelper helper =
+          new MimeMessageHelper(
+              message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
+              StandardCharsets.UTF_8.name());
 
-    helper.setTo((String)userInvitationNotification.getModel().get("receiver"));
-    helper.setText(html, true);
-    helper.setSubject(userInvitationNotification.getSubject());
-    helper.setFrom(mailFrom);
-   // mailSender.send(message);
+      Context context = new Context();
+      context.setVariables(userInvitationNotification.getModel());
+      String html = templateEngine.process("email-invitation", context);
+      LOG.info("email content: {}", html);
 
-    EmailInvitation emailInvitation =
-        new EmailInvitation(
-            (String)userInvitationNotification.getModel().get("sender"),
-            (String)userInvitationNotification.getModel().get("receiver"),
-            userInvitationNotification.getToken());
-    emailInvitationRepository.save(emailInvitation);
+      helper.setTo((String) userInvitationNotification.getModel().get("receiver"));
+      helper.setText(html, true);
+      helper.setSubject(userInvitationNotification.getSubject());
+      helper.setFrom(mailFrom);
+      mailSender.send(message);
+
+      EmailInvitation emailInvitation =
+          new EmailInvitation(
+              (String) userInvitationNotification.getModel().get("sender"),
+              (String) userInvitationNotification.getModel().get("receiver"),
+              userInvitationNotification.getToken());
+      emailInvitationRepository.save(emailInvitation);
+    } catch (Exception exception) {
+      LOG.info("exception sending email {}", exception.getCause());
+    }
   }
 }

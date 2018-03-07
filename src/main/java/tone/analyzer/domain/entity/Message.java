@@ -6,11 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
 
-/** Created by user on 4/11/2017. */
+/**
+ * Created by user on 4/11/2017.
+ */
 @Document
-public class Message implements Serializable{
+public class Message implements Serializable {
 
-  @Id private String id;
+  @Id
+  private String id;
 
   private String sender;
 
@@ -22,7 +25,8 @@ public class Message implements Serializable{
 
   private String receiver;
 
-  public Message() {}
+  public Message() {
+  }
 
   public Message(
       String conversationId, String sender, String receiver, String content, Date createdTime) {

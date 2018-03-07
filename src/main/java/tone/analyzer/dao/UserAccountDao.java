@@ -18,21 +18,28 @@ import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.event.PresenceEventListener;
 
-/** Created by Dell on 1/17/2018. */
+/**
+ * Created by Dell on 1/17/2018.
+ */
 @Component
 public class UserAccountDao {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserAccountDao.class);
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  @Autowired private PresenceEventListener presenceEventListener;
+  @Autowired
+  private PresenceEventListener presenceEventListener;
 
-  @Autowired private AccountRepository accountRepository;
+  @Autowired
+  private AccountRepository accountRepository;
 
-  @Autowired SimpUserRegistry simpUserRegistry;
+  @Autowired
+  SimpUserRegistry simpUserRegistry;
 
-  @Autowired private AccountRepository userAccountRepository;
+  @Autowired
+  private AccountRepository userAccountRepository;
 
   public void processEmailInvitationAndUpdateBuddyListIfAbsent(
       EmailInvitation token, Account account) {
@@ -43,7 +50,9 @@ public class UserAccountDao {
     if (receiverAccount != null) {
       emailInvitationReceiverBuddyList = receiverAccount.getBuddyList();
     }
-    if (receiverAccount == null) receiverAccount = userService.save(account);
+    if (receiverAccount == null) {
+      receiverAccount = userService.save(account);
+    }
 
     Account userEmailInvitationSender = userService.findByName(token.getSender());
     Set<BuddyDetails> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
@@ -69,7 +78,9 @@ public class UserAccountDao {
     Set<BuddyDetails> buddyList = userAccount.getBuddyList();
     List<LoginEvent> onlineBuddyList = new ArrayList<>();
 
-    if (buddyList == null) return buddyListObjects;
+    if (buddyList == null) {
+      return buddyListObjects;
+    }
 
     for (BuddyDetails buddy : buddyList) {
       LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
@@ -86,7 +97,9 @@ public class UserAccountDao {
       LOG.info("currently online: {}", currentUser.getName());
       if (buddyList.contains(new BuddyDetails(currentUser.getName(), currentUser.getName()))) {
         int indexOnlineUser = buddyListObjects.indexOf(new LoginEvent(currentUser.getName(), true));
-        if (indexOnlineUser == -1) continue;
+        if (indexOnlineUser == -1) {
+          continue;
+        }
 
         if (completeBuddyListWithOnlinePresence) {
           LoginEvent loginEvent = buddyListObjects.get(indexOnlineUser);
@@ -98,7 +111,9 @@ public class UserAccountDao {
         }
       }
     }
-    if (completeBuddyListWithOnlinePresence) return buddyListObjects;
+    if (completeBuddyListWithOnlinePresence) {
+      return buddyListObjects;
+    }
     return onlineBuddyList;
   }
 }

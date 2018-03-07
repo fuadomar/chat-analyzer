@@ -58,7 +58,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -102,7 +104,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   public static final String REMEMBER_ME = "remember-me";
 
-  @Autowired private UserDetailsService userDetailsService;
+  @Autowired
+  private UserDetailsService userDetailsService;
 
   private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -110,11 +113,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   private final ClientDetailsService clientDetailsService;
 
-  @Autowired private AccountRepository userRepository;
+  @Autowired
+  private AccountRepository userRepository;
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
-  @Autowired TokenService persistentTokenRepository;
+  @Autowired
+  TokenService persistentTokenRepository;
 
   @Autowired
   public WebSecurityConfig(
@@ -132,11 +138,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   @Override
   public void configure(
       AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer)
-      throws Exception {}
+      throws Exception {
+  }
 
   @Configuration
   @EnableResourceServer
   protected static class ResourceServerConfiguration extends ResourceServerConfigurerAdapter {
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
       http.antMatcher("/live-chat").authorizeRequests().anyRequest().authenticated();
@@ -183,8 +191,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
                     authentication.getAuthorities();
                 boolean isAdmin = authorities.contains(new SimpleGrantedAuthority(ROLE_ADMIN));
                 boolean isUser = authorities.contains(new SimpleGrantedAuthority(ROLE_USER));
-                if (isAdmin) redirectStrategy.sendRedirect(request, response, ADMIN_URI);
-                else if (isUser) redirectStrategy.sendRedirect(request, response, LIVE_CHAT_URI);
+                if (isAdmin) {
+                  redirectStrategy.sendRedirect(request, response, ADMIN_URI);
+                } else if (isUser) {
+                  redirectStrategy.sendRedirect(request, response, LIVE_CHAT_URI);
+                }
               }
             })
         .failureHandler(
@@ -281,8 +292,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             if (authentication.isAuthenticated()) {
               Account account = userRepository.findByName(principalNameFromAuthentication);
 
-              if (account == null)
+              if (account == null) {
                 userService.save(new Account(principalNameFromAuthentication, displayName));
+              }
               redirectStrategy.sendRedirect(httpServletRequest, httpServletResponse, LIVE_CHAT_URI);
             }
           }
@@ -302,7 +314,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   }
 
   @Override
-  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {}
+  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+  }
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {

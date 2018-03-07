@@ -1,6 +1,9 @@
 package tone.analyzer.validator;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -41,7 +44,8 @@ public class AccountValidator implements Validator {
 
   public static final String PASSWORD_SIZE_MESSAGE = "Size.AccountForm.password";
 
-  @Autowired private UserService userService;
+  @Autowired
+  private UserService userService;
 
   @Override
   public boolean supports(Class<?> aClass) {

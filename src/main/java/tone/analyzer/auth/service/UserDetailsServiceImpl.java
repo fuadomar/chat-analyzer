@@ -14,17 +14,22 @@ import tone.analyzer.domain.repository.AccountRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  @Autowired private AccountRepository userRepository;
+  @Autowired
+  private AccountRepository userRepository;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
     Account user = userRepository.findByName(username);
-    if (user == null) throw new UsernameNotFoundException("Account not found");
+    if (user == null) {
+      throw new UsernameNotFoundException("Account not found");
+    }
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
     for (Role role : user.getRole()) {

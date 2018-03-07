@@ -9,11 +9,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Document
 public class Account implements Serializable {
 
-  @Id private String id;
+  @Id
+  private String id;
 
   @Indexed(unique = true)
   private String name;
@@ -28,7 +31,8 @@ public class Account implements Serializable {
 
   private DocumentMetaData documentMetaData;
 
-  public Account() {}
+  public Account() {
+  }
 
   public Account(String name, String password) {
     this.name = name.toLowerCase();

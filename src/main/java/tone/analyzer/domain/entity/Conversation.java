@@ -4,17 +4,21 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/** Created by user on 4/11/2017. */
+/**
+ * Created by user on 4/11/2017.
+ */
 @Document
-public class Conversation implements Serializable{
+public class Conversation implements Serializable {
 
-  @Id private String id;
+  @Id
+  private String id;
 
   private String sender;
 
   private String recipient;
 
-  public Conversation() {}
+  public Conversation() {
+  }
 
   public Conversation(String initiator, String recipient) {
     this.sender = initiator;

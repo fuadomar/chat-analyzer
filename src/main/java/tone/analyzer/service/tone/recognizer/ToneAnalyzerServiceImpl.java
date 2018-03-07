@@ -13,7 +13,9 @@ import tone.analyzer.utility.ToneAnalyzerUtility;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 @Component
 public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
 
@@ -25,7 +27,8 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   @Value("${watson.user.password}")
   private String password;
 
-  @Autowired private ToneAnalyzerUtility toneAnalyzerUtility;
+  @Autowired
+  private ToneAnalyzerUtility toneAnalyzerUtility;
 
   @Override
   public ToneAnalyzerFeedBackDTO analyzerConversationalToneBetweenTwoUser(ChatMessage chatMessage) {

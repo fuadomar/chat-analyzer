@@ -34,75 +34,84 @@ import java.util.UUID;
 @RestController
 public class ToneAnalyzerChartImageRESTController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerChartImageRESTController.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(ToneAnalyzerChartImageRESTController.class);
 
-    @Autowired
-    private ToneAnalyzerUtility toneAnalyzerUtility;
+  @Autowired
+  private ToneAnalyzerUtility toneAnalyzerUtility;
 
-    @Value("${tone.analyzer.image.repository")
-    private String toneAnalyzerImageStorageLocation;
+  @Value("${tone.analyzer.image.repository")
+  private String toneAnalyzerImageStorageLocation;
 
-    @Autowired
-    private ImageRepository imageRepository;
+  @Autowired
+  private ImageRepository imageRepository;
 
-    @Autowired
-    private ToneAnalyzerChartImageDetailsRepository toneAnalyzerChartImageDetailsRepository;
+  @Autowired
+  private ToneAnalyzerChartImageDetailsRepository toneAnalyzerChartImageDetailsRepository;
 
-    @Autowired
-    private ProfileImageGateway profileImageGateway;
+  @Autowired
+  private ProfileImageGateway profileImageGateway;
 
-    @RequestMapping(value = "/tone_analyzer/images/{image}", method = RequestMethod.GET)
-    public void retrieveImageAsByteArray(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            @PathVariable("image") String image,
-            Principal principal)
-            throws IOException {
+  @RequestMapping(value = "/tone_analyzer/images/{image}", method = RequestMethod.GET)
+  public void retrieveImageAsByteArray(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      @PathVariable("image") String image,
+      Principal principal)
+      throws IOException {
 
-        ToneAnalyzerChartImageDetails toneAnalyzerChartImageDetails = toneAnalyzerChartImageDetailsRepository.findByDocumentMetaDataName(image);
-        if (toneAnalyzerChartImageDetails == null || toneAnalyzerChartImageDetails.getDocumentMetaData() == null)
-            return;
-        DocumentMetaData documentMetaData = toneAnalyzerChartImageDetails.getDocumentMetaData();
-        if (documentMetaData != null && !StringUtils.isEmpty(documentMetaData.getName()))
-            profileImageGateway.retrieveImageAsByteArray(request, response, image, true);
+    ToneAnalyzerChartImageDetails toneAnalyzerChartImageDetails = toneAnalyzerChartImageDetailsRepository
+        .findByDocumentMetaDataName(image);
+    if (toneAnalyzerChartImageDetails == null
+        || toneAnalyzerChartImageDetails.getDocumentMetaData() == null) {
+      return;
     }
-
-
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(value = "/tone_analyzer/upload/images", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String uploadBase64Image(
-            @RequestParam("image") String image, HttpServletRequest request, Principal principal) {
-        try {
-
-            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String loggedInUser;
-            if (auth instanceof OAuth2Authentication)
-                loggedInUser = new ToneAnalyzerUtility().findPrincipalNameFromAuthentication(auth);
-            else loggedInUser = auth.getName();
-
-            String loggedInUserSignature = loggedInUser + System.currentTimeMillis();
-            String sha256hex =
-                    Hashing.sha256().hashString(loggedInUserSignature, StandardCharsets.UTF_8).toString();
-            String imageName = sha256hex + UUID.randomUUID().toString() + ".png";
-
-            LOG.info("image base64:  {}", image);
-            String delimiter = "data:image/png;base64,";
-            int imageLength = image.length();
-            String base64Image = image.substring(delimiter.length(), imageLength - 2);
-
-            byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
-
-            Document document = new Document(imageName, imageBytes);
-            DocumentMetaData documentMetaData =
-                    new DocumentMetaData(imageName, toneAnalyzerImageStorageLocation, new Date());
-            imageRepository.add(document, true);
-            toneAnalyzerChartImageDetailsRepository.save(new ToneAnalyzerChartImageDetails(loggedInUser, documentMetaData));
-            return toneAnalyzerUtility.retrieveRootHostUrl(request) + "/tone_analyzer/images/" + document.getName();
-
-        } catch (Exception e) {
-            return "error = " + e;
-        }
+    DocumentMetaData documentMetaData = toneAnalyzerChartImageDetails.getDocumentMetaData();
+    if (documentMetaData != null && !StringUtils.isEmpty(documentMetaData.getName())) {
+      profileImageGateway.retrieveImageAsByteArray(request, response, image, true);
     }
+  }
+
+
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @RequestMapping(value = "/tone_analyzer/upload/images", method = RequestMethod.POST)
+  public
+  @ResponseBody
+  String uploadBase64Image(
+      @RequestParam("image") String image, HttpServletRequest request, Principal principal) {
+    try {
+
+      Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+      String loggedInUser;
+      if (auth instanceof OAuth2Authentication) {
+        loggedInUser = new ToneAnalyzerUtility().findPrincipalNameFromAuthentication(auth);
+      } else {
+        loggedInUser = auth.getName();
+      }
+
+      String loggedInUserSignature = loggedInUser + System.currentTimeMillis();
+      String sha256hex =
+          Hashing.sha256().hashString(loggedInUserSignature, StandardCharsets.UTF_8).toString();
+      String imageName = sha256hex + UUID.randomUUID().toString() + ".png";
+
+      LOG.info("image base64:  {}", image);
+      String delimiter = "data:image/png;base64,";
+      int imageLength = image.length();
+      String base64Image = image.substring(delimiter.length(), imageLength - 2);
+
+      byte[] imageBytes = javax.xml.bind.DatatypeConverter.parseBase64Binary(base64Image);
+
+      Document document = new Document(imageName, imageBytes);
+      DocumentMetaData documentMetaData =
+          new DocumentMetaData(imageName, toneAnalyzerImageStorageLocation, new Date());
+      imageRepository.add(document, true);
+      toneAnalyzerChartImageDetailsRepository
+          .save(new ToneAnalyzerChartImageDetails(loggedInUser, documentMetaData));
+      return toneAnalyzerUtility.retrieveRootHostUrl(request) + "/tone_analyzer/images/" + document
+          .getName();
+
+    } catch (Exception e) {
+      return "error = " + e;
+    }
+  }
 }

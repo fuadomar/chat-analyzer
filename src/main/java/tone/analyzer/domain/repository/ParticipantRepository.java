@@ -9,7 +9,9 @@ import tone.analyzer.event.LoginEvent;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** Created by mozammal on 4/12/17. */
+/**
+ * Created by mozammal on 4/12/17.
+ */
 @Component
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ParticipantRepository {

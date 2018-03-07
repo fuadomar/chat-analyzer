@@ -2,10 +2,13 @@ package tone.analyzer.domain.model;
 
 import java.io.Serializable;
 
-/** Created by mozammal on 4/11/17. */
-public class ChatMessage implements Serializable{
+/**
+ * Created by mozammal on 4/11/17.
+ */
+public class ChatMessage implements Serializable {
 
-  public ChatMessage() {}
+  public ChatMessage() {
+  }
 
   public ChatMessage(String topic, String recipient, String message) {
     this.recipient = recipient;

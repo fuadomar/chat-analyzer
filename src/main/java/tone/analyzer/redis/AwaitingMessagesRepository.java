@@ -6,17 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import tone.analyzer.domain.DTO.AwaitingMessagesNotificationDetailsDTO;
 
-/** Created by Dell on 1/29/2018. */
+/**
+ * Created by Dell on 1/29/2018.
+ */
 public class AwaitingMessagesRepository
     implements IHashRepository<AwaitingMessagesNotificationDetailsDTO> {
 
-  @Autowired RedisTemplate<String, AwaitingMessagesNotificationDetailsDTO> genericDTORedisTemplate;
+  @Autowired
+  RedisTemplate<String, AwaitingMessagesNotificationDetailsDTO> genericDTORedisTemplate;
 
   @Override
-  public void put(AwaitingMessagesNotificationDetailsDTO obj) {}
+  public void put(AwaitingMessagesNotificationDetailsDTO obj) {
+  }
 
   @Override
-  public void multiPut(Collection<AwaitingMessagesNotificationDetailsDTO> keys) {}
+  public void multiPut(Collection<AwaitingMessagesNotificationDetailsDTO> keys) {
+  }
 
   @Override
   public AwaitingMessagesNotificationDetailsDTO get(Long id) {
@@ -29,7 +34,8 @@ public class AwaitingMessagesRepository
   }
 
   @Override
-  public void delete(AwaitingMessagesNotificationDetailsDTO key) {}
+  public void delete(AwaitingMessagesNotificationDetailsDTO key) {
+  }
 
   @Override
   public List<AwaitingMessagesNotificationDetailsDTO> getObjects() {
@@ -37,5 +43,6 @@ public class AwaitingMessagesRepository
   }
 
   @Override
-  public void delete() {}
+  public void delete() {
+  }
 }

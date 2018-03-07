@@ -3,7 +3,9 @@ package tone.analyzer.event;
 import java.io.Serializable;
 import java.util.Date;
 
-/** Created by mozammal on 4/12/17. */
+/**
+ * Created by mozammal on 4/12/17.
+ */
 public class LoginEvent implements Serializable {
 
   private String userName;
@@ -16,7 +18,8 @@ public class LoginEvent implements Serializable {
 
   private String profileImage;
 
-  public LoginEvent() {}
+  public LoginEvent() {
+  }
 
   public LoginEvent(String username) {
     this.userName = username;
@@ -39,7 +42,9 @@ public class LoginEvent implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof LoginEvent)) return false;
+    if (!(o instanceof LoginEvent)) {
+      return false;
+    }
     LoginEvent other = (LoginEvent) o;
     return other.getUserName().equals(this.userName);
   }

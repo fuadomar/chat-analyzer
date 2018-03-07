@@ -52,7 +52,7 @@ public class DocumentMetaData implements Serializable {
     return name;
   }
 
-  public String getFileLocation()  {
+  public String getFileLocation() {
     return fileLocation;
   }
 

@@ -175,6 +175,7 @@ $(document).ready(function () {
       }
     });
   });
+
   function drawDonut(dataPoint, div, title) {
 
     var divId = "";

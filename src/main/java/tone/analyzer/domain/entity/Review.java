@@ -4,17 +4,21 @@ import java.io.Serializable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/** Created by mozammal on 4/25/17. */
+/**
+ * Created by mozammal on 4/25/17.
+ */
 @Document
-public class Review implements Serializable{
+public class Review implements Serializable {
 
-  @Id private String id;
+  @Id
+  private String id;
 
   private String user;
 
   private String content;
 
-  public Review() {}
+  public Review() {
+  }
 
   public Review(String user, String content) {
     this.user = user;

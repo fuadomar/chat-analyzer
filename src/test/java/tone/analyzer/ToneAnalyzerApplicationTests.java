@@ -38,9 +38,11 @@ public class ToneAnalyzerApplicationTests {
 
   public static final String USER_REGISTRATION_URI = "/user-registration";
 
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
-  @Autowired org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+  @Autowired
+  org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
 
   private MockMvc mockMvc;
 
@@ -60,7 +62,8 @@ public class ToneAnalyzerApplicationTests {
   }
 
   @Test
-  public void contextLoads() {}
+  public void contextLoads() {
+  }
 
   @Test
   public void testShouldRedirectUnauthorizedUser() throws Exception {

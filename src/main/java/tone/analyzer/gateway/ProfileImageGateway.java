@@ -10,7 +10,9 @@ import tone.analyzer.service.image.ProfileImageProviderService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/** Created by Dell on 1/17/2018. */
+/**
+ * Created by Dell on 1/17/2018.
+ */
 @Component
 public class ProfileImageGateway {
 
@@ -25,7 +27,8 @@ public class ProfileImageGateway {
     return fileUploadService.upload(file);
   }
 
-  public void retrieveImageAsByteArray(HttpServletRequest request, HttpServletResponse response, String image, boolean isBase64Image) throws IOException {
+  public void retrieveImageAsByteArray(HttpServletRequest request, HttpServletResponse response,
+      String image, boolean isBase64Image) throws IOException {
 
     profileImageService.getImageAsByteArray(request, response, image, isBase64Image);
 

@@ -21,7 +21,8 @@ import tone.analyzer.domain.repository.ParticipantRepository;
 
 /**
  * Listener to track user presence. Sends notifications to the login destination when a connected
- * event is received and notifications to the logout destination when a disconnect event is received
+ * event is received and notifications to the logout destination when a disconnect event is
+ * received
  *
  * @author Sergi Almar
  */
@@ -43,11 +44,14 @@ public class PresenceEventListener {
 
   private Map<String, String> sessionToUserIdMap;
 
-  @Autowired private AccountRepository accountRepository;
+  @Autowired
+  private AccountRepository accountRepository;
 
-  @Autowired private UserAccountDao userAccountDao;
+  @Autowired
+  private UserAccountDao userAccountDao;
 
-  @Autowired SimpUserRegistry simpUserRegistry;
+  @Autowired
+  SimpUserRegistry simpUserRegistry;
 
   public PresenceEventListener(
       SimpMessagingTemplate messagingTemplate, ParticipantRepository participantRepository) {
@@ -87,7 +91,7 @@ public class PresenceEventListener {
   private void handleSessionDisconnect(SessionDisconnectEvent event) {
     LOG.info("logged out user session id: {}", event.getSessionId());
     Optional.ofNullable(
-            participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
+        participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
         .ifPresent(
             login -> {
               List<LoginEvent> onlineBuddyList =

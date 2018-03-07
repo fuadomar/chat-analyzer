@@ -5,11 +5,14 @@ import org.springframework.stereotype.Service;
 import tone.analyzer.domain.entity.Review;
 import tone.analyzer.domain.repository.ReviewRepository;
 
-/** Created by mozammal on 4/25/17. */
+/**
+ * Created by mozammal on 4/25/17.
+ */
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-  @Autowired private ReviewRepository reviewRepository;
+  @Autowired
+  private ReviewRepository reviewRepository;
 
   @Override
   public void saveReview(Review review) {

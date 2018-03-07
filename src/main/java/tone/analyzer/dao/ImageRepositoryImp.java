@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.model.Document;
 
-/** Created by Dell on 1/17/2018. */
+/**
+ * Created by Dell on 1/17/2018.
+ */
 @Component
 public class ImageRepositoryImp implements ImageRepository {
 
@@ -65,8 +67,10 @@ public class ImageRepositoryImp implements ImageRepository {
 
     //BufferedImage img = ImageIO.read(new ByteArrayInputStream(document.getContent()));
     BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-    img.createGraphics().drawImage(ImageIO.read(new ByteArrayInputStream(document.getContent())).getScaledInstance(100, 100, Image.SCALE_SMOOTH),0,0,null);
-    ImageIO.write(img, "jpg",new FileOutputStream(new File(profielThumbImageStorageLocation, document.getThumbNail())));
+    img.createGraphics().drawImage(ImageIO.read(new ByteArrayInputStream(document.getContent()))
+        .getScaledInstance(100, 100, Image.SCALE_SMOOTH), 0, 0, null);
+    ImageIO.write(img, "jpg",
+        new FileOutputStream(new File(profielThumbImageStorageLocation, document.getThumbNail())));
   }
 
   private void createDirectory(String path) {
@@ -74,14 +78,14 @@ public class ImageRepositoryImp implements ImageRepository {
     file.mkdirs();
   }
 
-  private BufferedImage scale(BufferedImage source,double ratio) {
+  private BufferedImage scale(BufferedImage source, double ratio) {
     int w = (int) (source.getWidth() * ratio);
     int h = (int) (source.getHeight() * ratio);
     BufferedImage bi = getCompatibleImage(w, h);
     Graphics2D g2d = bi.createGraphics();
     double xScale = (double) w / source.getWidth();
     double yScale = (double) h / source.getHeight();
-    AffineTransform at = AffineTransform.getScaleInstance(xScale,yScale);
+    AffineTransform at = AffineTransform.getScaleInstance(xScale, yScale);
     g2d.drawRenderedImage(source, at);
     g2d.dispose();
     return bi;

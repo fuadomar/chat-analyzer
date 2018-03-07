@@ -8,7 +8,9 @@ import tone.analyzer.event.LoginEvent;
 
 import java.util.Collection;
 
-/** Created by mozammal on 4/27/17. */
+/**
+ * Created by mozammal on 4/27/17.
+ */
 public interface IInstantMessaging {
 
   @MessageMapping("/chat-message/message")

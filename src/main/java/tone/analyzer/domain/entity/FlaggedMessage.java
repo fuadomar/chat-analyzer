@@ -6,11 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-/** Created by mozammal on 4/26/17. */
+/**
+ * Created by mozammal on 4/26/17.
+ */
 @Document
-public class FlaggedMessage implements Serializable{
+public class FlaggedMessage implements Serializable {
 
-  @Id private String id;
+  @Id
+  private String id;
 
   private String sender;
 
@@ -20,7 +23,8 @@ public class FlaggedMessage implements Serializable{
 
   List<Double> likelyToneScore;
 
-  public FlaggedMessage() {}
+  public FlaggedMessage() {
+  }
 
   public String getSender() {
     return sender;

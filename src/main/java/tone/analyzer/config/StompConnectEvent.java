@@ -11,13 +11,16 @@ import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.websocket.ChatMessageProducer;
 
-/** Created by mozammal on 4/12/17. */
+/**
+ * Created by mozammal on 4/12/17.
+ */
 @Component
 public class StompConnectEvent implements ApplicationListener<SessionConnectEvent> {
 
   private final Log logger = LogFactory.getLog(StompConnectEvent.class);
 
-  @Autowired private ChatMessageProducer messageProducer;
+  @Autowired
+  private ChatMessageProducer messageProducer;
 
   public void onApplicationEvent(SessionConnectEvent event) {
     StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());

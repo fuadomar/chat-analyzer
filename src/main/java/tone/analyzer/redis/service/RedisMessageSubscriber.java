@@ -6,7 +6,9 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Service;
 
-/** Created by Dell on 1/29/2018. */
+/**
+ * Created by Dell on 1/29/2018.
+ */
 @Service
 public class RedisMessageSubscriber implements MessageListener {
 

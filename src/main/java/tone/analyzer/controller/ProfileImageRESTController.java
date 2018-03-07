@@ -18,11 +18,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.security.Principal;
 
-/** Created by user on 1/28/2018. */
+/**
+ * Created by user on 1/28/2018.
+ */
 @RestController
 public class ProfileImageRESTController {
 
-  @Autowired private ProfileImageGateway profileImageGateway;
+  @Autowired
+  private ProfileImageGateway profileImageGateway;
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/profiles/images/{image}", method = RequestMethod.GET)
@@ -38,9 +41,9 @@ public class ProfileImageRESTController {
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
-    value = "/upload/profile/images",
-    method = RequestMethod.POST,
-    consumes = {"multipart/form-data"}
+      value = "/upload/profile/images",
+      method = RequestMethod.POST,
+      consumes = {"multipart/form-data"}
   )
   public String upload(@RequestPart(value = "file", required = true) MultipartFile file)
       throws IOException {

@@ -11,7 +11,9 @@ import tone.analyzer.service.mail.MailService;
 
 import javax.mail.MessagingException;
 
-/** Created by Dell on 1/15/2018. */
+/**
+ * Created by Dell on 1/15/2018.
+ */
 @Service
 public class RabbitmqMessageListener {
 
@@ -19,7 +21,8 @@ public class RabbitmqMessageListener {
 
   private static Logger logger = LoggerFactory.getLogger(RabbitmqMessageListener.class);
 
-  @Autowired private MailService mailService;
+  @Autowired
+  private MailService mailService;
 
   @Value("${mail.from}")
   private String from;

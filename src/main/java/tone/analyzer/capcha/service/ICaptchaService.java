@@ -5,9 +5,9 @@ package tone.analyzer.capcha.service;
  */
 public interface ICaptchaService {
 
-    void processResponse(final String response) throws Exception;
+  void processResponse(final String response) throws Exception;
 
-    String getReCaptchaSite();
+  String getReCaptchaSite();
 
-    String getReCaptchaSecret();
+  String getReCaptchaSecret();
 }

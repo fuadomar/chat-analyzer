@@ -3,14 +3,17 @@ package tone.analyzer.domain.entity;
 import java.io.Serializable;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-/** Created by user on 1/8/2018. */
-public class BuddyDetails implements Serializable{
+/**
+ * Created by user on 1/8/2018.
+ */
+public class BuddyDetails implements Serializable {
 
   private String id;
 
   private String name;
 
-  public BuddyDetails() {}
+  public BuddyDetails() {
+  }
 
   public BuddyDetails(String id, String name) {
     this.id = id;
@@ -44,7 +47,7 @@ public class BuddyDetails implements Serializable{
 
     BuddyDetails that = (BuddyDetails) o;
 
-    if (name != null ? !name.equals(that.name) : that.name!= null) {
+    if (name != null ? !name.equals(that.name) : that.name != null) {
       return false;
     }
     return true;
