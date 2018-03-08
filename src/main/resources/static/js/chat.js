@@ -429,21 +429,15 @@ $(document).ready(function () {
     $("#contacts-uli").on("click", "li", function (event) {
       console.log('clicked ' + $(this).attr('id'));
       $('#ul-messages').html('');
+      var receiverId = $(this).attr('id').replace("mgs-li-", "")
       profileImageLoggedInUser = $('.wrap img').attr('src');
       profileImageBuddy = $("#" + $(this).attr('id') + " .wrap img").attr(
           'src');
-      var receiverId = $(this).attr('id').replace("mgs-li-", "")
+      var currentUserToChat = '<img src="'+profileImageBuddy+'" alt="" alt="" height="40" width="40"/>';
+      currentUserToChat = currentUserToChat + '<p>'+ $(".meta "+"#"+receiverId).html() + '</p>';
+      $("#contact-profile").html(currentUserToChat);
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
-
-      /* hideNotificationPanel();
-       $.get({
-       type: 'get',
-       url: '/dispose_all_message_notification',
-       success: function (data) {
-       jQuery.event.trigger("ajaxStop");
-       }
-       });*/
 
       userClickedOnWhcihBuddyMessageBox = $(
           "#" + $(this).attr('id') + " .wrap .meta .name").text();
