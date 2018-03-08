@@ -200,10 +200,11 @@ public class UserAccountControllerWeb {
         emailInvitationService.findByToeknAndSenderAndReceiver(token, sender, receiver);
 
     if (emailInvitationServiceByToekn == null) {
-      new ModelAndView("redirect:/login");
+      new ModelAndView("redirect:/login.html");
     }
     modelAndView.addObject("confirmationToken", emailInvitationServiceByToekn.getToken());
     modelAndView.setViewName("user-registration-email");
+    modelAndView.addObject("invitedBy", emailInvitationServiceByToekn.getSender());
     return modelAndView;
   }
 
