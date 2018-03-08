@@ -396,8 +396,14 @@ $(document).ready(function () {
     });
 
     $("#myModal").on("show.bs.modal", function (e) {
-      var link = $(e.relatedTarget);
-      $(this).find(".modal-body").load(link.attr("href"));
+      /* var link = $(e.relatedTarget);
+       $(this).find(".modal-body").load(link.attr("href"));*/
+      //invitation-text-area
+      var email = $("#exampleInputEmail1").val();
+      var name = $("#name").val();
+      var emailTemplate = "Dear "+name+" ," + " I have found a great chatting tool where they will show us some really cool insights based on our conversation. I think, it will be a lot of fun!";
+      emailTemplate = emailTemplate +  userName;
+      $("#email-invitation-text-area").val(emailTemplate);
     });
 
     /* $(document).click(function () {
@@ -568,12 +574,13 @@ $(document).ready(function () {
 
     function newMessage() {
 
-      var message = $(".message-input input").val();
+      var message = $("#message-box").val();
       var recipientId = $('.message-input').attr('id');
       console.log("id from newMessage: " + recipientId);
       if ($.trim(message) == '') {
         return false;
       }
+      $("#message-box").val("");
       stompClient.send("/app/send.message", {}, JSON.stringify({
         'topic': "message", 'message': message,
         'recipient': recipientId
@@ -596,7 +603,7 @@ $(document).ready(function () {
       newMessage();
     });
 
-    $(window).on('keydown', function (e) {
+    $("textarea").on('keydown', function (e) {
       if (e.which == 13) {
         newMessage();
         return false;

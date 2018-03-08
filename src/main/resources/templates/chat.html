@@ -1210,43 +1210,18 @@
   <div class="row">
 
     <div class="button-container">
-      <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
+     <!-- <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalHorizontal">
         Invite Friends
-      </button>
+      </button>-->
       <button type="button" class="btn btn-info" data-toggle="modal" data-target="#uploadModal">
         Upload Profile Photo
       </button>
 
 
       <form th:action="@{/logout}" method="post">
-        <!--    <a class=" " name="registration"
-                        type="Submit" style="float: right; color: red; text-decoration: underline; cursor:pointer;">
-                logout
-                </a>-->
         <button class="btn btn-link logout-design" type="submit">log out</button>
       </form>
     </div>
-
-    <!--    <div class="notification-unseen-mesages">
-          <div>
-            <ul>
-              <li id="noti_Container">
-                <div id="noti_Counter"></div>   &lt;!&ndash;SHOW NOTIFICATIONS COUNT.&ndash;&gt;
-
-                &lt;!&ndash;A CIRCLE LIKE BUTTON TO DISPLAY NOTIFICATION DROPDOWN.&ndash;&gt;
-                <div id="noti_Button"></div>
-
-                &lt;!&ndash;THE NOTIFICAIONS DROPDOWN BOX.&ndash;&gt;
-                <div id="notifications">
-                  <h3>Notifications</h3>
-                  <div style="height:300px;"></div>
-                  <div class="seeAll"><a href="#">See All</a></div>
-                </div>
-              </li>
-              <li><a href="#">Messages</a></li>
-            </ul>
-          </div>
-        </div>-->
 
     <div id="success-msg-mail-send">
       The mail has been sent successfully!
@@ -1277,9 +1252,7 @@
       <div id="sidepanel">
         <div id="profile">
           <div class="wrap">
-            <!-- <img id="profile-img" src="http://emilcarlsson.se/assets/mikeross.png" class="online" alt="" />-->
-            <!--   <img th:height="50" th:width="180" src="../static/images/images.png"
-                    th:src="@{/images/images.png}"/>-->
+
             <img
                 th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
                 alt="memorynotfound logo"
@@ -1302,20 +1275,9 @@
                   <p>Offline</p></li>
               </ul>
             </div>
-            <!--<div id="expanded">-->
-            <!--<label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>-->
-            <!--<input name="twitter" type="text" value="mikeross"/>-->
-            <!--<label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>-->
-            <!--<input name="twitter" type="text" value="ross81"/>-->
-            <!--<label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>-->
-            <!--<input name="twitter" type="text" value="mike.ross"/>-->
-            <!--</div>-->
           </div>
         </div>
-        <!--<div id="search">-->
-        <!--<label for=""><i class="fa fa-search" aria-hidden="true"></i></label>-->
-        <!--<input type="text" placeholder="Search contacts..."/>-->
-        <!--</div>-->
+
         <div id="contacts">
           <ul id="contacts-uli">
           </ul>
@@ -1339,7 +1301,7 @@
         <div class="message-input">
           <div class="wrap">
                         <span class="text-area">
-                            <textarea type="text" placeholder="Write your message..."
+                            <textarea id="message-box" type="text" placeholder="Write your message..."
                                       class="form-control"></textarea>
                         </span>
             <!--  <i class="fa fa-paperclip attachment" aria-hidden="true"></i>-->
@@ -1356,7 +1318,6 @@
 
           <!-- <li><a href="#" data-toggle="modal" data-target="#modalRegister"> Register</a></li>-->
         </div>
-
       </div>
     </div>
   </div>
@@ -1369,7 +1330,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
 
-      <!-- <div class="content-body">
+       <div class="content-body">
            <div class="row">
                <div class="col-sm-7 col-sm-offset-5">
                    <h2>Chat with your friend and know his state of mind in 3 easy steps</h2>
@@ -1389,62 +1350,35 @@
                        </div>
                        <div class="form-group">
                            <button type="button" class="btn start-btn" data-toggle="modal"
-                                   data-target="#myModal">Start Chat
+                                    data-target="#myModal">Start Chat
                            </button>
                        </div>
+
+
                    </form>
                </div>
            </div>
-       </div>-->
-
-
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <button type="button" class="close"
-                data-dismiss="modal">
-          <span aria-hidden="true">&times;</span>
-          <span class="sr-only">Close</span>
-        </button>
-        <h4 class="modal-title">
-          Send Inv to friends & family
-        </h4>
+       </div>
       </div>
-
-      Modal Body
-      <div class="modal-body" id="invitation-modal">
-
-        <form class="form-horizontal" role="form" id="invitation-form">
-
-          <div class="form-group">
-            <label class="col-sm-2 control-label"
-                   for="text3">Name</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control"
-                     id="text3" placeholder="Name"/>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="col-sm-2 control-label"
-                   for="inputEmail">Email</label>
-            <div class="col-sm-10">
-              <input type="sender" class="form-control"
-                     id="inputEmail" placeholder="Email"/>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <!-- Modal Footer -->
-      <!--<div class="modal-footer">-->
-      <!--<button type="button" class="btn btn-default"-->
-      <!--data-dismiss="modal" id="cancel">-->
-      <!--Cancel-->
-      <!--</button>-->
-      <button type="button" class="btn btn-primary" id="send-invitation-modal">
+    <button type="button" class="btn btn-primary" id="send-invitation-modal">
         Send
       </button>
-      <!--</div>-->
+    </div>
+  </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content vanish-background">
+      <div class="modal-body white-background" id="invitation">
+        <textarea class="form-control col-xs-12" rows="10" cols="17" id="email-invitation-text-area"></textarea>
+        <!--<p>Dear XYZ,</p>
+        <p>I have found a great chatting tool where they sh</p>
+        <p>- Faruk</p>-->
+      </div>
+      <div class="modal-footer vanish-background keep-it-center">
+        <button type="button" class="btn btn-secondary start-btn" data-dismiss="modal">send
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -1515,6 +1449,7 @@
         </button>
         <button type="button" class="btn btn-primary" id="conversation-share-ok">Ok</button>
       </div>
+
     </div>
   </div>
 </div>
