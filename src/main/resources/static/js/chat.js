@@ -374,15 +374,16 @@ $(document).ready(function () {
 
     $("#send-invitation-modal").click(function () {
 
-      var email = $("#inputEmail").val();
-      var name = $("#text").val();
+      var email = $("#exampleInputEmail1").val();
+      var invitedText = $("#email-invitation-text-area").val();
+      var invitedUser = $("#name").val();
       console.log("cur usr id " + $("#cur-user-uuid").val());
 
       $.get({
         type: 'get',
         url: '/invitation-email',
         dataType: "text",
-        data: "email=" + email,
+        data: "email=" + email+"&invitedText="+invitedText+"&invitedUser="+invitedUser,
         success: function (data) {
           $('#myModalHorizontal').modal('hide');
           $("#success-msg-mail-send").show();
@@ -402,7 +403,6 @@ $(document).ready(function () {
       var email = $("#exampleInputEmail1").val();
       var name = $("#name").val();
       var emailTemplate = "Dear "+name+" ," + " I have found a great chatting tool where they will show us some really cool insights based on our conversation. I think, it will be a lot of fun!";
-      emailTemplate = emailTemplate +  userName;
       $("#email-invitation-text-area").val(emailTemplate);
     });
 
@@ -429,21 +429,15 @@ $(document).ready(function () {
     $("#contacts-uli").on("click", "li", function (event) {
       console.log('clicked ' + $(this).attr('id'));
       $('#ul-messages').html('');
+      var receiverId = $(this).attr('id').replace("mgs-li-", "")
       profileImageLoggedInUser = $('.wrap img').attr('src');
       profileImageBuddy = $("#" + $(this).attr('id') + " .wrap img").attr(
           'src');
-      var receiverId = $(this).attr('id').replace("mgs-li-", "")
+      var currentUserToChat = '<img src="'+profileImageBuddy+'" alt="" alt="" height="40" width="40"/>';
+      currentUserToChat = currentUserToChat + '<p>'+ $(".meta "+"#"+receiverId).html() + '</p>';
+      $("#contact-profile").html(currentUserToChat);
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;
-
-      /* hideNotificationPanel();
-       $.get({
-       type: 'get',
-       url: '/dispose_all_message_notification',
-       success: function (data) {
-       jQuery.event.trigger("ajaxStop");
-       }
-       });*/
 
       userClickedOnWhcihBuddyMessageBox = $(
           "#" + $(this).attr('id') + " .wrap .meta .name").text();

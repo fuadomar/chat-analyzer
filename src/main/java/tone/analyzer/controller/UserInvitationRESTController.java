@@ -39,7 +39,7 @@ public class UserInvitationRESTController {
 
   @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
   public String inviteUserByEmail(
-      @RequestParam("email") String email, HttpServletRequest request, Principal principal)
+      @RequestParam("email") String email, @RequestParam("invitedText") String invitedText, @RequestParam("invitedUser") String invitedUser , HttpServletRequest request, Principal principal)
       throws MalformedURLException {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -53,11 +53,12 @@ public class UserInvitationRESTController {
     String token = UUID.randomUUID().toString();
     String url = toneAnalyzerUtility.retrieveRootHostUrl(request) + "/confirmation-email";
 
-    String subject = "Hi " + email + ", " + "a friend on nascenia invited you to join toneAnalyzer";
+    String subject = "Hi " + invitedUser + ", " + "a friend invited you to join at toneAnalyzer";
     String confirmationUrl = url + "?token=" + token + "&sender=" + sender + "&receiver=" + email;
     Map<String, Object> model = new HashMap<String, Object>();
     model.put("receiver", email);
     model.put("url", confirmationUrl);
+    model.put("invitedText", invitedText);
     model.put("sender", sender);
     UserEmailInvitationNotification newUserInvitationNotification =
         new UserEmailInvitationNotification(subject, token);
