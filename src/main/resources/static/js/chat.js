@@ -38,6 +38,47 @@ function createChatList(user, host, action) {
   return chatListDiv;
 }
 
+function NotificationList(user, host, action) {
+
+  var chatListDiv = '<li style="height:200px; width:200px; background:red;" class="contact" id="mgs-li-'
+      + user.id
+      + '">';
+
+  if (typeof user.profileImage === 'undefined' || user.profileImage
+      === null || user.profileImage === "") {
+    if (action !== "notification") {
+      chatListDiv = chatListDiv
+          + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" height="40" width="40"/>';
+    }
+    //alert(user.profileImage + " " + user.userName);
+
+  }
+  else {
+    if (action !== "notification") {
+      chatListDiv = chatListDiv + '<div class="wrap"><img src="'
+          + '/profiles/images/'
+          + user.profileImage + '" alt="" height="40" width="40"/>';
+    }
+  }
+
+  if (user.online === true) {
+    if (action !== "notification") {
+      chatListDiv = chatListDiv + '<span class="contact-status online"/>';
+    }
+  }
+  else {
+    if (action !== "notification") {
+      chatListDiv = chatListDiv + '<span class="contact-status"/>';
+    }
+  }
+  chatListDiv = chatListDiv + '<div class="meta"><p class="name" id="' + user.id
+      + '">' + user.userName
+      + '</p> <p class="preview"></p> </div> </div> </li>';
+  //chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
+  console.log(chatListDiv);
+  return chatListDiv;
+}
+
 function clearGraphDdiv() {
   //$("#canvas").empty();
   //var canvas = $('#canvas').remove(); // or document.getElementById('canvas');
@@ -76,7 +117,10 @@ function drawDonut(dataPoint, div, title) {
       text: title
     },
     subtitle: {
-      text: '3D donut'
+      text: ''
+    },
+    credits: {
+      enabled: false
     },
     series: [{
       name: 'Tone',
@@ -247,7 +291,7 @@ $(document).ready(function () {
               }
 
               $("#notifications").append(
-                  createChatList(payload.sender[i], host, "notification"));
+                  NotificationList(payload.sender[i], host, "notification"));
             }
           }
           console.log("pay load: " + payload);
@@ -366,7 +410,7 @@ $(document).ready(function () {
           var series = normalizedDataToneAnalyzer(data);
           console.log(series);
           clearGraphDdiv();
-          drawDonut(series, "graph", "tone analyzer for people");
+          drawDonut(series, "graph", "Your friend's mood is");
           jQuery.event.trigger("ajaxStop");
         }
       });
@@ -383,7 +427,8 @@ $(document).ready(function () {
         type: 'get',
         url: '/invitation-email',
         dataType: "text",
-        data: "email=" + email+"&invitedText="+invitedText+"&invitedUser="+invitedUser,
+        data: "email=" + email + "&invitedText=" + invitedText + "&invitedUser="
+        + invitedUser,
         success: function (data) {
           $('#myModalHorizontal').modal('hide');
           $("#success-msg-mail-send").show();
@@ -400,9 +445,11 @@ $(document).ready(function () {
       /* var link = $(e.relatedTarget);
        $(this).find(".modal-body").load(link.attr("href"));*/
       //invitation-text-area
+      $("#myModalHorizontal").modal('hide');
       var email = $("#exampleInputEmail1").val();
       var name = $("#name").val();
-      var emailTemplate = "Dear "+name+" ," + " I have found a great chatting tool where they will show us some really cool insights based on our conversation. I think, it will be a lot of fun!";
+      var emailTemplate = "Dear " + name + " ,"
+          + " I have found a great chatting tool where they will show us some really cool insights based on our conversation. I think, it will be a lot of fun!";
       $("#email-invitation-text-area").val(emailTemplate);
     });
 
@@ -433,8 +480,10 @@ $(document).ready(function () {
       profileImageLoggedInUser = $('.wrap img').attr('src');
       profileImageBuddy = $("#" + $(this).attr('id') + " .wrap img").attr(
           'src');
-      var currentUserToChat = '<img src="'+profileImageBuddy+'" alt="" alt="" height="40" width="40"/>';
-      currentUserToChat = currentUserToChat + '<p>'+ $(".meta "+"#"+receiverId).html() + '</p>';
+      var currentUserToChat = '<img src="' + profileImageBuddy
+          + '" alt="" alt="" height="40" width="40"/>';
+      currentUserToChat = currentUserToChat + '<p>' + $(".meta " + "#"
+          + receiverId).html() + '</p>';
       $("#contact-profile").html(currentUserToChat);
       $('.message-input').attr('id', receiverId);
       var receiver = receiverId;

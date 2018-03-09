@@ -102,22 +102,8 @@ body {
 }
 
 .content-footer {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: end;
-  -webkit-justify-content: flex-end;
-  -ms-flex-pack: end;
-  justify-content: flex-end;
-  padding: 15px;
-  border-top: 1px solid #eceeef;
-  display: block;
-  padding: 15px 30px;
+  background: #FFFFFF;
+  padding: 20px 0;
 }
 
 .make-it-center {
@@ -131,6 +117,8 @@ body {
 .vanish-background {
   background-color: transparent;
   border: 1px solid transparent;
+  box-shadow: none;
+  -webkit-box-shadow: none ;
 }
 
 .white-background {
@@ -141,4 +129,6 @@ body {
 .keep-it-center {
   webkit-justify-content: center;
   justify-content: center;
+}
+
 

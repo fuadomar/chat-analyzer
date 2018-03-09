@@ -39,15 +39,22 @@
         <div class="content-body">
             <div class="make-it-center">
                 <h2>Start chat with <p th:text="${invitedBy}"></p>   <br>Plesae enter your name</h2>
-                <form th:action="@{/confirmation-email}" method="post">
+                <form th:object="${accountFromRegistrationByEmail}" th:action="@{/confirmation-email}" method="post">
                     <input type="hidden" name="token" th:value="${confirmationToken}"/>
                     <div class="form-group">
-                        <input type="text" name="name" class="form-control margin-0-auto" id="name" placeholder="name/email" required>
+                        <input type="text" th:field="*{name}"  pattern=".{3,32}" required title="3 to 32 characters" class="form-control margin-0-auto" id="name" placeholder="name/email" required>
+                        <label
+                            th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                            class="validation-message"></label>
                     </div>
-                    <!--<div class="form-group">-->
-                        <input type="password" name="password" class="form-control margin-0-auto" id="password"
+                    <div class="form-group">
+                        <input type="password" pattern=".{8,}"  th:field="*{password}"
+                               required title="8 characters minimum"  class="form-control margin-0-auto" id="password"
                                placeholder="password" required>
-                  <!--  </div>-->
+                    <label
+                        th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                        class="validation-message"></label>
+                    </div>
                     <input type="hidden"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}"/>
