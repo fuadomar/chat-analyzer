@@ -5,6 +5,8 @@ import javax.servlet.ServletContext;
 
 import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import tone.analyzer.ToneAnalyzerApplication;
 import tone.analyzer.auth.service.IEmailInvitationService;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
@@ -29,6 +32,7 @@ import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 import tone.analyzer.validator.AccountValidator;
+import tone.analyzer.validator.EmailInvitationValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +45,9 @@ import java.util.*;
  */
 @Controller
 public class UserAccountControllerWeb {
+
+
+  private static final Logger LOG = LoggerFactory.getLogger(UserAccountControllerWeb.class);
 
   public static final String ERROR_ATTRIBUTED = "error";
 
@@ -84,6 +91,9 @@ public class UserAccountControllerWeb {
 
   @Autowired
   private AccountValidator accountValidator;
+
+  @Autowired
+  private EmailInvitationValidator emailInvitationValidator;
 
   @Autowired
   private AdminService adminService;
@@ -244,18 +254,18 @@ public class UserAccountControllerWeb {
       RedirectAttributes redir)
       throws UnsupportedEncodingException {
 
-    accountValidator.validate(accountFromRegistrationByEmail, bindingResult);
+    emailInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
     if (bindingResult.hasErrors()) {
-      return "redirect:confirmation-email-error?token="
-          + (String) requestParams.get("token");
+      LOG.info("error bind error inside method processConfirmationForm: ");
+      return "redirect:/login";
     }
     EmailInvitation token = emailInvitationService.findByToken((String) requestParams.get("token"));
 
     if (token == null) {
       bindingResult.reject("password");
-      redir.addFlashAttribute("errorMessage", "Your password is too weak.  Choose a stronger one.");
+      redir.addFlashAttribute("errorMessage", "Your token has expired or invalid.");
       //modelAndView.setViewName("redirect:confirm?token=" + requestParams.get("token"));
-      return "redirect:confirm?token=" + requestParams.get("token");
+      return "redirect:/login";
     }
 
     Object userPassword = requestParams.get("password");
@@ -264,7 +274,7 @@ public class UserAccountControllerWeb {
     if (userPassword == null ||
         StringUtils.isBlank((String) userPassword) || userName == null
         || StringUtils.isBlank((String) userName)) {
-      return "redirect:confirm?token=" + requestParams.get("token");
+      return "redirect:/login";
     }
 
     String password = (String) userPassword;

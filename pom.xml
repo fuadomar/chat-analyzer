@@ -304,6 +304,16 @@
           <exclude>*/*.js</exclude>
         </excludes>
       </resource>
+	    <resource>
+                <!-- Creates directory for OpsWorks config -->
+                <directory>src/deploy</directory>
+                <targetPath>../deploy</targetPath>
+            </resource>
+            <resource>
+                <!-- Creates config directory for external config --> 
+                <directory>src/config</directory>
+                <targetPath>../config</targetPath>
+            </resource>
     </resources>
     <plugins>
       <plugin>
@@ -340,6 +350,14 @@
           </requiresUnpack>
         </configuration>
       </plugin>
+	   <plugin>
+                <!-- Creates zip distributable -->
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <descriptor>src/assembly/dep.xml</descriptor>
+                </configuration>
+            </plugin>
       <plugin>
         <groupId>com.spotify</groupId>
         <artifactId>docker-maven-plugin</artifactId>

@@ -40,7 +40,7 @@ public class ToneAnalyzerApplication {
   @Value("${app.admin.password}")
   private String plainTextPassword;
 
-  private static final Logger log = LoggerFactory.getLogger(ToneAnalyzerApplication.class);
+  private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerApplication.class);
 
   public static void main(String[] args) {
     SpringApplication.run(ToneAnalyzerApplication.class, args);

@@ -153,6 +153,10 @@ function drawDonut(dataPoint, div, title) {
       $("#tone-analyzer-charts").modal('show');
       $('#generate-image-tone-analysis').val(data);
       jQuery.event.trigger("ajaxStop");
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+      console.log(textStatus, errorThrown);
+      jQuery.event.trigger("ajaxStop");
     }
   });
 
@@ -196,7 +200,7 @@ $(document).ready(function () {
   var host = location.protocol + '//' + location.host;
   console.log("host: " + host);
 
-  var socket = new SockJS(host + "/stomp");
+  var socket = new SockJS("/stomp");
   var stompClient = Stomp.over(socket);
 
   stompClient.connect('', function (frame) {
@@ -275,7 +279,8 @@ $(document).ready(function () {
                   },
                   success: function (data) {
                   },
-                  failure: function (errMsg) {
+                  error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
                   }
                 });
 
@@ -390,6 +395,10 @@ $(document).ready(function () {
         url: '/dispose_all_message_notification',
         success: function (data) {
           jQuery.event.trigger("ajaxStop");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          jQuery.event.trigger("ajaxStop");
+          console.log(textStatus, errorThrown);
         }
       });
     });
@@ -412,6 +421,10 @@ $(document).ready(function () {
           clearGraphDdiv();
           drawDonut(series, "graph", "Your friend's mood is");
           jQuery.event.trigger("ajaxStop");
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          jQuery.event.trigger("ajaxStop");
+          console.log(textStatus, errorThrown);
         }
       });
     });
@@ -437,6 +450,9 @@ $(document).ready(function () {
             $("#success-msg-mail-send").fadeOut().empty();
           }
           setTimeout(fade_out, 3000);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
         }
       });
     });
@@ -453,14 +469,6 @@ $(document).ready(function () {
       $("#email-invitation-text-area").val(emailTemplate);
     });
 
-    /* $(document).click(function () {
-     if ($(this) != $("#notifications")) {
-     alert($(this).attr('id'))
-     if ($(this) != $("#noti_Button"))
-     $("#notifications").hide();
-     }
-     });*/
-
     $("body").mouseup(function (e) {
       var subject = $("#notifications");
 
@@ -469,6 +477,7 @@ $(document).ready(function () {
       }
     });
 
+
     $("#notifications").on("click", "li", function (event) {
       $("#contacts-uli" + " #" + $(this).attr('id')).trigger('click');
     });
@@ -476,6 +485,7 @@ $(document).ready(function () {
     $("#contacts-uli").on("click", "li", function (event) {
       console.log('clicked ' + $(this).attr('id'));
       $('#ul-messages').html('');
+      $('#message-input-div').show();
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
       profileImageLoggedInUser = $('.wrap img').attr('src');
       profileImageBuddy = $("#" + $(this).attr('id') + " .wrap img").attr(
@@ -494,7 +504,7 @@ $(document).ready(function () {
       $(this).css({'background': 'gray'});
       $("#contacts-uli li").each(function () {
         if (receiverId !== $(this).attr('id').replace("mgs-li-", "")) {
-          $(this).css({'background': '#2c3e50'});
+          $(this).css({'background': '#e8e8e8'});
         }
       });
       $.get({
@@ -568,6 +578,9 @@ $(document).ready(function () {
             $('#uploadModal').modal('hide');
             location.reload();
           }, 2000);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
         }
       });
     });
@@ -652,5 +665,22 @@ $(document).ready(function () {
         return false;
       }
     });
-  });
+  }, stompFailure);
+
+  function stompFailure(error) {
+    errorMessage("Lost connection to WebSocket! Reconnecting in 10 seconds...");
+    disableInputMessage();
+    setTimeout(connect, 10000);
+  }
+
+  function errorMessage(msg){
+    noty({
+      text: msg,
+      layout: 'top',
+      type: 'error',
+      timeout: 5000
+    });
+  }
+
+
 });

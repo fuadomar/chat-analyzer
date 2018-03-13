@@ -5,10 +5,10 @@
   <!-- <script src='//production-assets.codepen.io/assets/editor/live/console_runner-079c09a0e3b9ff743e39ee2d5637b9216b3545af0de366d4b9aad9dc87e26bfd.js'>
    </script><script src='//production-assets.codepen.io/assets/editor/live/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js'></script>
    <script src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-2c0dc5167d60a5af3ee189d570b1835129687ea2a61bee3513dee3a50c115a77.js'></script>-->
-  <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
+  <meta property="og:image" content="http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/images/default-avatar.png"/>
   <meta charset='UTF-8'>
   <meta name="robots" content="noindex">
-  <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
+  <meta property="og:url" content="http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/login"/>
   <meta property="og:type" content="website"/>
   <meta property="og:title" content="tone analyzer"/>
   <meta property="og:description" content="we use machine learning"/>
@@ -1038,6 +1038,7 @@
   <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
   <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
   <script type="text/javascript" th:src="@{/js/hoy3lrg.js}"></script>
+  <script type="text/javascript" th:src="@{/js/jquery.noty.min.js}"></script>
   <!-- <script type="text/javascript" src="https//connect.facebook.net/en_US/sdk.js"></script>-->
   <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
   <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
@@ -1048,9 +1049,10 @@
 
 <div id="fb-root"></div>
 
-<div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
-  <img src="https://www.drupal.org/files/issues/ajax-loader.gif"></img>
-</div>
+<!--<div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
+  <img class="header-logo"
+       th:src="@{/images/ajax-loader.gif}"/>
+</div>-->
 
 <div class="container">
 
@@ -1104,6 +1106,11 @@
              th:src="@{/images/logo.png}"/>
       </div>
 
+      <div id='ajax_loader' style="display: none;">
+        <img class="header-logo"
+             th:src="@{/images/ajax-loader.gif}"/>
+      </div>
+
       <div id="sidepanel">
         <div id="profile">
           <div class="wrap">
@@ -1153,7 +1160,7 @@
           <ul id="ul-messages">
           </ul>
         </div>
-        <div class="message-input">
+        <div class="message-input" id="message-input-div" style="display:none">
           <div class="wrap">
             <div class="row">
               <div class="col-sm-10">
@@ -1298,7 +1305,7 @@
                value=""/>
         <!--<img src = "share_button.png" id = "share_button"/>-->
         <div class="fb-share-button"
-             data-href="http://http://dev.myhost.com:8080/login"
+             data-href="http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/login"
              data-layout="button_count">
           <!--<img th:height="50" id="share_button" th:width="180"-->
           <!--th:src="@{/images/share_button.png}"/>-->
@@ -1398,11 +1405,10 @@ window.fbAsyncInit = function () {
     $("#tone-analyzer-charts").modal('hide');
     var hidUrl = $("#generate-image-tone-analysis").val();
     console.log("hidden url: " + hidUrl);
-
     // Dynamically gather and set the FB share data.
     var FBDesc = 'learn more about machine learning with tone analyzer';
     var FBTitle = 'This is the tone analyzer';
-    var FBLink = 'http://dev.myhost.com:8080/login';
+    var FBLink = 'http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/login';
     var FBPic = hidUrl;
 
     // Open FB share popup
