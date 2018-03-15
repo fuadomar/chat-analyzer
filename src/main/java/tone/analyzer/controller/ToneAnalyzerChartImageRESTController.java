@@ -17,6 +17,7 @@ import tone.analyzer.domain.entity.ToneAnalyzerChartImageDetails;
 import tone.analyzer.domain.model.Document;
 import tone.analyzer.domain.repository.ToneAnalyzerChartImageDetailsRepository;
 import tone.analyzer.gateway.ProfileImageGateway;
+import tone.analyzer.service.amazon.AmazonFileUploaderClient;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,6 +52,9 @@ public class ToneAnalyzerChartImageRESTController {
 
   @Autowired
   private ProfileImageGateway profileImageGateway;
+
+  @Autowired
+  private AmazonFileUploaderClient amazonFileUploaderClient;
 
   @RequestMapping(value = "/tone_analyzer/images/{image}", method = RequestMethod.GET)
   public void retrieveImageAsByteArray(
@@ -110,8 +114,9 @@ public class ToneAnalyzerChartImageRESTController {
       return toneAnalyzerUtility.retrieveRootHostUrl(request) + "/tone_analyzer/images/" + document
           .getName();
 
-    } catch (Exception e) {
-      return "error = " + e;
+    } catch (Exception ex) {
+      LOG.info("Exception inside method uploadBase64Image: {}", ex);
+      return "error = " + ex.getCause();
     }
   }
 }

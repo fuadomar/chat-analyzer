@@ -12,9 +12,11 @@ import javax.annotation.PostConstruct;
 
 import javax.imageio.ImageIO;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.model.Document;
+import tone.analyzer.service.amazon.AmazonFileUploaderClient;
 
 /**
  * Created by Dell on 1/17/2018.
@@ -32,6 +34,9 @@ public class ImageRepositoryImp implements ImageRepository {
 
   @Value("${profile.thumb.image.repository}")
   private String profielThumbImageStorageLocation;
+
+  @Autowired
+  private AmazonFileUploaderClient amazonFileUploaderClient;
 
   @PostConstruct
   public void init() {
@@ -52,8 +57,9 @@ public class ImageRepositoryImp implements ImageRepository {
       saveImage(document, profileImageStorageLocation);
     } else {
       BufferedImage img = ImageIO.read(new ByteArrayInputStream(document.getContent()));
-      File outputImageFile = new File(toneAnalyzerImageStorageLocation, document.getName());
+      File outputImageFile = new File(document.getName());
       ImageIO.write(img, "png", outputImageFile);
+      amazonFileUploaderClient.uploadFileTos3bucket(document.getName(), outputImageFile);
       // saveImage(document, toneAnalyzerImageStorageLocation);
     }
   }

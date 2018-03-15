@@ -1,19 +1,25 @@
 package tone.analyzer.service.image;
 
+import com.amazonaws.services.s3.model.S3Object;
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
+import tone.analyzer.service.amazon.AmazonFileUploaderClient;
 
 /**
  * Created by Dell on 1/25/2018.
  */
-@RestController
+@Service
 public class ProfileImageProviderService {
 
   @Value("${profile.thumb.image.repository}")
@@ -22,33 +28,44 @@ public class ProfileImageProviderService {
   @Value("${tone.analyzer.image.repository}")
   private String toneAnalyzerImageStorageLocation;
 
+  @Autowired
+  private AmazonFileUploaderClient amazonFileUploaderClient;
+
   public void getImageAsByteArray(
       HttpServletRequest request,
       HttpServletResponse response,
       String image, boolean isBase64Image)
       throws IOException {
 
-    String fullFilePath;
-    if (!isBase64Image) {
-      fullFilePath = profileImageStorageLocation + "/" + image;
-    } else {
-      fullFilePath = toneAnalyzerImageStorageLocation + "/" + image;
+    InputStream s3ObjectInputStream = null;
+    OutputStream outputStream = null;
+    OutputStream out = null;
+    S3Object s3Object = null;
+    try {
+
+      s3Object = amazonFileUploaderClient
+          .downloadFileFromS3bucket(image);
+      s3ObjectInputStream = s3Object.getObjectContent();
+      String contentType = s3Object.getObjectMetadata().getContentType();
+      byte[] bytes = IOUtils.toByteArray(s3ObjectInputStream);
+      response.setContentLength((int) bytes.length);
+
+      s3Object = amazonFileUploaderClient
+          .downloadFileFromS3bucket(image);
+      s3ObjectInputStream = s3Object.getObjectContent();
+      String mimeType = request.getServletContext().getMimeType(image);
+      response.setContentType(mimeType);
+      outputStream = response.getOutputStream();
+      IOUtils.copy(s3ObjectInputStream, outputStream);
+    } catch (Exception ex) {
+    } finally {
+
+      if (outputStream != null) {
+        outputStream.close();
+      }
+      if (s3ObjectInputStream != null) {
+        s3ObjectInputStream.close();
+      }
     }
-    String mimeType = request.getServletContext().getMimeType(image);
-    File profileImage = new File(fullFilePath);
-
-    response.setContentType(mimeType);
-    response.setContentLength((int) profileImage.length());
-
-    FileInputStream fileInputStream = new FileInputStream(profileImage);
-    OutputStream outputStream = response.getOutputStream();
-
-    byte[] buf = new byte[1024];
-    int count = 0;
-    while ((count = fileInputStream.read(buf)) >= 0) {
-      outputStream.write(buf, 0, count);
-    }
-    outputStream.close();
-    fileInputStream.close();
   }
 }
