@@ -34,6 +34,11 @@ public class Account implements Serializable {
   public Account() {
   }
 
+  public Account(String name) {
+    this.name = name;
+    this.buddyList = new HashSet<>();
+  }
+
   public Account(String name, String password) {
     this.name = name.toLowerCase();
     this.password = password;

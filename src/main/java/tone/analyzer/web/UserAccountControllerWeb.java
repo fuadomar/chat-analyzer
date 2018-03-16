@@ -306,17 +306,17 @@ public class UserAccountControllerWeb {
       throws UnsupportedEncodingException {
 
     Object userName = requestParams.get("name");
-    return "";
-
-/*    String name = (String) userName;
-    Account account = new Account(name.trim(), password.trim());
-    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(token, account);
+    EmailInvitation emailToken = emailInvitationService
+        .findByToken((String)requestParams.get("tinyUrl"));
+    String name = (String) userName;
+    Account account = new Account(name.trim());
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account);
 
     securityService.autoLogin(account.getName(), password, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     Account user = userService.findByName(auth.getName());
     redir.addFlashAttribute(USER_NAME, user.getName());
-    return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");*/
+    return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
   }
 
 }
