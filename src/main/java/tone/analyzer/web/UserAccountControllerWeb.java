@@ -3,11 +3,11 @@ package tone.analyzer.web;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 
-import javax.validation.Valid;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import tone.analyzer.ToneAnalyzerApplication;
 import tone.analyzer.auth.service.IEmailInvitationService;
 import tone.analyzer.auth.service.SecurityService;
 import tone.analyzer.auth.service.UserService;
@@ -217,7 +216,6 @@ public class UserAccountControllerWeb {
     }
 
     model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
-    //model.setViewName("user-registration-email");
     model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
     model.addAttribute("accountFromRegistrationByEmail", new Account());
     return "user-registration-email";
@@ -264,7 +262,6 @@ public class UserAccountControllerWeb {
     if (token == null) {
       bindingResult.reject("password");
       redir.addFlashAttribute("errorMessage", "Your token has expired or invalid.");
-      //modelAndView.setViewName("redirect:confirm?token=" + requestParams.get("token"));
       return "redirect:/login";
     }
 
@@ -288,4 +285,38 @@ public class UserAccountControllerWeb {
     redir.addFlashAttribute(USER_NAME, user.getName());
     return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
   }
+
+  @RequestMapping(value = "/chat/anonymous", method = RequestMethod.GET)
+  @Secured( value={"ROLE_ANONYMOUS"})
+  public String anonymousLoginForChat(Model model, @RequestParam("tinyUrl") String tinyUrl) {
+
+    model.addAttribute("tinyUrl", tinyUrl);
+    return "user-registration-anonymous";
+  }
+
+  @RequestMapping(value = "/chat/anonymous", method = RequestMethod.POST)
+  public String processInvitationForAnonymousUsers(
+      @ModelAttribute("accountFromRegistrationByEmail") Account accountFromRegistrationByEmail,
+      BindingResult bindingResult,
+      @RequestParam Map requestParams,
+      Model model,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redir)
+      throws UnsupportedEncodingException {
+
+    Object userName = requestParams.get("name");
+    return "";
+
+/*    String name = (String) userName;
+    Account account = new Account(name.trim(), password.trim());
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(token, account);
+
+    securityService.autoLogin(account.getName(), password, request, response);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Account user = userService.findByName(auth.getName());
+    redir.addFlashAttribute(USER_NAME, user.getName());
+    return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");*/
+  }
+
 }

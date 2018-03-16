@@ -39,7 +39,9 @@ public class UserInvitationRESTController {
 
   @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
   public String inviteUserByEmail(
-      @RequestParam("email") String email, @RequestParam("invitedText") String invitedText, @RequestParam("invitedUser") String invitedUser , HttpServletRequest request, Principal principal)
+      @RequestParam("email") String email, @RequestParam("invitedText") String invitedText,
+      @RequestParam("invitedUser") String invitedUser ,
+      @RequestParam("tinyUrl") String tinyUrl, HttpServletRequest request, Principal principal)
       throws MalformedURLException {
 
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();

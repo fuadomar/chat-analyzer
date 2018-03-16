@@ -56,13 +56,6 @@ public class WebSocketConfig
   @Value("${app.relay.port}")
   private Integer relayPort;
 
-   /* @Bean
-    public TopicExchange streamingExchange(@Qualifier("admin") final RabbitAdmin rabbitAdmin) {
-        TopicExchange topicExchange = new TopicExchange("test-exchange", true, false);
-        topicExchange.setAdminsThatShouldDeclare(rabbitAdmin);
-        return topicExchange;
-    }*/
-
   @Override
   protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
     stompEndpointRegistry.addEndpoint("/stomp").withSockJS();
