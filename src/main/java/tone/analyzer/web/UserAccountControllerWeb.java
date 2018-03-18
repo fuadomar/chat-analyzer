@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -20,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import tone.analyzer.auth.service.IEmailInvitationService;
-import tone.analyzer.auth.service.SecurityService;
-import tone.analyzer.auth.service.UserService;
+import tone.analyzer.auth.service.*;
 import tone.analyzer.capcha.service.ICaptchaService;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
@@ -83,10 +82,20 @@ public class UserAccountControllerWeb {
   public static final String USER_REGISTRATION_EMAIL = "user-registration-email";
 
   @Autowired
-  private UserService userService;
+  @Qualifier("securityServiceImpl")
+  private SecurityService securityServiceImpl;
 
   @Autowired
-  private SecurityService securityService;
+  @Qualifier("anonymousSecurityServiceImpl")
+  private  SecurityService anonymousSecurityServiceImpl;
+
+  @Autowired
+  @Qualifier("userServiceImpl")
+  private UserService userServiceImpl;
+
+  @Autowired
+  @Qualifier("anonymousUserServiceImpl")
+  private UserService anonymousUserServiceImpl;
 
   @Autowired
   private AccountValidator accountValidator;
@@ -150,10 +159,10 @@ public class UserAccountControllerWeb {
     captchaService.processResponse(googleReCapcha);
 
     String plainTextPassword = accountForm.getPassword();
-    userService.save(accountForm);
-    securityService.autoLogin(accountForm.getName(), plainTextPassword, request, response);
+    userServiceImpl.save(accountForm);
+    securityServiceImpl.autoLogin(accountForm.getName(), plainTextPassword, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Account user = userService.findByName(auth.getName());
+    Account user = userServiceImpl.findByName(auth.getName());
     redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
 
     return "redirect:/chat";
@@ -171,7 +180,7 @@ public class UserAccountControllerWeb {
     return LOGIN_VIEW;
   }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
+  @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ANONYMOUS_CHAT')")
   @RequestMapping(
       value = {ROOT_URI, LIVE_CHAT_URI},
       method = RequestMethod.GET
@@ -277,20 +286,21 @@ public class UserAccountControllerWeb {
     String password = (String) userPassword;
     String name = (String) userName;
     Account account = new Account(name.trim(), password.trim());
-    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(token, account);
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(token, account, userServiceImpl);
 
-    securityService.autoLogin(account.getName(), password, request, response);
+    securityServiceImpl.autoLogin(account.getName(), password, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Account user = userService.findByName(auth.getName());
+    Account user = userServiceImpl.findByName(auth.getName());
     redir.addFlashAttribute(USER_NAME, user.getName());
     return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
   }
 
   @RequestMapping(value = "/chat/anonymous", method = RequestMethod.GET)
-  @Secured( value={"ROLE_ANONYMOUS"})
-  public String anonymousLoginForChat(Model model, @RequestParam("tinyUrl") String tinyUrl) {
-
-    model.addAttribute("tinyUrl", tinyUrl);
+  public String anonymousLoginForChat(Model model, @RequestParam("token") String token) {
+    EmailInvitation emailInvitationServiceByToekn = emailInvitationService
+            .findByToken(token);
+    model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
+    model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
     return "user-registration-anonymous";
   }
 
@@ -307,16 +317,15 @@ public class UserAccountControllerWeb {
 
     Object userName = requestParams.get("name");
     EmailInvitation emailToken = emailInvitationService
-        .findByToken((String)requestParams.get("tinyUrl"));
+        .findByToken((String)requestParams.get("token"));
     String name = (String) userName;
-    Account account = new Account(name.trim());
-    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account);
-
-    securityService.autoLogin(account.getName(), password, request, response);
+    Account account = new Account(name.trim(), "");
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account, anonymousUserServiceImpl);
+    anonymousSecurityServiceImpl.autoLogin(account.getName(), "", request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Account user = userService.findByName(auth.getName());
-    redir.addFlashAttribute(USER_NAME, user.getName());
-    return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
+    Account user = anonymousUserServiceImpl.findByName(auth.getName());
+    redir.addFlashAttribute(USER_NAME, userName);
+    return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
   }
 
 }

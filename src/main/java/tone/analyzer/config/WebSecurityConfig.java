@@ -3,6 +3,7 @@ package tone.analyzer.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.UserInfoTokenServices;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -44,7 +45,9 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.filter.CompositeFilter;
+import tone.analyzer.auth.service.AnonymousUserServiceImpl;
 import tone.analyzer.auth.service.UserService;
+import tone.analyzer.auth.service.UserServiceImpl;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.service.token.TokenService;
@@ -117,7 +120,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   private AccountRepository userRepository;
 
   @Autowired
-  private UserService userService;
+  private UserServiceImpl userService;
+
+ /* @Autowired
+  @Qualifier("anonymousUserService")
+  private AnonymousUserServiceImpl anonymousUserService;*/
 
   @Autowired
   TokenService persistentTokenRepository;
@@ -147,7 +154,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-      http.antMatcher("/live-chat").authorizeRequests().anyRequest().authenticated();
+      http.antMatcher("/chat").authorizeRequests().anyRequest().authenticated();
     }
   }
 
@@ -165,11 +172,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             ADMIN_PANEL_URI,
             "/invitation-email/**",
             "/confirmation-email-error/**",
+                "/chat/anonymous/**",
             "/confirmation-email/**")
         .permitAll()
         .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
         .hasRole(ADMIN_ROLE_NAME)
-        .antMatchers("/live-chat/**")
+        .antMatchers("/chat/**")
         .hasAnyRole(USER_ROLE_NAME, ADMIN_ROLE_NAME, ACTUATOR_ROLE_NAME)
         .anyRequest()
         .authenticated()

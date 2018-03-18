@@ -39,8 +39,9 @@
     <div class="content-body">
       <div class="make-it-center">
 
-        <form  th:action="@{/user-registration-anonymous}" method="post">
+        <form  th:action="@{/chat/anonymous}" method="post">
           <div class="form-group">
+            <input type="hidden" name="token" th:value="${confirmationToken}"/>
             <input type="text" name="name"  pattern=".{3,32}" required title="3 to 32 characters" class="form-control margin-0-auto" id="name" placeholder="name/email" required>
 
           </div>

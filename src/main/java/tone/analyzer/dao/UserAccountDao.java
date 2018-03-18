@@ -28,9 +28,6 @@ public class UserAccountDao {
   private static final Logger LOG = LoggerFactory.getLogger(UserAccountDao.class);
 
   @Autowired
-  private UserService userService;
-
-  @Autowired
   private PresenceEventListener presenceEventListener;
 
   @Autowired
@@ -43,7 +40,7 @@ public class UserAccountDao {
   private AccountRepository userAccountRepository;
 
   public void processEmailInvitationAndUpdateBuddyListIfAbsent(
-      EmailInvitation token, Account account) {
+          EmailInvitation token, Account account, UserService userService) {
 
     Account receiverAccount = userService.findByName(account.getName());
     Set<BuddyDetails> emailInvitationReceiverBuddyList = new HashSet<>();

@@ -455,6 +455,7 @@ $(document).ready(function () {
           console.log(textStatus, errorThrown);
         }
       });
+
     });
 
     $("#myModal").on("show.bs.modal", function (e) {
@@ -477,6 +478,28 @@ $(document).ready(function () {
       }
     });
 
+    $("#generate-chat-link").click(function () {
+
+      $("#myModalHorizontal").modal('hide');
+      $.get({
+        type: 'get',
+        url: '/anonymous-chat-link',
+        dataType: "text",
+        success: function (data) {
+          alert(data);
+          $('#myModalHorizontal').modal('hide');
+          $("#success-msg-mail-send").hide();
+          $("#email-invitation-text-area").val(data);
+          var fade_out = function () {
+            $("#success-msg-mail-send").fadeOut().empty();
+          }
+          setTimeout(fade_out, 3000);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+        }
+      });
+    });
 
     $("#notifications").on("click", "li", function (event) {
       $("#contacts-uli" + " #" + $(this).attr('id')).trigger('click');

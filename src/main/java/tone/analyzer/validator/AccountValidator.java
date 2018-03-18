@@ -11,6 +11,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 import tone.analyzer.auth.service.UserService;
+import tone.analyzer.auth.service.UserServiceImpl;
 import tone.analyzer.domain.entity.Account;
 
 import java.util.regex.Pattern;
@@ -45,7 +46,7 @@ public class AccountValidator implements Validator {
   public static final String PASSWORD_SIZE_MESSAGE = "Size.AccountForm.password";
 
   @Autowired
-  private UserService userService;
+  private UserServiceImpl userService;
 
   @Override
   public boolean supports(Class<?> aClass) {
