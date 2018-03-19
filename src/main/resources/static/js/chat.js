@@ -119,7 +119,12 @@ function drawDonut(dataPoint, div, title) {
     subtitle: {
       text: ''
     },
-    credits: {
+    plotOptions: {
+      pie: {
+        innerSize: 100,
+        depth: 45
+      }},
+      credits: {
       enabled: false
     },
     series: [{
@@ -136,7 +141,7 @@ function drawDonut(dataPoint, div, title) {
   canvg(document.getElementById('canvas'), chart.getSVG())
   var canvas = document.getElementById("canvas");
   var img = canvas.toDataURL("image/png");
-  $('#canvas').replaceWith('<img height="500" width="500" src="' + img + '"/>');
+  //$('#canvas').replaceWith('<img height="500" width="500" src="' + img + '"/>');
 
   var token = $("meta[name='_csrf']").attr("content");
   var header = $("meta[name='_csrf_header']").attr("content");
