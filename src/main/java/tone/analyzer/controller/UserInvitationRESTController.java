@@ -48,7 +48,7 @@ public class UserInvitationRESTController {
     @Autowired
     EmailInvitationRepository emailInvitationRepository;
 
-    @RequestMapping(value = "/invitation-email", method = RequestMethod.GET)
+    @RequestMapping(value = "/invitationEmail", method = RequestMethod.GET)
     public String inviteUserByEmail(
             @RequestParam("email") String email, @RequestParam("invitedText") String invitedText,
             @RequestParam("invitedUser") String invitedUser,
@@ -81,7 +81,7 @@ public class UserInvitationRESTController {
     }
 
 
-    @RequestMapping(value = "/anonymous-chat-link", method = RequestMethod.GET)
+    @RequestMapping(value = "/anonymousChatLink", method = RequestMethod.GET)
     public String inviteAnonymousUserByGeneratingLink(
             HttpServletRequest request, Principal principal)
             throws MalformedURLException {
@@ -101,6 +101,4 @@ public class UserInvitationRESTController {
         emailInvitationRepository.save(emailInvitation);
         return confirmationUrl;
     }
-
-
 }

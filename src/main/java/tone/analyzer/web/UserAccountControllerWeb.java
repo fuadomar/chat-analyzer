@@ -1,5 +1,6 @@
 package tone.analyzer.web;
 
+import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 
@@ -8,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.*;
@@ -57,21 +60,21 @@ public class UserAccountControllerWeb {
   public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
       "You have been logged out successfully.";
 
-  public static final String ADMIN_LOGIN_VIEW = "admin-login";
+  public static final String ADMIN_LOGIN_VIEW = "adminLogin";
 
-  public static final String USERS_REGISTRATION_VIEW = "users-registration";
+  public static final String USERS_REGISTRATION_VIEW = "usersRegistration";
 
   public static final String LOGIN_VIEW = "login";
 
   public static final String CHAT_VIEW = "chat";
 
-  public static final String ADMIN_PANEL_VIEW = "admin-panel";
+  public static final String ADMIN_PANEL_VIEW = "adminPanel";
 
   public static final String USER_NAME = "userName";
 
   public static final String USER_LIST = "userList";
 
-  public static final String USER_REGISTRATION_URI = "/user-registration";
+  public static final String USER_REGISTRATION_URI = "/userRegistration";
 
   public static final String LIVE_CHAT_URI = "/chat";
 
@@ -79,7 +82,7 @@ public class UserAccountControllerWeb {
 
   public static final String ACCOUNT_FORM = "accountForm";
 
-  public static final String USER_REGISTRATION_EMAIL = "user-registration-email";
+  public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
 
   @Autowired
   @Qualifier("securityServiceImpl")
@@ -87,7 +90,7 @@ public class UserAccountControllerWeb {
 
   @Autowired
   @Qualifier("anonymousSecurityServiceImpl")
-  private  SecurityService anonymousSecurityServiceImpl;
+  private SecurityService anonymousSecurityServiceImpl;
 
   @Autowired
   @Qualifier("userServiceImpl")
@@ -124,7 +127,7 @@ public class UserAccountControllerWeb {
   @Autowired
   private ServletContext servletContext;
 
-  @RequestMapping(value = "/admin-login", method = RequestMethod.GET)
+  @RequestMapping(value = "/adminLogin", method = RequestMethod.GET)
   public String adminPanel(Model model) {
 
     model.addAttribute(ACCOUNT_FORM, new Account());
@@ -180,7 +183,7 @@ public class UserAccountControllerWeb {
     return LOGIN_VIEW;
   }
 
-  @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ANONYMOUS_CHAT')")
+  @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
       value = {ROOT_URI, LIVE_CHAT_URI},
       method = RequestMethod.GET
@@ -210,7 +213,7 @@ public class UserAccountControllerWeb {
     return ADMIN_PANEL_VIEW;
   }
 
-  @RequestMapping(value = "/confirmation-email", method = RequestMethod.GET)
+  @RequestMapping(value = "/confirmationEmail", method = RequestMethod.GET)
   public String confirmationUserByEmail(
       Model model,
       @RequestParam("token") String token,
@@ -231,7 +234,7 @@ public class UserAccountControllerWeb {
   }
 
 
-  @RequestMapping(value = "/confirmation-email-error", method = RequestMethod.GET)
+  @RequestMapping(value = "/errorConfirmationEmail", method = RequestMethod.GET)
   public String confirmationUserByEmail(
       Model model,
       @RequestParam("token") String token) {
@@ -246,11 +249,11 @@ public class UserAccountControllerWeb {
     model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
     model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
     model.addAttribute("accountFromRegistrationByEmail", new Account());
-    return "user-registration-email";
+    return "userRegistrationEmail";
   }
 
 
-  @RequestMapping(value = "/confirmation-email", method = RequestMethod.POST)
+  @RequestMapping(value = "/confirmationEmail", method = RequestMethod.POST)
   public String processConfirmationForm(
       @ModelAttribute("accountFromRegistrationByEmail") Account accountFromRegistrationByEmail,
       BindingResult bindingResult,
@@ -286,7 +289,8 @@ public class UserAccountControllerWeb {
     String password = (String) userPassword;
     String name = (String) userName;
     Account account = new Account(name.trim(), password.trim());
-    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(token, account, userServiceImpl);
+    userAccountDao
+        .processEmailInvitationAndUpdateBuddyListIfAbsent(token, account, userServiceImpl);
 
     securityServiceImpl.autoLogin(account.getName(), password, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -298,10 +302,10 @@ public class UserAccountControllerWeb {
   @RequestMapping(value = "/chat/anonymous", method = RequestMethod.GET)
   public String anonymousLoginForChat(Model model, @RequestParam("token") String token) {
     EmailInvitation emailInvitationServiceByToekn = emailInvitationService
-            .findByToken(token);
+        .findByToken(token);
     model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
     model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
-    return "user-registration-anonymous";
+    return "anonymousUserRegistration";
   }
 
   @RequestMapping(value = "/chat/anonymous", method = RequestMethod.POST)
@@ -316,16 +320,135 @@ public class UserAccountControllerWeb {
       throws UnsupportedEncodingException {
 
     Object userName = requestParams.get("name");
+
+    if (userName == null || StringUtils.isBlank((String) userName)) {
+      return "redirect:/login";
+    }
+
     EmailInvitation emailToken = emailInvitationService
-        .findByToken((String)requestParams.get("token"));
+        .findByToken((String) requestParams.get("token"));
     String name = (String) userName;
-    Account account = new Account(name.trim(), "");
-    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account, anonymousUserServiceImpl);
-    anonymousSecurityServiceImpl.autoLogin(account.getName(), "", request, response);
-    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-    Account user = anonymousUserServiceImpl.findByName(auth.getName());
+    Account account = userAccountRepository.findByName(name);
+    if (account == null) {
+      account = new Account(name.trim(), UUID.randomUUID().toString());
+    }
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account,
+        anonymousUserServiceImpl);
+    anonymousSecurityServiceImpl.autoLogin(account.getName(), account.getPassword(), request, response);
     redir.addFlashAttribute(USER_NAME, userName);
     return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
   }
 
+  /*@RequestMapping(value = "/user/resendRegistrationToken", method = RequestMethod.GET)
+  public String resendRegistrationToken(final HttpServletRequest request, final Model model, @RequestParam("token") final String existingToken) {
+    final Locale locale = request.getLocale();
+    final VerificationToken newToken = userDetails.generateNewVerificationToken(existingToken);
+    final User user = userService.getUser(newToken.getToken());
+    try {
+      final String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+      final SimpleMailMessage email = constructResetVerificationTokenEmail(appUrl, request.getLocale(), newToken, user);
+      mailSender.send(email);
+    } catch (final MailAuthenticationException e) {
+      LOGGER.debug("MailAuthenticationException", e);
+      return "redirect:/emailError.html?lang=" + locale.getLanguage();
+    } catch (final Exception e) {
+      LOGGER.debug(e.getLocalizedMessage(), e);
+      model.addAttribute("message", e.getLocalizedMessage());
+      return "redirect:/login.html?lang=" + locale.getLanguage();
+    }
+    model.addAttribute("message", messages.getMessage("message.resendToken", null, locale));
+    return "redirect:/login.html?lang=" + locale.getLanguage();
+  }
+
+  @RequestMapping(value = "/user/resetPassword", method = RequestMethod.POST)
+  public String resetPassword(final HttpServletRequest request, final Model model, @RequestParam("email") final String userEmail) {
+    final User user = userService.findUserByEmail(userEmail);
+    if (user == null) {
+      model.addAttribute("message", messages.getMessage("message.userNotFound", null, request.getLocale()));
+      return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+    }
+
+    final String token = UUID.randomUUID().toString();
+    userService.createPasswordResetTokenForUser(user, token);
+    try {
+      final String appUrl = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+      final SimpleMailMessage email = constructResetTokenEmail(appUrl, request.getLocale(), token, user);
+      mailSender.send(email);
+    } catch (final MailAuthenticationException e) {
+      LOGGER.debug("MailAuthenticationException", e);
+      return "redirect:/emailError.html?lang=" + request.getLocale().getLanguage();
+    } catch (final Exception e) {
+      LOGGER.debug(e.getLocalizedMessage(), e);
+      model.addAttribute("message", e.getLocalizedMessage());
+      return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+    }
+    model.addAttribute("message", messages.getMessage("message.resetPasswordEmail", null, request.getLocale()));
+    return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+  }
+
+  @RequestMapping(value = "/user/changePassword", method = RequestMethod.GET)
+  public String changePassword(final HttpServletRequest request, final Model model, @RequestParam("id") final long id, @RequestParam("token") final String token) {
+    final Locale locale = request.getLocale();
+
+    final PasswordResetToken passToken = userService.getPasswordResetToken(token);
+    final User user = passToken.getUser();
+    if ((passToken == null) || (user.getId() != id)) {
+      final String message = messages.getMessage("auth.message.invalidToken", null, locale);
+      model.addAttribute("message", message);
+      return "redirect:/login.html?lang=" + locale.getLanguage();
+    }
+
+    final Calendar cal = Calendar.getInstance();
+    if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+      model.addAttribute("message", messages.getMessage("auth.message.expired", null, locale));
+      return "redirect:/login.html?lang=" + locale.getLanguage();
+    }
+
+    final Authentication auth = new UsernamePasswordAuthenticationToken(user, null, userDetailsService.loadUserByUsername(user.getEmail()).getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+
+    return "redirect:/updatePassword.html?lang=" + locale.getLanguage();
+  }
+
+  @RequestMapping(value = "/user/savePassword", method = RequestMethod.POST)
+  @PreAuthorize("hasRole('READ_PRIVILEGE')")
+  public String savePassword(final HttpServletRequest request, final Model model, @RequestParam("password") final String password) {
+    final Locale locale = request.getLocale();
+
+    final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    userService.changeUserPassword(user, password);
+    model.addAttribute("message", messages.getMessage("message.resetPasswordSuc", null, locale));
+    return "redirect:/login.html?lang=" + locale;
+  }
+
+  private SimpleMailMessage constructResetTokenEmail(
+      String contextPath, Locale locale, String token, Account user) {
+    String url = contextPath + "/user/changePassword?id=" +
+        user.getId() + "&token=" + token;
+    String message = messages.getMessage("message.resetPassword",
+        null, locale);
+    return constructEmail("Reset Password", message + " \r\n" + url, user);
+  }
+
+  private SimpleMailMessage constructEmail(String subject, String body,
+      Account user) {
+    SimpleMailMessage email = new SimpleMailMessage();
+    email.setSubject(subject);
+    email.setText(body);
+    email.setTo(user.getEmail());
+    email.setFrom(env.getProperty("support.email"));
+    return email;
+  }
+  @RequestMapping(value = "/user/savePassword", method = RequestMethod.POST)
+  @ResponseBody
+  public GenericResponse savePassword(Locale locale,
+      @Valid PasswordDto passwordDto) {
+    User user =
+        (User) SecurityContextHolder.getContext()
+            .getAuthentication().getPrincipal();
+
+    userService.changeUserPassword(user, passwordDto.getNewPassword());
+    return new GenericResponse(
+        messages.getMessage("message.resetPasswordSuc", null, locale));
+  }*/
 }

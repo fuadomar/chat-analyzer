@@ -12,6 +12,7 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AnonymousAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -45,6 +46,7 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import org.springframework.web.filter.CompositeFilter;
+import tone.analyzer.auth.service.AnonymousAuthProvider;
 import tone.analyzer.auth.service.AnonymousUserServiceImpl;
 import tone.analyzer.auth.service.UserService;
 import tone.analyzer.auth.service.UserServiceImpl;
@@ -172,7 +174,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             ADMIN_PANEL_URI,
             "/invitation-email/**",
             "/confirmation-email-error/**",
-                "/chat/anonymous/**",
+            "/chat/anonymous/**",
             "/confirmation-email/**")
         .permitAll()
         .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
@@ -335,6 +337,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
     auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
   }
+
+  /*@Override
+  protected void configure(
+      AuthenticationManagerBuilder auth) throws Exception {
+    auth.authenticationProvider(new AnonymousAuthProvider());
+  }*/
 }
 
 class ClientResources {

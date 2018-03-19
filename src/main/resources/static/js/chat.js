@@ -154,7 +154,7 @@ function drawDonut(dataPoint, div, title) {
       $('#generate-image-tone-analysis').val(data);
       jQuery.event.trigger("ajaxStop");
     },
-    error: function(jqXHR, textStatus, errorThrown) {
+    error: function (jqXHR, textStatus, errorThrown) {
       console.log(textStatus, errorThrown);
       jQuery.event.trigger("ajaxStop");
     }
@@ -279,7 +279,7 @@ $(document).ready(function () {
                   },
                   success: function (data) {
                   },
-                  error: function(jqXHR, textStatus, errorThrown) {
+                  error: function (jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
                   }
                 });
@@ -396,7 +396,7 @@ $(document).ready(function () {
         success: function (data) {
           jQuery.event.trigger("ajaxStop");
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
           jQuery.event.trigger("ajaxStop");
           console.log(textStatus, errorThrown);
         }
@@ -422,7 +422,7 @@ $(document).ready(function () {
           drawDonut(series, "graph", "Your friend's mood is");
           jQuery.event.trigger("ajaxStop");
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
           jQuery.event.trigger("ajaxStop");
           console.log(textStatus, errorThrown);
         }
@@ -438,7 +438,7 @@ $(document).ready(function () {
 
       $.get({
         type: 'get',
-        url: '/invitation-email',
+        url: '/invitationEmail',
         dataType: "text",
         data: "email=" + email + "&invitedText=" + invitedText + "&invitedUser="
         + invitedUser,
@@ -451,7 +451,7 @@ $(document).ready(function () {
           }
           setTimeout(fade_out, 3000);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
           console.log(textStatus, errorThrown);
         }
       });
@@ -483,7 +483,7 @@ $(document).ready(function () {
       $("#myModalHorizontal").modal('hide');
       $.get({
         type: 'get',
-        url: '/anonymous-chat-link',
+        url: '/anonymousChatLink',
         dataType: "text",
         success: function (data) {
           alert(data);
@@ -495,7 +495,7 @@ $(document).ready(function () {
           }
           setTimeout(fade_out, 3000);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
           console.log(textStatus, errorThrown);
         }
       });
@@ -507,6 +507,7 @@ $(document).ready(function () {
 
     $("#contacts-uli").on("click", "li", function (event) {
       console.log('clicked ' + $(this).attr('id'));
+      jQuery.event.trigger("ajaxStart");
       $('#ul-messages').html('');
       $('#message-input-div').show();
       var receiverId = $(this).attr('id').replace("mgs-li-", "")
@@ -537,6 +538,7 @@ $(document).ready(function () {
         data: "receiver=" + receiver,
         success: function (data) {
 
+          //jQuery.event.trigger("ajaxStop");
           if (!$.trim(data)) {
           }
           else {
@@ -602,7 +604,7 @@ $(document).ready(function () {
             location.reload();
           }, 2000);
         },
-        error: function(jqXHR, textStatus, errorThrown) {
+        error: function (jqXHR, textStatus, errorThrown) {
           console.log(textStatus, errorThrown);
         }
       });
@@ -696,7 +698,7 @@ $(document).ready(function () {
     setTimeout(connect, 10000);
   }
 
-  function errorMessage(msg){
+  function errorMessage(msg) {
     noty({
       text: msg,
       layout: 'top',
@@ -704,6 +706,5 @@ $(document).ready(function () {
       timeout: 5000
     });
   }
-
 
 });

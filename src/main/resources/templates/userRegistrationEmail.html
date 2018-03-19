@@ -39,7 +39,7 @@
         <div class="content-body">
             <div class="make-it-center">
                 <h2>Start chat with <p th:text="${invitedBy}"></p>   <br>Plesae enter your name</h2>
-                <form th:object="${accountFromRegistrationByEmail}" th:action="@{/confirmation-email}" method="post">
+                <form th:object="${accountFromRegistrationByEmail}" th:action="@{/confirmationEmail}" method="post">
                     <input type="hidden" name="token" th:value="${confirmationToken}"/>
                     <div class="form-group">
                         <input type="text" th:field="*{name}"  pattern=".{3,32}" required title="3 to 32 characters" class="form-control margin-0-auto" id="name" placeholder="name/email" required>
@@ -104,64 +104,6 @@
         <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
         <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
         <script type="text/javascript" th:src="@{/js/hoy3lrg.js}"></script>
-
-
-        <!--
-        <h4>Set Your Password</h4>
-
-        <div class="container">
-          <div class="card card-container">
-            <form class="form-signin" th:action="@{/confirmation-email}" method="post">
-              <input type="hidden" name="token" th:value="${confirmationToken}">
-              <input name="password" type="password" id="password"
-                     placeholder="Password" class="form-control" required/>
-              <input type="hidden"
-                     th:name="${_csrf.parameterName}"
-                     th:value="${_csrf.token}"/>
-              <button type="submit" class="btn btn-primary block full-width m-b">Save</button>
-            </form>
-          </div>
-        </div>
-        -->
-
-
-        <!--<form th:if="!${invalidToken}" class="m-t" id="passwordForm" role="form" action="#"
-              th:object="${setPassword}" th:action="@{/confirmation-email}" method="post">
-
-          <input type="hidden" name="token" th:value=${confirmationToken}>
-
-          <div class="form-group input-group">
-              <span class="input-group-addon">
-                <span class="glyphicon glyphicon-lock"></span>
-              </span>
-            <input name="password" type="password" id="password"
-                   placeholder="Password" class="form-control" required/>
-            <span class="glyphicon"
-                  aria-hidden="true"></span>
-          </div>
-
-          <div class="form-group input-group has-feedback">
-              <span class="input-group-addon">
-                <span class="glyphicon glyphicon-lock"></span>
-              </span>
-            <input type="password" class="form-control" id="signup-password-confirm"
-                   placeholder="Confirm Password" name="ConfirmPassword" data-fv-notempty="true"
-                   data-fv-notempty-message="Please confirm password"
-                   data-fv-identical="true"
-                   data-fv-identical-field="password"
-                   data-fv-identical-message="Both passwords must be identical"/>
-
-            <div class="help-block with-errors"></div>
-          </div>
-
-
-          <button type="submit"
-                  class="btn btn-primary block full-width m-b">Save
-          </button>
-
-        </form>
-        -->
-
 
         <script th:src="@{js/fv.min.js}"></script>
 </body>

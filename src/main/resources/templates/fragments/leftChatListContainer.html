@@ -1,0 +1,35 @@
+
+  <!-- <div lang="en" th:include="fragments/profile :: profile"></div>-->
+
+  <div th:fragment="leftChatListContainer"  xmlns:th="http://www.w3.org/1999/xhtml">
+
+    <div id="profile">
+      <div class="wrap">
+
+        <img
+            th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
+            alt="memorynotfound logo"
+            class="online"
+            alt=""/>
+        <p th:text="${username}"></p>
+        <a href="#" data-toggle="modal" data-target="#myModalHorizontal">
+          <img class="invite-friends" th:height="50" th:width="50"
+               th:src="@{/images/plus-button.png}"/></a>
+        <!--<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>-->
+        <div id="status-options">
+          <ul>
+            <li id="status-online" class="online"><span class="status-circle"></span>
+              <p>Online</p></li>
+            <li id="status-away"><span class="status-circle"></span>
+              <p>Away</p></li>
+            <li id="status-busy"><span class="status-circle"></span>
+              <p>Busy</p></li>
+            <li id="status-offline"><span class="status-circle"></span>
+              <p>Offline</p></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <ul id="contacts-uli">
+    </ul>
+  </div>
