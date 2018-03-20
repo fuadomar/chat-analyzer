@@ -158,8 +158,8 @@ public class UserAccountControllerWeb {
       return USERS_REGISTRATION_VIEW;
     }
 
-    String googleReCapcha = request.getParameter("g-recaptcha-response");
-    captchaService.processResponse(googleReCapcha);
+   /* String googleReCapcha = request.getParameter("g-recaptcha-response");
+    captchaService.processResponse(googleReCapcha);*/
 
     String plainTextPassword = accountForm.getPassword();
     userServiceImpl.save(accountForm);
