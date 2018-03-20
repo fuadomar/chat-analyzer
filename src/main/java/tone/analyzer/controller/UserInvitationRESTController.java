@@ -64,7 +64,7 @@ public class UserInvitationRESTController {
         }
 
         String token = UUID.randomUUID().toString();
-        String url = toneAnalyzerUtility.retrieveRootHostUrl(request) + "/confirmation-email";
+        String url = toneAnalyzerUtility.retrieveRootHostUrl(request) + "/confirmationEmail";
 
         String subject = "Hi " + invitedUser + ", " + "a friend invited you to join toneAnalyzer";
         String confirmationUrl = url + "?token=" + token + "&sender=" + sender + "&receiver=" + email;

@@ -1,6 +1,5 @@
 package tone.analyzer.web;
 
-import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import java.io.IOException;
 import javax.servlet.ServletContext;
 
@@ -9,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +18,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import tone.analyzer.auth.service.*;
@@ -220,6 +216,11 @@ public class UserAccountControllerWeb {
       @RequestParam("sender") String sender,
       @RequestParam("receiver") String receiver) {
 
+    if (token == null ||
+        StringUtils.isBlank((String) token)) {
+      return "redirect:/login";
+    }
+
     EmailInvitation emailInvitationServiceByToekn = emailInvitationService
         .findByToeknAndSenderAndReceiver(token, sender, receiver);
 
@@ -301,10 +302,20 @@ public class UserAccountControllerWeb {
 
   @RequestMapping(value = "/chat/anonymous", method = RequestMethod.GET)
   public String anonymousLoginForChat(Model model, @RequestParam("token") String token) {
-    EmailInvitation emailInvitationServiceByToekn = emailInvitationService
+
+    if (token == null ||
+        StringUtils.isBlank((String) token)) {
+      return "redirect:/login";
+    }
+
+    EmailInvitation anonymousInvitationToken = emailInvitationService
         .findByToken(token);
-    model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
-    model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
+
+    if (anonymousInvitationToken == null) {
+      return "redirect:/login";
+    }
+    model.addAttribute("confirmationToken", anonymousInvitationToken.getToken());
+    model.addAttribute("invitedBy", anonymousInvitationToken.getSender());
     return "anonymousUserRegistration";
   }
 
@@ -334,7 +345,8 @@ public class UserAccountControllerWeb {
     }
     userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account,
         anonymousUserServiceImpl);
-    anonymousSecurityServiceImpl.autoLogin(account.getName(), account.getPassword(), request, response);
+    anonymousSecurityServiceImpl
+        .autoLogin(account.getName(), account.getPassword(), request, response);
     redir.addFlashAttribute(USER_NAME, userName);
     return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
   }
