@@ -89,7 +89,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   public static final String RESOURCES_URI = "/resources/static/**";
 
-  public static final String REGISTRATION_URI = "/user-registration/**";
+  public static final String REGISTRATION_URI = "/userRegistration/**";
 
   public static final String ADMIN_ROLE_NAME = "ADMIN";
 
@@ -173,9 +173,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             REGISTRATION_URI,
             ADMIN_PANEL_URI,
             "/invitation-email/**",
-            "/confirmation-email-error/**",
+            "/errorConfirmationEmail/**",
             "/chat/anonymous/**",
-            "/confirmation-email/**")
+            "/confirmationEmail/**")
         .permitAll()
         .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
         .hasRole(ADMIN_ROLE_NAME)

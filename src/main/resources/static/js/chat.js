@@ -9,8 +9,6 @@ function createChatList(user, host, action) {
       chatListDiv = chatListDiv
           + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" height="40" width="40"/>';
     }
-    //alert(user.profileImage + " " + user.userName);
-
   }
   else {
     if (action !== "notification") {
@@ -50,8 +48,6 @@ function NotificationList(user, host, action) {
       chatListDiv = chatListDiv
           + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" height="40" width="40"/>';
     }
-    //alert(user.profileImage + " " + user.userName);
-
   }
   else {
     if (action !== "notification") {
@@ -77,11 +73,6 @@ function NotificationList(user, host, action) {
   //chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
   console.log(chatListDiv);
   return chatListDiv;
-}
-
-function clearGraphDdiv() {
-  //$("#canvas").empty();
-  //var canvas = $('#canvas').remove(); // or document.getElementById('canvas');
 }
 
 function drawDonut(dataPoint, div, title) {
@@ -123,8 +114,9 @@ function drawDonut(dataPoint, div, title) {
       pie: {
         innerSize: 100,
         depth: 45
-      }},
-      credits: {
+      }
+    },
+    credits: {
       enabled: false
     },
     series: [{
@@ -142,7 +134,8 @@ function drawDonut(dataPoint, div, title) {
   var canvas = document.getElementById("canvas");
   var img = canvas.toDataURL("image/png");
   //$('#canvas').replaceWith('<img height="500" width="500" src="' + img + '"/>');
-
+  $('#canvas').attr("style", "");
+  $('#canvas').css({"height": "400px", "width": "500px"});
   var token = $("meta[name='_csrf']").attr("content");
   var header = $("meta[name='_csrf_header']").attr("content");
   $(document).ajaxSend(function (e, xhr, options) {
@@ -423,7 +416,6 @@ $(document).ready(function () {
           console.log(data);
           var series = normalizedDataToneAnalyzer(data);
           console.log(series);
-          clearGraphDdiv();
           drawDonut(series, "graph", "Your friend's mood is");
           jQuery.event.trigger("ajaxStop");
         },
@@ -448,7 +440,7 @@ $(document).ready(function () {
         data: "email=" + email + "&invitedText=" + invitedText + "&invitedUser="
         + invitedUser,
         success: function (data) {
-          $('#myModalHorizontal').modal('hide');
+          $('#userInvitationMainModal').modal('hide');
           $("#success-msg-mail-send").show();
 
           var fade_out = function () {
@@ -463,11 +455,8 @@ $(document).ready(function () {
 
     });
 
-    $("#myModal").on("show.bs.modal", function (e) {
-      /* var link = $(e.relatedTarget);
-       $(this).find(".modal-body").load(link.attr("href"));*/
-      //invitation-text-area
-      $("#myModalHorizontal").modal('hide');
+    $("#userInvitationTextAreaModal").on("show.bs.modal", function (e) {
+      $("#userInvitationMainModal").modal('hide');
       var email = $("#exampleInputEmail1").val();
       var name = $("#name").val();
       var emailTemplate = "Dear " + name + " ,"
@@ -484,21 +473,14 @@ $(document).ready(function () {
     });
 
     $("#generate-chat-link").click(function () {
-
-      $("#myModalHorizontal").modal('hide');
+      $("#userInvitationTextAreaModal").modal('show');
       $.get({
         type: 'get',
         url: '/anonymousChatLink',
         dataType: "text",
         success: function (data) {
-          alert(data);
-          $('#myModalHorizontal').modal('hide');
-          $("#success-msg-mail-send").hide();
+          $("#send-invitation-modal").hide();
           $("#email-invitation-text-area").val(data);
-          var fade_out = function () {
-            $("#success-msg-mail-send").fadeOut().empty();
-          }
-          setTimeout(fade_out, 3000);
         },
         error: function (jqXHR, textStatus, errorThrown) {
           console.log(textStatus, errorThrown);
@@ -529,7 +511,6 @@ $(document).ready(function () {
 
       userClickedOnWhcihBuddyMessageBox = $(
           "#" + $(this).attr('id') + " .wrap .meta .name").text();
-      //$("#user-is-on-messagebox").val( $("#"+(this).attr('id') + " .wrap .meta .name").text());
       $(this).css({'background': 'gray'});
       $("#contacts-uli li").each(function () {
         if (receiverId !== $(this).attr('id').replace("mgs-li-", "")) {
@@ -542,8 +523,6 @@ $(document).ready(function () {
         dataType: 'json',
         data: "receiver=" + receiver,
         success: function (data) {
-
-          //jQuery.event.trigger("ajaxStop");
           if (!$.trim(data)) {
           }
           else {
@@ -671,15 +650,8 @@ $(document).ready(function () {
         'topic': "message", 'message': message,
         'recipient': recipientId
       }));
-      /* if (typeof profileImageLoggedInUser === 'undefined'
-       || profileImageLoggedInUser === null) {
-       $('<li class="sent"><p>' + message + '</p></li>').appendTo(
-       $('.messages ul'))
-       }*/
-      /* else {*/
       $('<li class="sent"> <p>' + message + '</p></li>').appendTo(
           $('.messages ul'));
-      /*}*/
       $('.message-input input').val(null);
       $('.contact.online .preview').html('<span>You: </span>' + message);
       $(".messages").animate({scrollTop: $(document).height()}, "fast");

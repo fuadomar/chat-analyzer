@@ -62,7 +62,7 @@ public class UserAccountControllerWeb {
 
   public static final String ADMIN_LOGIN_VIEW = "adminLogin";
 
-  public static final String USERS_REGISTRATION_VIEW = "usersRegistration";
+  public static final String USERS_REGISTRATION_VIEW = "userRegistration";
 
   public static final String LOGIN_VIEW = "login";
 
@@ -230,7 +230,7 @@ public class UserAccountControllerWeb {
     model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
     model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
     model.addAttribute("accountFromRegistrationByEmail", new Account());
-    return "user-registration-email";
+    return "userRegistrationEmail";
   }
 
 

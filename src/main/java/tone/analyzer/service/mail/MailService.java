@@ -51,7 +51,7 @@ public class MailService {
 
       Context context = new Context();
       context.setVariables(userInvitationNotification.getModel());
-      String html = templateEngine.process("email-invitation", context);
+      String html = templateEngine.process("emailInvitation", context);
       LOG.info("email content: {}", html);
 
       helper.setTo((String) userInvitationNotification.getModel().get("receiver"));
