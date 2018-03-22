@@ -62,14 +62,13 @@ public class AnonymousSecurityServiceImpl implements SecurityService {
       // generate session if one doesn't exist
       request.getSession();
       usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
-      SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-/*
+     // SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
       Authentication authenticatedUser =
           authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
       if (authenticatedUser.isAuthenticated()) {
         SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
         LOGGER.info(String.format("Auto login %s successfully!", username));
-      }*/
+      }
     }
 }

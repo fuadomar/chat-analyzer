@@ -65,11 +65,11 @@ public class EmailInvitationValidator implements Validator{
                 errors.rejectValue(NAME, SIZE_OF_NAME);
             }
 
-            String regex = "([0-9|a-z|A-Z|\\_\\.])+";
+            /*String regex = "([0-9|a-z|A-Z|\\_\\.])+";
             boolean matches = Pattern.matches(regex, account.getName());
              if (!matches) {
                 errors.rejectValue(NAME, EMPTY_NAME);
-            }
+            }*/
         }
 
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, PASSWORD, NOT_EMPTY_MESSAGE);

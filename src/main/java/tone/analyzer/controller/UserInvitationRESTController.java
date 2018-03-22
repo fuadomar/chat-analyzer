@@ -6,8 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +18,11 @@ import tone.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 import tone.analyzer.utility.ToneAnalyzerUtility;
-import tone.analyzer.web.UserAccountControllerWeb;
 
 /**
  * Created by user on 1/8/2018.
