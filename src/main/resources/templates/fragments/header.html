@@ -2,4 +2,12 @@
 
     <img class="header-logo"
          th:src="@{/images/logo.png}"/>
+    <div class="button-container">
+        <form th:action="@{/logout}" method="post">
+            <button class="btn btn-link logout-design" type="submit"><img class="header-logo"
+                                                                          style="transform: rotate(90deg);"
+                                                                          th:src="@{/images/logout.png}"/>
+            </button>
+        </form>
+    </div>
 </div>

@@ -78,17 +78,6 @@
 <div class="container-fluid">
 
   <div class="row">
-
-    <div class="button-container">
-
-      <form th:action="@{/logout}" method="post">
-        <button class="btn btn-link logout-design" type="submit"><img class="header-logo"
-                                                                      style="transform: rotate(90deg);"
-                                                                      th:src="@{/images/logout.png}"/>
-        </button>
-      </form>
-    </div>
-
     <div id="success-msg-mail-send">
       The mail has been sent successfully!
     </div>
@@ -110,17 +99,15 @@
   </div>
 
   <div class="row">
-
     <input type="hidden" id="user-is-on-messagebox" name="user-is-on-messagebox"
            value=""/>
     <div id="frame">
-
       <div lang="en" class="header" th:include="fragments/header :: header"></div>
       <div id='ajax_loader' style="display: none;">
         <img class="header-logo"
              th:src="@{/images/ajax-loader.gif}"/>
       </div>
-      <div class="col-sm-4">
+      <div class="col-sm-4 sender-side">
         <div id="sidepanel">
           <div lang="en" id="contacts"
                th:include="fragments/leftChatListContainer :: leftChatListContainer">
@@ -128,15 +115,11 @@
         </div>
 
       </div>
-      <div class="col-sm-8">
+      <div class="col-sm-8 receiver-side">
         <div lang="en" class="content" th:include="fragments/chatMessageContainer :: chatMessageContainer"></div>
       </div>
-
-
-
-      <div lang="en" class="footer" th:include="fragments/footer :: footer"></div>
-
     </div>
+    <div lang="en" class="footer" th:include="fragments/footer :: footer"></div>
   </div>
 </div>
 
