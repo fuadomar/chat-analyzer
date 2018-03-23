@@ -40,17 +40,17 @@
         href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css'>
   <style class="cp-pen-styles">
     body {
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      /*display: flex;*/
+      /*align-items: center;*/
+      /*justify-content: center;*/
       min-height: 100vh;
-      background: #27ae60;
+      /*background: #27ae60;*/
       font-family: "proxima-nova", "Source Sans Pro", sans-serif;
-      font-size: 1em;
-      letter-spacing: 0.1px;
+      /*font-size: 1em;*/
+      /*letter-spacing: 0.1px;*/
       color: #32465a;
-      text-rendering: optimizeLegibility;
-      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);
+      /*text-rendering: optimizeLegibility;*/
+      /*text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.004);*/
       -webkit-font-smoothing: antialiased;
     }
   </style>
@@ -75,7 +75,7 @@
 <div id="fb-root"></div>
 
 
-<div class="container">
+<div class="container-fluid">
 
   <div class="row">
 
@@ -123,13 +123,19 @@
         <img class="header-logo"
              th:src="@{/images/ajax-loader.gif}"/>
       </div>
+      <div class="col-sm-4">
+        <div id="sidepanel">
+          <div lang="en" id="contacts"
+               th:include="fragments/leftChatListContainer :: leftChatListContainer">
+          </div>
+        </div>
 
-      <div id="sidepanel">
-        <div lang="en" id="contacts"
-             th:include="fragments/leftChatListContainer :: leftChatListContainer"></div>
+      </div>
+      <div class="col-sm-8">
+        <div lang="en" class="content" th:include="fragments/chatMessageContainer :: chatMessageContainer"></div>
       </div>
 
-      <div lang="en" class="content" th:include="fragments/chatMessageContainer :: chatMessageContainer"></div>
+
 
       <div lang="en" class="footer" th:include="fragments/footer :: footer"></div>
 
