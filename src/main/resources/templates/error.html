@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.springframework.org/schema/data/jaxb">
 <head>
     <meta charset="UTF-8">
     <title>Error Page</title>
-
+    <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}"/>
+    <style>
+        body {
+            padding-top: 70px;
+        }
+    </style>
 </head>
-<body>
-<h1> Sorry</h1>
-<h3>Looks like something went wrong on our end. </h3>
 
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <a href="/login"><span class="glyphicon glyphicon-user"></span>Log In</a>
+
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <div class="text-center"><i class="fa fa-5x fa-frown-o" style="color:#d9534f;"></i></div>
+        <h1 class="text-center">Sorry<p></p>
+            <p>
+                <small class="text-center"> Looks like something went wrong on our end.</small>
+            </p>
+        </h1>
+        <p class="text-center"><a class="btn btn-primary" href="/login"><i class="fa fa-home"></i> Take Me Home</a></p>
     </div>
-</nav>
+</div>
 </body>
 </html>
