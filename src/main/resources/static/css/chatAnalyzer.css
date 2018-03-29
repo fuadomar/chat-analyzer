@@ -130,5 +130,12 @@ body {
   webkit-justify-content: center;
   justify-content: center;
 }
-
+.footer {
+  background: white;
+  padding: 0 30px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
