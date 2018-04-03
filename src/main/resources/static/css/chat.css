@@ -15,10 +15,9 @@
   background: black;
   width: 300px;
   height: 300px;
-  position: relative;
-  position: absolute;
-  left: 33%;
-  top: 10%;
+  position: fixed;
+  left: 15%;
+  z-index: 999999;
   display:none;
 }
 .notification-div::before {
@@ -1035,4 +1034,12 @@ border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+.icons-div {
+  position: relative;
+}
+.notify-counter {
+  position: absolute;
+  left: 30px;
+  top: 0;
 }
