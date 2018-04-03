@@ -37,7 +37,7 @@ function createChatList(user, host, action) {
 }
 
 function NotificationList(user, host, action) {
-  
+
   var chatListDiv = '<li class="notification-item" id="mgs-li-'
       + user.id
       + '"><div class="img-left"><img class="notification-avatar" height="50" width="50" src="/images/default-avatar.png"/></div>';
