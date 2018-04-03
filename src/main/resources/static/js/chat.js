@@ -37,41 +37,14 @@ function createChatList(user, host, action) {
 }
 
 function NotificationList(user, host, action) {
-
-  var chatListDiv = '<li style="height:200px; width:200px; background:red;" class="contact" id="mgs-li-'
+  
+  var chatListDiv = '<li class="notification-item" id="mgs-li-'
       + user.id
-      + '">';
+      + '"><div class="img-left"><img class="notification-avatar" height="50" width="50" src="/images/default-avatar.png"/></div>';
+  chatListDiv = chatListDiv +'<div class="user-content"> <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>';
 
-  if (typeof user.profileImage === 'undefined' || user.profileImage
-      === null || user.profileImage === "") {
-    if (action !== "notification") {
-      chatListDiv = chatListDiv
-          + '<div class="wrap"><img src="/images/default-avatar.png"  alt="" height="40" width="40"/>';
-    }
-  }
-  else {
-    if (action !== "notification") {
-      chatListDiv = chatListDiv + '<div class="wrap"><img src="'
-          + '/profiles/images/'
-          + user.profileImage + '" alt="" height="40" width="40"/>';
-    }
-  }
+  chatListDiv = chatListDiv + '<p class="time">1 hour ago</p></div> </li>';
 
-  if (user.online === true) {
-    if (action !== "notification") {
-      chatListDiv = chatListDiv + '<span class="contact-status online"/>';
-    }
-  }
-  else {
-    if (action !== "notification") {
-      chatListDiv = chatListDiv + '<span class="contact-status"/>';
-    }
-  }
-  chatListDiv = chatListDiv + '<div class="meta"><p class="name" id="' + user.id
-      + '">' + user.userName
-      + '</p> <p class="preview"></p> </div> </div> </li>';
-  //chatListDiv = ' <div class="user" id="user' + userId + '">' + userId + '</div>';
-  console.log(chatListDiv);
   return chatListDiv;
 }
 
@@ -231,9 +204,10 @@ $(document).ready(function () {
           function (data) {
             var payload = JSON.parse(data.body);
             if (payload !== null && payload.sender !== null) {
-              $("#noti_Button").show();
-              $("#noti_Counter").text(payload.sender.length);
-              $("#noti_Counter").show();
+              $(".notification-design").css('border', "block");
+              //$(".notification-design").show();
+              $(".notification-design").html(payload.sender.length);
+              //$("#noti_Counter").show();
 
               for (var i = 0; i < payload.sender.length; i++) {
                 $("#notifications").append(
@@ -248,7 +222,7 @@ $(document).ready(function () {
             var payload = JSON.parse(data.body);
             if (payload !== null && payload.sender !== null) {
 
-              $("#notifications").html("");
+              $(".notification-list").html("");
               var isFirstIteration = true;
               for (var i = 0; i < payload.sender.length; i++) {
                 if ((typeof userClickedOnWhcihBuddyMessageBox !== 'undefined'
@@ -283,15 +257,14 @@ $(document).ready(function () {
                 }
 
                 if (isFirstIteration) {
-                  $("#noti_Button").show();
-                  $("#noti_Counter").text(payload.sender.length);
-                  $("#noti_Counter").show();
-                  $("#notifications").html("<h3>Just happening: </h3>");
+
+                  $(".notification-design").show();
+                  $(".notification-design").html(payload.sender.length);
                   isFirstIteration = false;
                 }
 
-                $("#notifications").append(
-                    NotificationList(payload.sender[i], host, "notification"));
+                 $(".notification-list").append(
+                     NotificationList(payload.sender[i], host, "notification"));
               }
             }
             console.log("pay load: " + payload);
@@ -370,21 +343,16 @@ $(document).ready(function () {
       function hideNotificationPanel() {
 
         // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
-        $('#notifications').fadeToggle('slow', 'linear', function () {
-          if ($('#notifications').is(':hidden')) {
-            $('#noti_Button').css('background-color', '#2E467C');
+        $('#notification-div').fadeToggle('slow', 'linear', function () {
+          if ($('#notification-div').is(':hidden')) {
           }
-          else {
-            $('#noti_Button').css('background-color', '#FFF');
-          }        // CHANGE BACKGROUND COLOR OF THE BUTTON.
         });
 
-        $('#noti_Counter').fadeOut('slow');
-        $('#noti_Button').hide();
-        $('#notifications').show();
+        //$('.notification-design').fadeOut('slow');
+        //$('#notification-div').show();
       }
 
-      $('#noti_Button').click(function () {
+      $('.notification-design').click(function () {
         hideNotificationPanel();
         $.get({
           type: 'get',
@@ -682,6 +650,7 @@ $(document).ready(function () {
     $("#chatbox-container").html("");
     setTimeout(establishConnection, 10000);
   }
+
   establishConnection();
 
 });
