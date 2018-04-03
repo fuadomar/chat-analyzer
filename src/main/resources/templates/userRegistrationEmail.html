@@ -42,7 +42,7 @@
                 <form th:object="${accountFromRegistrationByEmail}" th:action="@{/confirmationEmail}" method="post">
                     <input type="hidden" name="token" th:value="${confirmationToken}"/>
                     <div class="form-group">
-                        <input type="text" th:field="*{name}"  pattern=".{3,32}" required title="3 to 32 characters" class="form-control margin-0-auto" id="name" placeholder="name/email" required>
+                        <input type="text" th:field="*{name}"  pattern=".{3,32}" required title="3 to 32 characters" class="form-control margin-0-auto" id="name" placeholder="Name/Email" required>
                         <label
                             th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
                             class="validation-message"></label>
@@ -50,7 +50,7 @@
                     <div class="form-group">
                         <input type="password" pattern=".{8,}"  th:field="*{password}"
                                required title="8 characters minimum"  class="form-control margin-0-auto" id="password"
-                               placeholder="password" required>
+                               placeholder="Password" required>
                     <label
                         th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                         class="validation-message"></label>
@@ -66,12 +66,9 @@
                 </form>
             </div>
         </div>
-        <div class="content-footer">
-            <p>
-                <span>© Nascenia Limited</span>
-        <span class="pull-right"> Developed using <a
-                href="#">IBM Watson </a> and Ruby on Rails</span>
-            </p>
+        <div class="footer">
+            <span>© Nascenia Limited</span>
+            <span class="pull-right"> Developed using <a href="#">IBM Watson </a> and Ruby on Rails</span>
         </div>
 
 

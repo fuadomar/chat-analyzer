@@ -31,6 +31,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
       throw new UsernameNotFoundException("Account not found");
     }
 
+
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
     for (Role role : user.getRole()) {
       grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
