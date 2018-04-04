@@ -14,25 +14,24 @@
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
 
-    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
-      <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/font-awesome.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/chat.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
+
 
 </head>
 
 <body>
-
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="/userRegistration"><span class="glyphicon glyphicon-user"></span> Sign Up</a>
-        </ul>
-    </div>
-</nav>
-
 <div class="container">
-    <div class="row">
         <form th:action="@{/login}" method="POST" class="form-signin">
+            <div class="log-in-avatar">
+                <img
+                        th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
+                        alt="memorynotfound logo"
+                        class="online "
+                        alt=""/>
+            </div>
             <h3 class="form-signin-heading" th:text="Welcome"></h3>
             <br/>
 
@@ -43,29 +42,32 @@
             <div align="center" th:if="${param.error}">
                 <p style="font-size: 20; color: #FF1C19;">Email or Password invalid, please verify</p>
             </div>
-            <div align="center">
-                <label for="remember-me">Remember me</label>
+            <div>
                 <input type="checkbox" name="remember-me" id="remember-me">
+                <label for="remember-me">Remember me</label>
+                <a class="pull-right">Forgot Password</a>
             </div>
             <div class="form-group">
                 <input type="hidden"
                        th:name="${_csrf.parameterName}"
                        th:value="${_csrf.token}"/>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" name="Submit" value="Login" type="Submit"
-                    th:text="Login"></button>
-
-        </form>
-        <!--    <label> <input type="checkbox" name="remember-me" id="remember-me"/>Remember Me</label>-->
-    </div>
-    <div class="row">
-        <div class="col-md-2 col-md-offset-5">
-            <div class="btn-group">
-              <!--  <a class='btn btn-danger disabled'><i class="fa fa-google-plus" style="width:16px; height:20px"></i></a>-->
-                <a class='btn btn-danger' href="/login/google" style="width:12em;"> Sign in with Google</a>
+            <div class="row">
+                <div class="col-xs-6">
+                    <a class="btn btn-primary login-btn" name="Submit" value="Login" type="Submit"
+                        th:text="Login"></a>
+                </div>
+                <div class="col-xs-6">
+                    <a class='btn btn-danger pull-right' href="/login/google"> <span><img th:height="25" id="google-plus-button" th:width="25"
+                        th:src="@{/images/google-plus-logo.png}"/></span>Sign in with Google</a>
+                </div>
             </div>
-        </div>
+    <div align="center" class="login-signup-div">
+        <p>Don't have an account? <a href="/userRegistration">Sign Up!</a></p>
     </div>
+
+
+</form>
 </div>
 
 </body>

@@ -1043,3 +1043,13 @@ border-radius: 50%;
   left: 30px;
   top: 0;
 }
+.log-in-avatar {
+  text-align: center;
+}
+.log-in-avatar img {
+  width: 80px;
+  height: 80px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}

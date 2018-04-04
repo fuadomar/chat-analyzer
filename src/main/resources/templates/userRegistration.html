@@ -4,8 +4,10 @@
 <head>
   <title>Registration Form</title>
 
-  <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
+
   <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
 
   <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
   <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
@@ -13,60 +15,38 @@
 
 </head>
 <body>
-
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <ul class="nav navbar-nav navbar-right">
-      <li><a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-    </ul>
-  </div>
-</nav>
-
-
 <div class="container">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
       <form id="registration-form" autocomplete="off" action="#" th:action="@{/userRegistration}"
-            th:object="${accountForm}" method="post" class="form-horizontal"
+            th:object="${accountForm}" method="post" class="form-horizontal signup-div"
             name="form">
-        <h3>User SignUp</h3>
+        <h3 align="center">User SignUp</h3>
         <div class="form-group">
-          <div class="col-sm-9">
-            <span class="input-group-addon">
             <input type="text" th:field="*{name}" placeholder="UserName"
                    class="form-control"/> <label
                 th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
                 class="validation-message"></label>
-            </span>
 
           </div>
-        </div>
         <div class="form-group">
-          <div class="col-sm-9">
-            <span class="input-group-addon">
             <input type="password" th:field="*{password}"
                    placeholder="Password" class="form-control"/> <label
                 th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                 class="validation-message"></label>
-            </span>
           </div>
-        </div>
         <div class="form-group row">
-          <label class="col-sm-3">Captcha</label>
+          <label class="">Captcha</label>
           <div class="g-recaptcha" data-sitekey="6LeDflAUAAAAAB2lkhhSQGl87C42sUd6phVxbeZJ"  data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
           <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
         </div>
         <br/>
         <div class="form-group">
-          <div class="col-sm-9">
             <button type="submit" class="btn btn-primary btn-block">Register User</button>
-          </div>
         </div>
 
+
         <span th:utext="${successMessage}"></span>
+        <p class="login-signup-div" align="center">Already have an account? <a>Login</a></p>
       </form>
-    </div>
-  </div>
 </div>
 
 <!--<script th:inline="javascript">
