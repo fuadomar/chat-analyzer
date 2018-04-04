@@ -1,8 +1,12 @@
 package tone.analyzer.controller;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 
+import java.util.SimpleTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,13 +99,22 @@ public class InstantMessagingRESTController {
   @MessageExceptionHandler
   @MessageMapping("/send.message")
   public String sendChatMessageFromSenderToReceiver(
-      @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+      @Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor)
+      throws ParseException {
 
     String sender = headerAccessor.getUser().getName();
     chatMessage.setSender(sender);
     chatGateway.sendMessageTo(chatMessage);
 
+/*    SimpleDateFormat sdf = new SimpleDateFormat();
+    sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
+    Date utcDate = sdf.parse(new Date().toString());*/
+
     LoginEvent loginEvent = new LoginEvent(chatMessage.getRecipient(), false);
+    Date date = new Date();
+    LOG.info("date {}", date.toString());
+    loginEvent.setTime(date);
+
     Account friendAccount = accountRepository.findByName(chatMessage.getSender());
     loginEvent.setId(friendAccount.getId());
     loginEvent.setUserName(friendAccount.getName());
