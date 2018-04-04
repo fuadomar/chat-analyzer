@@ -204,11 +204,8 @@ $(document).ready(function () {
           function (data) {
             var payload = JSON.parse(data.body);
             if (payload !== null && payload.sender !== null) {
-              $(".notification-design").css('border', "block");
-              //$(".notification-design").show();
-              $(".notification-design").html(payload.sender.length);
-              //$("#noti_Counter").show();
 
+              $("#notify-counter").text(payload.sender.length);
               for (var i = 0; i < payload.sender.length; i++) {
                 $("#notifications").append(
                     createChatList(payload.sender[i], host, "notification"));
@@ -342,6 +339,8 @@ $(document).ready(function () {
 
       function hideNotificationPanel() {
 
+
+        $("#notify-counter").text("");
         // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
         $('#notification-div').fadeToggle('slow', 'linear', function () {
           if ($('#notification-div').is(':hidden')) {
