@@ -41,7 +41,7 @@ function NotificationList(user, host, action) {
   var chatListDiv = '<li class="notification-item" id="mgs-li-'
       + user.id
       + '"><div class="img-left"><img class="notification-avatar" height="50" width="50" src="/images/default-avatar.png"/></div>';
-  chatListDiv = chatListDiv +'<div class="user-content"> <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>';
+  chatListDiv = chatListDiv +'<div class="user-content"> <p class="user-info"><span class="name">'+user.userName+'</span> left a comment.</p>';
 
   chatListDiv = chatListDiv + '<p class="time">1 hour ago</p></div> </li>';
 
@@ -255,8 +255,8 @@ $(document).ready(function () {
 
                 if (isFirstIteration) {
 
-                  $(".notification-design").show();
-                  $(".notification-design").html(payload.sender.length);
+                  //$("#notify-counter").show();
+                  $("#notify-counter").html(payload.sender.length);
                   isFirstIteration = false;
                 }
 
@@ -346,9 +346,6 @@ $(document).ready(function () {
           if ($('#notification-div').is(':hidden')) {
           }
         });
-
-        //$('.notification-design').fadeOut('slow');
-        //$('#notification-div').show();
       }
 
       $('.notification-design').click(function () {
@@ -428,10 +425,12 @@ $(document).ready(function () {
         $("#userInvitationMainModal").modal('hide');
         var email = $("#exampleInputEmail1").val();
         var name = $("#name").val();
-        var emailTemplate = "Dear " + name + " ,"
-            + " I have found a great chatting tool where they will show us some really cool insights based on our conversation. I think, it will be a lot of fun!";
+        var emailTemplate = "Dear " + name + ", \n\n"
+            + " I have found a great chatting tool where they will show us some really cool insights \n\nbased on our conversation. I think, it will be a lot of fun!";
         $("#send-invitation-modal").show();
-        $("#email-invitation-text-area").val(emailTemplate);
+        $("#email-invitation-text-area").val("");
+        var text = $("textarea#email-invitation-text-area")
+        text.val(emailTemplate);
       });
 
       $("body").mouseup(function (e) {
