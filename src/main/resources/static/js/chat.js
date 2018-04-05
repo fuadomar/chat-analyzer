@@ -36,14 +36,48 @@ function createChatList(user, host, action) {
   return chatListDiv;
 }
 
+function findTimeDiffFromCurrentDate(date) {
+
+  var timeDiff = "";
+  var lastMessageSendingDate = new Date(date);
+  var currentDate = new Date();
+  var delta = Math.abs(currentDate.getTime() - lastMessageSendingDate.getTime())
+      / 1000;
+  var days = Math.floor(delta / 86400);
+  delta -= days * 86400;
+
+  var hours = Math.floor(delta / 3600) % 24;
+  delta -= hours * 3600;
+  var minutes = Math.floor(delta / 60) % 60;
+  delta -= minutes * 60;
+  var seconds = delta % 60;
+  if (days >= 1) {
+    timeDiff = Math.ceil(days) + " days ago";
+  } else if (hours >= 1) {
+    timeDiff = Math.ceil(hours) + " hours ago";
+  } else if (minutes >= 1) {
+    timeDiff = Math.ceil(minutes) + " minutes ago";
+  } else if (seconds >= 1) {
+    timeDiff = Math.ceil(seconds) + " seconds ago";
+  }
+  else {
+    timeDiff = " a moment ago";
+  }
+  return timeDiff;
+}
+
 function NotificationList(user, host, action) {
-  
+
+  var timeDiff = findTimeDiffFromCurrentDate(user.time);
   var chatListDiv = '<li class="notification-item" id="mgs-li-'
       + user.id
       + '"><div class="img-left"><img class="notification-avatar" height="50" width="50" src="/images/default-avatar.png"/></div>';
-  chatListDiv = chatListDiv +'<div class="user-content"> <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>';
+  chatListDiv = chatListDiv
+      + '<div class="user-content"> <p class="user-info"><span class="name">'
+      + user.userName + '</span> left a comment.</p>';
 
-  chatListDiv = chatListDiv + '<p class="time">1 hour ago</p></div> </li>';
+  chatListDiv = chatListDiv + '<p class="time" id="id-time">' + timeDiff
+      + '</p></div> </li>';
 
   return chatListDiv;
 }
@@ -119,8 +153,6 @@ function drawDonut(dataPoint, div, title) {
       //jQuery.event.trigger("ajaxStop");
     },
     error: function (jqXHR, textStatus, errorThrown) {
-      console.log(textStatus, errorThrown);
-      // jQuery.event.trigger("ajaxStop");
     }
   });
 
@@ -200,29 +232,26 @@ $(document).ready(function () {
             console.log("received message: " + payload);
           });
 
+      var dates = []
       stompClient.subscribe("/app/unseen.messages",
           function (data) {
             var payload = JSON.parse(data.body);
             if (payload !== null && payload.sender !== null) {
-              $(".notification-design").css('border', "block");
-              //$(".notification-design").show();
-              $(".notification-design").html(payload.sender.length);
-              //$("#noti_Counter").show();
 
+              $("#notify-counter").text(payload.sender.length);
               for (var i = 0; i < payload.sender.length; i++) {
+                dates.push(payload.sender[i].time);
                 $("#notifications").append(
-                    createChatList(payload.sender[i], host, "notification"));
+                    NotificationList(payload.sender[i], host, "notification"));
               }
             }
-            console.log("pay load: " + payload);
+            //console.log("pay load: " + payload);
           });
 
       stompClient.subscribe("/user/queue/unseen-message",
           function (data) {
             var payload = JSON.parse(data.body);
             if (payload !== null && payload.sender !== null) {
-
-              $(".notification-list").html("");
               var isFirstIteration = true;
               for (var i = 0; i < payload.sender.length; i++) {
                 if ((typeof userClickedOnWhcihBuddyMessageBox !== 'undefined'
@@ -249,7 +278,6 @@ $(document).ready(function () {
                     success: function (data) {
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
-                      console.log(textStatus, errorThrown);
                     }
                   });
 
@@ -257,14 +285,12 @@ $(document).ready(function () {
                 }
 
                 if (isFirstIteration) {
-
-                  $(".notification-design").show();
-                  $(".notification-design").html(payload.sender.length);
+                  $("#notify-counter").html(payload.sender.length);
                   isFirstIteration = false;
                 }
-
-                 $(".notification-list").append(
-                     NotificationList(payload.sender[i], host, "notification"));
+                dates.push(payload.sender[i].time);
+                $(".notification-list").append(
+                    NotificationList(payload.sender[i], host, "notification"));
               }
             }
             console.log("pay load: " + payload);
@@ -332,27 +358,30 @@ $(document).ready(function () {
           });
 
       $(document).ajaxStop(function () {
-        console.debug("ajaxStop");
         $("#ajax_loader").hide();
       });
       $(document).ajaxStart(function () {
-        console.debug("ajaxStart");
         $("#ajax_loader").show();
       });
 
       function hideNotificationPanel() {
 
-        // TOGGLE (SHOW OR HIDE) NOTIFICATION WINDOW.
+        $("#notify-counter").text("");
         $('#notification-div').fadeToggle('slow', 'linear', function () {
           if ($('#notification-div').is(':hidden')) {
           }
         });
-
-        //$('.notification-design').fadeOut('slow');
-        //$('#notification-div').show();
       }
 
       $('.notification-design').click(function () {
+
+        for (var k = 0; k < dates.length; k++) {
+          $("#id-time").val("");
+          var value = findTimeDiffFromCurrentDate(dates[k]);
+          $("#id-time").val(value);
+        }
+        dates = [];
+
         hideNotificationPanel();
         $.get({
           type: 'get',
@@ -422,17 +451,18 @@ $(document).ready(function () {
             console.log(textStatus, errorThrown);
           }
         });
-
       });
 
       $("#userInvitationTextAreaModal").on("show.bs.modal", function (e) {
         $("#userInvitationMainModal").modal('hide');
         var email = $("#exampleInputEmail1").val();
         var name = $("#name").val();
-        var emailTemplate = "Dear " + name + " ,"
-            + " I have found a great chatting tool where they will show us some really cool insights based on our conversation. I think, it will be a lot of fun!";
+        var emailTemplate = "Dear " + name + ", \n\n"
+            + " I have found a great chatting tool where they will show us some really cool insights \n\nbased on our conversation. I think, it will be a lot of fun!";
         $("#send-invitation-modal").show();
-        $("#email-invitation-text-area").val(emailTemplate);
+        $("#email-invitation-text-area").val("");
+        var text = $("textarea#email-invitation-text-area")
+        text.val(emailTemplate);
       });
 
       $("body").mouseup(function (e) {
@@ -459,8 +489,10 @@ $(document).ready(function () {
         });
       });
 
-      $("#notifications").on("click", "li", function (event) {
+      $("#id-notification-list").on("click", "li", function (event) {
+        hideNotificationPanel();
         $("#contacts-uli" + " #" + $(this).attr('id')).trigger('click');
+        $("#id-notification-list").html("");
       });
 
       $("#contacts-uli").on("click", "li", function (event) {
