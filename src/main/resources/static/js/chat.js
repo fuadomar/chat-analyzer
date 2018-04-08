@@ -514,7 +514,7 @@ $(document).ready(function () {
 
         userClickedOnWhcihBuddyMessageBox = $(
             "#" + $(this).attr('id') + " .wrap .meta .name").text();
-        $(this).css({'background': 'gray'});
+        // $(this).css({'background': 'gray'});
         $("#contacts-uli li").each(function () {
           if (receiverId !== $(this).attr('id').replace("mgs-li-", "")) {
             $(this).css({'background': '#e8e8e8'});

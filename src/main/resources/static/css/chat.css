@@ -460,9 +460,17 @@ border-radius: 50%;
   text-decoration: underline;
   cursor: pointer;
 }
+.social-share-area {
+  padding-bottom: 20px;
+  display: table;
+  margin: 0 auto;
+  text-align: center;
+}
 
-.social-share-area, .social-share-area li {
-  display: inline;
+.social-share-area li {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 10px;
 }
 
 .content-body h2 {
@@ -900,7 +908,7 @@ border-radius: 50%;
 }
 
 .modal-footer {
-  padding: 0;
+  padding: 10px;
 }
 
 .modal-footer .btn-group button {
@@ -1042,4 +1050,14 @@ border-radius: 50%;
   position: absolute;
   left: 30px;
   top: 0;
+}
+.log-in-avatar {
+  text-align: center;
+}
+.log-in-avatar img {
+  width: 80px;
+  height: 80px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
 }
