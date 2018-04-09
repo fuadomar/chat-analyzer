@@ -161,8 +161,7 @@ public class InstantMessagingRESTController {
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
       value = "/dispose_all_message_notification",
-      method = RequestMethod.GET,
-      produces = MediaType.APPLICATION_JSON_VALUE
+      method = RequestMethod.GET
   )
   public String DisposeAwaitingMessageNotificationForLoggedInUser(Principal principal) {
 
