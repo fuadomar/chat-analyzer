@@ -1,6 +1,7 @@
 package tone.analyzer.auth.service;
 
 import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,22 +54,22 @@ public class AnonymousSecurityServiceImpl implements SecurityService {
 
     @Override
     public void autoLogin(String username, String password, HttpServletRequest request, HttpServletResponse response) {
-      UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-      Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-      UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-          new UsernamePasswordAuthenticationToken(userDetails, null,
-              AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ANONYMOUS_CHAT"));
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, null,
+                        AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ANONYMOUS_CHAT"));
 
-      // generate session if one doesn't exist
-      request.getSession();
-      usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
-     // SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-      Authentication authenticatedUser =
-          authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        // generate session if one doesn't exist
+        request.getSession();
+        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
+        // SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+        Authentication authenticatedUser =
+                authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-      if (authenticatedUser.isAuthenticated()) {
-        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-        LOGGER.info(String.format("Auto login %s successfully!", username));
-      }
+        if (authenticatedUser.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            LOGGER.info(String.format("Auto login %s successfully!", username));
+        }
     }
 }

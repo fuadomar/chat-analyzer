@@ -8,7 +8,7 @@ import tone.analyzer.domain.entity.Token;
  */
 public interface TokenRepository extends MongoRepository<Token, String> {
 
-  Token findBySeries(String series);
+    Token findBySeries(String series);
 
-  Token findByUsername(String username);
+    Token findByUsername(String username);
 }

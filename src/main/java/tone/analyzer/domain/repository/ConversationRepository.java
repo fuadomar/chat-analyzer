@@ -11,11 +11,11 @@ import java.util.List;
  */
 public interface ConversationRepository extends MongoRepository<Conversation, String> {
 
-  @Query(
-      value =
-          "{ $or: [ { $and: [ {'sender' : ?0}, {'receiver' : ?1}  ] },  { $and: [ {'sender' : ?1}, {'receiver' : ?0}  ] } ]}"
-  )
-  Conversation findConversationBySenderAndRecipient(String sender, String recipient);
+    @Query(
+            value =
+                    "{ $or: [ { $and: [ {'sender' : ?0}, {'receiver' : ?1}  ] },  { $and: [ {'sender' : ?1}, {'receiver' : ?0}  ] } ]}"
+    )
+    Conversation findConversationBySenderAndRecipient(String sender, String recipient);
 
-  List<Conversation> findBySender(String sender);
+    List<Conversation> findBySender(String sender);
 }

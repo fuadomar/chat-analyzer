@@ -1,31 +1,31 @@
-<div th:fragment="chatMessageContainer" class="content"  id="content" xmlns:th="http://www.w3.org/1999/xhtml">
-  <div class="contact-profile" id="contact-profile">
-  </div>
-  <div class="messages" id="messages">
-    <ul id="ul-messages">
-    </ul>
-  </div>
-  <div class="message-input" id="message-input-div" style="display:none">
-    <div class="wrap">
-      <div class="row">
-        <div class="col-sm-10">
+<div th:fragment="chatMessageContainer" class="content" id="content" xmlns:th="http://www.w3.org/1999/xhtml">
+    <div class="contact-profile" id="contact-profile">
+    </div>
+    <div class="messages" id="messages">
+        <ul id="ul-messages">
+        </ul>
+    </div>
+    <div class="message-input" id="message-input-div" style="display:none">
+        <div class="wrap">
+            <div class="row">
+                <div class="col-sm-10">
                  <span class="text-area">
                             <textarea id="message-box" type="text"
                                       placeholder="Write your message..."
                                       class="form-control"></textarea>
                  </span>
-        </div>
-        <div class="col-sm-2">
+                </div>
+                <div class="col-sm-2">
                 <span class="send-button">
                             <button class="btn btn-warning btn-sm" id="btn-chat">
                                 Send</button>
                 </span>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="mood-detection-div">
+            <a href="#" data-toggle="modal" data-target="#modal-end-conversation"
+               id="anchor-tone-anlysis"> End Chat and see your partner's mood</a>
+        </div>
     </div>
-    <div class="mood-detection-div">
-      <a href="#" data-toggle="modal" data-target="#modal-end-conversation"
-         id="anchor-tone-anlysis"> End Chat and see your partner's mood</a>
-    </div>
-  </div>
 </div>

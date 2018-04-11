@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface ReviewRepository extends MongoRepository<Review, String> {
 
-  public List<Review> findByUser(String user);
+    public List<Review> findByUser(String user);
 }

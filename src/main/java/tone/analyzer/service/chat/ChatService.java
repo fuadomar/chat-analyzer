@@ -7,5 +7,5 @@ import tone.analyzer.domain.model.ChatMessage;
  */
 public interface ChatService {
 
-  public void sendMessageTo(ChatMessage chatMessage);
+    public void sendMessageTo(ChatMessage chatMessage);
 }

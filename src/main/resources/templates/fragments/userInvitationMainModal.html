@@ -1,36 +1,36 @@
 <div th:fragment="userInvitationMainModal" class="modal fade" id="userInvitationMainModal" tabindex="-1"
      role="dialog"
      aria-labelledby="myModalLabel" aria-hidden="true" xmlns:th="http://www.w3.org/1999/xhtml">
-  <div class="modal-dialog">
-    <div class="modal-content">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-      <div class="content-body">
-        <div class="row">
-          <div class="col-sm-7 col-sm-offset-5">
-            <h2>Chat with your friend and know his state of mind in 3 easy steps</h2>
-            <form>
-              <div class="form-group">
-                <label for="name">1. Enter your name</label>
-                <input type="name" class="form-control" id="name" placeholder="name">
-              </div>
-              <div class="form-group">
-                <label for="exampleInputEmail1">2. Invite through your friend's email</label>
-                <input type="email" class="form-control" id="exampleInputEmail1"
-                       placeholder="abc@test.com">
-              </div>
-              <div class="form-group">
-                <label for="exampleInputFile">or copy and send link</label>
-                <a><img id="generate-chat-link" th:src="@{/images/asset-add-icon.png}"></a>
-              </div>
-              <div class="form-group">
-                <button type="button" class="btn start-btn" data-toggle="modal"
-                        data-target="#userInvitationTextAreaModal">Start Chat
-                </button>
-              </div>
-            </form>
-          </div>
+            <div class="content-body">
+                <div class="row">
+                    <div class="col-sm-7 col-sm-offset-5">
+                        <h2>Chat with your friend and know his state of mind in 3 easy steps</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="name">1. Enter your name</label>
+                                <input type="name" class="form-control" id="name" placeholder="name">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">2. Invite through your friend's email</label>
+                                <input type="email" class="form-control" id="exampleInputEmail1"
+                                       placeholder="abc@test.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="exampleInputFile">or copy and send link</label>
+                                <a><img id="generate-chat-link" th:src="@{/images/asset-add-icon.png}"></a>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn start-btn" data-toggle="modal"
+                                        data-target="#userInvitationTextAreaModal">Start Chat
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>

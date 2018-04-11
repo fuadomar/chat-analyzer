@@ -8,8 +8,8 @@ import tone.analyzer.domain.entity.EmailInvitation;
  */
 public interface IEmailInvitationService {
 
-  EmailInvitation findByToeknAndSenderAndReceiver(String token, String sender, String receiver);
+    EmailInvitation findByToeknAndSenderAndReceiver(String token, String sender, String receiver);
 
-  EmailInvitation findByToken(String token);
+    EmailInvitation findByToken(String token);
 
 }

@@ -1,82 +1,81 @@
+<!-- <div lang="en" th:include="fragments/profile :: profile"></div>-->
 
-  <!-- <div lang="en" th:include="fragments/profile :: profile"></div>-->
-
-  <div th:fragment="leftChatListContainer"  xmlns:th="http://www.w3.org/1999/xhtml">
+<div th:fragment="leftChatListContainer" xmlns:th="http://www.w3.org/1999/xhtml">
 
     <div id="profile">
-      <div class="wrap">
+        <div class="wrap">
 
-        <img
-            th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
-            alt="memorynotfound logo"
-            class="online"
-            alt=""/>
-        <p th:text="${username}"></p>
-        <div class="pull-right icons-div">
-            <span class="badge notify-counter" id="notify-counter"></span>
-            <img class="notification-design" th:height="50" th:width="50"
-                 th:src="@{/images/notification.png}"/>
-          <a href="#" data-toggle="modal" data-target="#userInvitationMainModal">
-            <img class="invite-friends" th:height="50" th:width="50"
-                 th:src="@{/images/plus-button.png}"/></a>
+            <img
+                    th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
+                    alt="memorynotfound logo"
+                    class="online"
+                    alt=""/>
+            <p th:text="${username}"></p>
+            <div class="pull-right icons-div">
+                <span class="badge notify-counter" id="notify-counter"></span>
+                <img class="notification-design" th:height="50" th:width="50"
+                     th:src="@{/images/notification.png}"/>
+                <a href="#" data-toggle="modal" data-target="#userInvitationMainModal">
+                    <img class="invite-friends" th:height="50" th:width="50"
+                         th:src="@{/images/plus-button.png}"/></a>
+            </div>
+            <!--<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>-->
+            <div id="status-options">
+                <ul>
+                    <li id="status-online" class="online"><span class="status-circle"></span>
+                        <p>Online</p></li>
+                    <li id="status-away"><span class="status-circle"></span>
+                        <p>Away</p></li>
+                    <li id="status-busy"><span class="status-circle"></span>
+                        <p>Busy</p></li>
+                    <li id="status-offline"><span class="status-circle"></span>
+                        <p>Offline</p></li>
+                </ul>
+            </div>
         </div>
-        <!--<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>-->
-        <div id="status-options">
-          <ul>
-            <li id="status-online" class="online"><span class="status-circle"></span>
-              <p>Online</p></li>
-            <li id="status-away"><span class="status-circle"></span>
-              <p>Away</p></li>
-            <li id="status-busy"><span class="status-circle"></span>
-              <p>Busy</p></li>
-            <li id="status-offline"><span class="status-circle"></span>
-              <p>Offline</p></li>
-          </ul>
-        </div>
-      </div>
     </div>
-    <div id="notification-div"class="notification-div">
-      <div id="heading">
-        <div class="heading-left">
-          <h6 class="heading-title">Notifications</h6>
+    <div id="notification-div" class="notification-div">
+        <div id="heading">
+            <div class="heading-left">
+                <h6 class="heading-title">Notifications</h6>
+            </div>
+            <div class="heading-right">
+                <a class="notification-link" href="#">See all</a>
+            </div>
         </div>
-        <div class="heading-right">
-          <a class="notification-link" href="#">See all</a>
-        </div>
-      </div>
-      <ul class="notification-list" id="id-notification-list">
-        <!--<li class="notification-item" v-for="user of users">
-          <div class="img-left">
-            <img class="notification-avatar" th:height="50" th:width="50"
-                 th:src="@{/images/default-avatar.png}"/>
-          </div>
-          <div class="user-content">
-            <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>
-            <p class="time">1 hour ago</p>
-          </div>
-        </li>
-        <li class="notification-item" v-for="user of users">
-          <div class="img-left">
-            <img class="notification-avatar" th:height="50" th:width="50"
-                 th:src="@{/images/default-avatar.png}"/>
-          </div>
-          <div class="user-content">
-            <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>
-            <p class="time">1 hour ago</p>
-          </div>
-        </li>
-        <li class="notification-item" v-for="user of users">
-          <div class="img-left">
-            <img class="notification-avatar" th:height="50" th:width="50"
-                 th:src="@{/images/default-avatar.png}"/>
-          </div>
-          <div class="user-content">
-            <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>
-            <p class="time">1 hour ago</p>
-          </div>
-        </li>-->
-      </ul>
+        <ul class="notification-list" id="id-notification-list">
+            <!--<li class="notification-item" v-for="user of users">
+              <div class="img-left">
+                <img class="notification-avatar" th:height="50" th:width="50"
+                     th:src="@{/images/default-avatar.png}"/>
+              </div>
+              <div class="user-content">
+                <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>
+                <p class="time">1 hour ago</p>
+              </div>
+            </li>
+            <li class="notification-item" v-for="user of users">
+              <div class="img-left">
+                <img class="notification-avatar" th:height="50" th:width="50"
+                     th:src="@{/images/default-avatar.png}"/>
+              </div>
+              <div class="user-content">
+                <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>
+                <p class="time">1 hour ago</p>
+              </div>
+            </li>
+            <li class="notification-item" v-for="user of users">
+              <div class="img-left">
+                <img class="notification-avatar" th:height="50" th:width="50"
+                     th:src="@{/images/default-avatar.png}"/>
+              </div>
+              <div class="user-content">
+                <p class="user-info"><span class="name">User-name name na me</span>left a comment. left a comment. left a comment.</p>
+                <p class="time">1 hour ago</p>
+              </div>
+            </li>-->
+        </ul>
     </div>
     <ul id="contacts-uli" class="contacts-uli-design">
     </ul>
-  </div>
+</div>

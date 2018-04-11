@@ -11,8 +11,8 @@ import java.util.List;
  */
 public interface AccountRepository extends MongoRepository<Account, String> {
 
-  public Account findByName(String username);
+    public Account findByName(String username);
 
-  @Query(value = "{}", fields = "{'password': 0}, {'role': 0}")
-  List<Account> findAll();
+    @Query(value = "{}", fields = "{'password': 0}, {'role': 0}")
+    List<Account> findAll();
 }

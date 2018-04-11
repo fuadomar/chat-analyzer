@@ -9,7 +9,7 @@
     <meta property="og:description" content="we use machine learning"/>
     <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
+    <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
     <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
@@ -24,50 +24,53 @@
 
 <body>
 <div class="container">
-        <form th:action="@{/login}" method="POST" class="form-signin">
-            <div class="log-in-avatar">
-                <img
-                        th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
-                        alt="memorynotfound logo"
-                        class="online "
-                        alt=""/>
-            </div>
-            <h3 class="form-signin-heading" th:text="Welcome"></h3>
-            <br/>
+    <form th:action="@{/login}" method="POST" class="form-signin">
+        <div class="log-in-avatar">
+            <img
+                    th:src="@{${userAvatar != null? '/profiles/images/'+ userAvatar: '/images/default-avatar.png'}}"
+                    alt="memorynotfound logo"
+                    class="online "
+                    alt=""/>
+        </div>
+        <h3 class="form-signin-heading" th:text="Welcome"></h3>
+        <br/>
 
-            <input type="text" id="name" name="name" placeholder="Name/Email" class="form-control"/> <br/>
-            <input type="password" th:placeholder="Password"
-                   id="password" name="password" class="form-control"/> <br/>
+        <input type="text" id="name" name="name" placeholder="Name/Email" class="form-control"/> <br/>
+        <input type="password" th:placeholder="Password"
+               id="password" name="password" class="form-control"/> <br/>
 
-            <div align="center" th:if="${param.error}">
-                <p style="font-size: 20; color: #FF1C19;">Email or Password invalid, please verify</p>
-            </div>
-            <div>
-                <input type="checkbox" name="remember-me" id="remember-me">
-                <label for="remember-me">Remember me</label>
-                <a class="pull-right">Forgot Password</a>
-            </div>
-            <div class="form-group">
-                <input type="hidden"
-                       th:name="${_csrf.parameterName}"
-                       th:value="${_csrf.token}"/>
-            </div>
-            <div class="row">
-                <div class="col-xs-6">
-                    <button class="btn btn-primary login-btn" name="Submit" value="Login" type="Submit"
+        <div align="center" th:if="${param.error}">
+            <p style="font-size: 20; color: #FF1C19;">Email or Password invalid, please verify</p>
+        </div>
+        <div>
+            <input type="checkbox" name="remember-me" id="remember-me">
+            <label for="remember-me">Remember me</label>
+            <a class="pull-right">Forgot Password</a>
+        </div>
+        <div class="form-group">
+            <input type="hidden"
+                   th:name="${_csrf.parameterName}"
+                   th:value="${_csrf.token}"/>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <button class="btn btn-primary login-btn" name="Submit" value="Login" type="Submit"
                         th:text="Login"></button>
-                </div>
-                <div class="col-xs-6">
-                    <a class='btn btn-danger pull-right' href="/login/google"> <span><img th:height="25" id="google-plus-button" th:width="25"
-                        th:src="@{/images/google-plus-logo.png}"/></span>Sign in with Google</a>
-                </div>
             </div>
-    <div align="center" class="login-signup-div">
-        <p>Don't have an account? <a href="/userRegistration">Sign Up!</a></p>
-    </div>
+            <div class="col-xs-6">
+                <a class='btn btn-danger pull-right' href="/login/google"> <span><img th:height="25"
+                                                                                      id="google-plus-button"
+                                                                                      th:width="25"
+                                                                                      th:src="@{/images/google-plus-logo.png}"/></span>Sign
+                    in with Google</a>
+            </div>
+        </div>
+        <div align="center" class="login-signup-div">
+            <p>Don't have an account? <a href="/userRegistration">Sign Up!</a></p>
+        </div>
 
 
-</form>
+    </form>
 </div>
 
 </body>

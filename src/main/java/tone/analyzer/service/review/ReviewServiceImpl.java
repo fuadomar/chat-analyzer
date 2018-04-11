@@ -11,11 +11,11 @@ import tone.analyzer.domain.repository.ReviewRepository;
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-  @Autowired
-  private ReviewRepository reviewRepository;
+    @Autowired
+    private ReviewRepository reviewRepository;
 
-  @Override
-  public void saveReview(Review review) {
-    reviewRepository.save(review);
-  }
+    @Override
+    public void saveReview(Review review) {
+        reviewRepository.save(review);
+    }
 }

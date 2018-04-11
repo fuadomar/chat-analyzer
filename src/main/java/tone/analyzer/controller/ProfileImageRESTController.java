@@ -24,34 +24,34 @@ import java.security.Principal;
 @RestController
 public class ProfileImageRESTController {
 
-  @Autowired
-  private ProfileImageGateway profileImageGateway;
+    @Autowired
+    private ProfileImageGateway profileImageGateway;
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/profiles/images/{image}", method = RequestMethod.GET)
-  public void retrieveImageAsByteArray(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      @PathVariable("image") String image,
-      Principal principal)
-      throws IOException {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/profiles/images/{image}", method = RequestMethod.GET)
+    public void retrieveImageAsByteArray(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            @PathVariable("image") String image,
+            Principal principal)
+            throws IOException {
 
-    profileImageGateway.retrieveImageAsByteArray(request, response, image, false);
-  }
-
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(
-      value = "/upload/profile/images",
-      method = RequestMethod.POST,
-      consumes = {"multipart/form-data"}
-  )
-  public String upload(@RequestPart(value = "file", required = true) MultipartFile file)
-      throws IOException {
-
-    if (!file.isEmpty()) {
-
-      return profileImageGateway.upload(file);
+        profileImageGateway.retrieveImageAsByteArray(request, response, image, false);
     }
-    return null;
-  }
+
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(
+            value = "/upload/profile/images",
+            method = RequestMethod.POST,
+            consumes = {"multipart/form-data"}
+    )
+    public String upload(@RequestPart(value = "file", required = true) MultipartFile file)
+            throws IOException {
+
+        if (!file.isEmpty()) {
+
+            return profileImageGateway.upload(file);
+        }
+        return null;
+    }
 }

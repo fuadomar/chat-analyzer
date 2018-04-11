@@ -13,10 +13,10 @@ import java.util.List;
 @Service
 public class AdminService {
 
-  @Autowired
-  private AccountRepository userRepository;
+    @Autowired
+    private AccountRepository userRepository;
 
-  public List<Account> fetchAllUsers() {
-    return userRepository.findAll();
-  }
+    public List<Account> fetchAllUsers() {
+        return userRepository.findAll();
+    }
 }

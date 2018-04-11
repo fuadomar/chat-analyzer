@@ -12,19 +12,19 @@ import tone.analyzer.domain.repository.EmailInvitationRepository;
 @Service
 public class EmailInvitationServiceImpl implements IEmailInvitationService {
 
-  @Autowired
-  private EmailInvitationRepository emailInvitationRepository;
+    @Autowired
+    private EmailInvitationRepository emailInvitationRepository;
 
-  @Override
-  public EmailInvitation findByToeknAndSenderAndReceiver(String token, String sender,
-      String receiver) {
-    //return emailInvitationRepository.findByToken(token);
-    return emailInvitationRepository.findByTokenAndSenderAndReceiver(token, sender, receiver);
-  }
+    @Override
+    public EmailInvitation findByToeknAndSenderAndReceiver(String token, String sender,
+                                                           String receiver) {
+        //return emailInvitationRepository.findByToken(token);
+        return emailInvitationRepository.findByTokenAndSenderAndReceiver(token, sender, receiver);
+    }
 
-  @Override
-  public EmailInvitation findByToken(String token) {
-    //return emailInvitationRepository.findByToken(token);
-    return emailInvitationRepository.findByToken(token);
-  }
+    @Override
+    public EmailInvitation findByToken(String token) {
+        //return emailInvitationRepository.findByToken(token);
+        return emailInvitationRepository.findByToken(token);
+    }
 }

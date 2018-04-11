@@ -35,137 +35,137 @@ import java.util.UUID;
 @RestController
 public class ToneAnalyzerRESTController {
 
-  @Autowired
-  private ToneAnalyzerGateway toneAnalyzerGateway;
+    @Autowired
+    private ToneAnalyzerGateway toneAnalyzerGateway;
 
-  private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerRESTController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerRESTController.class);
 
-  public String getURLBase(HttpServletRequest request) throws MalformedURLException {
+    public String getURLBase(HttpServletRequest request) throws MalformedURLException {
 
-    URL requestURL = new URL(request.getRequestURL().toString());
-    String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
-    return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
-  }
-
-  private File getFileFromURL() {
-    URL url = getClass().getClassLoader().getResource("upload-images");
-    File file = null;
-    try {
-      file = new File(url.toURI());
-    } catch (URISyntaxException e) {
-      file = new File(url.getPath());
-    } finally {
-      return file;
+        URL requestURL = new URL(request.getRequestURL().toString());
+        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
     }
-  }
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/upload/images", method = RequestMethod.POST)
-  public @ResponseBody
-  String uploadImage(
-      @RequestParam("image") String image, HttpServletRequest request) {
-    try {
-
-      String token = UUID.randomUUID().toString();
-      LOG.info("image base64:  {}", image);
-      String delimiter = "data:image/png;base64,";
-      int imageLength = image.length();
-      String bse64Image = image.substring(delimiter.length(), imageLength - 2);
-      String s = image.substring(imageLength - 2);
-      HttpClient httpclient = HttpClients.createDefault();
-      HttpPost httppost = new HttpPost("http://data-uri-to-img-url.herokuapp.com/images.json");
-
-      List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-      params.add(new BasicNameValuePair("image[data_uri]", bse64Image));
-      httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-      HttpResponse response = httpclient.execute(httppost);
-      HttpEntity entity = response.getEntity();
-      String responseString = EntityUtils.toString(entity, "UTF-8");
-      return responseString;
-
-    } catch (Exception e) {
-      return "error = " + e;
+    private File getFileFromURL() {
+        URL url = getClass().getClassLoader().getResource("upload-images");
+        File file = null;
+        try {
+            file = new File(url.toURI());
+        } catch (URISyntaxException e) {
+            file = new File(url.getPath());
+        } finally {
+            return file;
+        }
     }
-  }
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/tone-analyzer-people-individual", method = RequestMethod.GET)
-  public PeopleDTO analyzeStatedPeopleTone(@RequestParam("sender") String sender)
-      throws IOException, IndicoException, URISyntaxException {
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/upload/images", method = RequestMethod.POST)
+    public @ResponseBody
+    String uploadImage(
+            @RequestParam("image") String image, HttpServletRequest request) {
+        try {
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzeStatedPeopleTone(chatMessage);
-  }
+            String token = UUID.randomUUID().toString();
+            LOG.info("image base64:  {}", image);
+            String delimiter = "data:image/png;base64,";
+            int imageLength = image.length();
+            String bse64Image = image.substring(delimiter.length(), imageLength - 2);
+            String s = image.substring(imageLength - 2);
+            HttpClient httpclient = HttpClients.createDefault();
+            HttpPost httppost = new HttpPost("http://data-uri-to-img-url.herokuapp.com/images.json");
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/tone-analyzer-places-individual", method = RequestMethod.GET)
-  public PlacesDTO analyzeStatedPlacesTone(@RequestParam("sender") String sender)
-      throws IOException, IndicoException, URISyntaxException {
+            List<NameValuePair> params = new ArrayList<NameValuePair>(1);
+            params.add(new BasicNameValuePair("image[data_uri]", bse64Image));
+            httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzeStatedPlacesTone(chatMessage);
-  }
+            HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+            String responseString = EntityUtils.toString(entity, "UTF-8");
+            return responseString;
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/tone-analyzer-organizations-individual", method = RequestMethod.GET)
-  public OrganizationsDTO analyzeStatedOrganizationsTone(@RequestParam("sender") String sender)
-      throws IOException, IndicoException, URISyntaxException {
+        } catch (Exception e) {
+            return "error = " + e;
+        }
+    }
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzeStatedOrganizationsTone(chatMessage);
-  }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/tone-analyzer-people-individual", method = RequestMethod.GET)
+    public PeopleDTO analyzeStatedPeopleTone(@RequestParam("sender") String sender)
+            throws IOException, IndicoException, URISyntaxException {
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/aspect-analyzer-individual", method = RequestMethod.GET)
-  public String analyzeIndividualAspect(@RequestParam("sender") String sender)
-      throws IOException, IndicoException, URISyntaxException {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        return toneAnalyzerGateway.analyzeStatedPeopleTone(chatMessage);
+    }
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzeIndividualAspect(chatMessage);
-  }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/tone-analyzer-places-individual", method = RequestMethod.GET)
+    public PlacesDTO analyzeStatedPlacesTone(@RequestParam("sender") String sender)
+            throws IOException, IndicoException, URISyntaxException {
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/texttag-analyzer-individual", method = RequestMethod.GET)
-  public TextTagDTO analyzeIndividualContext(@RequestParam("sender") String sender)
-      throws IOException, IndicoException, URISyntaxException {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        return toneAnalyzerGateway.analyzeStatedPlacesTone(chatMessage);
+    }
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzeIndividualTextTag(chatMessage);
-  }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/tone-analyzer-organizations-individual", method = RequestMethod.GET)
+    public OrganizationsDTO analyzeStatedOrganizationsTone(@RequestParam("sender") String sender)
+            throws IOException, IndicoException, URISyntaxException {
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/tone-analyzer-between-users", method = RequestMethod.GET)
-  public ToneAnalyzerFeedBackDTO analyzerConversationalTone(
-      @RequestParam("sender") String sender, @RequestParam("recipient") String recipient) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        return toneAnalyzerGateway.analyzeStatedOrganizationsTone(chatMessage);
+    }
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    chatMessage.setRecipient(recipient);
-    return toneAnalyzerGateway.analyzerConversationalTone(chatMessage);
-  }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/aspect-analyzer-individual", method = RequestMethod.GET)
+    public String analyzeIndividualAspect(@RequestParam("sender") String sender)
+            throws IOException, IndicoException, URISyntaxException {
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/tone-analyzer-individual", method = RequestMethod.GET)
-  public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(
-      @RequestParam("sender") String sender) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        return toneAnalyzerGateway.analyzeIndividualAspect(chatMessage);
+    }
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(sender);
-    return toneAnalyzerGateway.analyzerIndividualConversationalTone(chatMessage);
-  }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/texttag-analyzer-individual", method = RequestMethod.GET)
+    public TextTagDTO analyzeIndividualContext(@RequestParam("sender") String sender)
+            throws IOException, IndicoException, URISyntaxException {
 
-  @PreAuthorize("hasRole('ROLE_ADMIN')")
-  @RequestMapping(value = "/review-analyzer", method = RequestMethod.GET)
-  public ToneAnalyzerFeedBackDTO analyzeReviewTone(@RequestParam("reviewer") String reviewer) {
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        return toneAnalyzerGateway.analyzeIndividualTextTag(chatMessage);
+    }
 
-    ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setSender(reviewer);
-    return toneAnalyzerGateway.analyzeReviewTone(chatMessage);
-  }
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @RequestMapping(value = "/tone-analyzer-between-users", method = RequestMethod.GET)
+    public ToneAnalyzerFeedBackDTO analyzerConversationalTone(
+            @RequestParam("sender") String sender, @RequestParam("recipient") String recipient) {
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        chatMessage.setRecipient(recipient);
+        return toneAnalyzerGateway.analyzerConversationalTone(chatMessage);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/tone-analyzer-individual", method = RequestMethod.GET)
+    public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(
+            @RequestParam("sender") String sender) {
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(sender);
+        return toneAnalyzerGateway.analyzerIndividualConversationalTone(chatMessage);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @RequestMapping(value = "/review-analyzer", method = RequestMethod.GET)
+    public ToneAnalyzerFeedBackDTO analyzeReviewTone(@RequestParam("reviewer") String reviewer) {
+
+        ChatMessage chatMessage = new ChatMessage();
+        chatMessage.setSender(reviewer);
+        return toneAnalyzerGateway.analyzeReviewTone(chatMessage);
+    }
 }

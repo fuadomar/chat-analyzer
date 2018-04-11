@@ -13,11 +13,11 @@ import java.util.Collection;
  */
 public interface IInstantMessaging {
 
-  @MessageMapping("/chat-message/message")
-  @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
-  public String sendChatMessageToDestination(ChatMessage chatMessage);
+    @MessageMapping("/chat-message/message")
+    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+    public String sendChatMessageToDestination(ChatMessage chatMessage);
 
-  @SubscribeMapping("/chat.participants")
-  @PreAuthorize("hasAuthority('ROLE_USER')")
-  public Collection<LoginEvent> retrieveParticipants();
+    @SubscribeMapping("/chat.participants")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public Collection<LoginEvent> retrieveParticipants();
 }

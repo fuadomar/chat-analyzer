@@ -9,7 +9,7 @@ import tone.analyzer.domain.model.Document;
  * Created by user on 1/28/2018.
  */
 public interface ToneAnalyzerChartImageDetailsRepository extends
-    MongoRepository<ToneAnalyzerChartImageDetails, String> {
+        MongoRepository<ToneAnalyzerChartImageDetails, String> {
 
-  public ToneAnalyzerChartImageDetails findByDocumentMetaDataName(String name);
+    public ToneAnalyzerChartImageDetails findByDocumentMetaDataName(String name);
 }

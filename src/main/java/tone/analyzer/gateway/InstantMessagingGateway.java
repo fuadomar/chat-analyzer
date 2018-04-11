@@ -11,10 +11,10 @@ import tone.analyzer.service.chat.ChatService;
 @Component
 public class InstantMessagingGateway {
 
-  @Autowired
-  private ChatService chatService;
+    @Autowired
+    private ChatService chatService;
 
-  public void sendMessageTo(ChatMessage chatMessage) {
-    chatService.sendMessageTo(chatMessage);
-  }
+    public void sendMessageTo(ChatMessage chatMessage) {
+        chatService.sendMessageTo(chatMessage);
+    }
 }

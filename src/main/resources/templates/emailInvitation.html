@@ -2,27 +2,27 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <title>Sending Email with Thymeleaf HTML Template Example</title>
+    <title>Sending Email with Thymeleaf HTML Template Example</title>
 
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-  <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      font-size: 48px;
-    }
-  </style>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            font-size: 48px;
+        }
+    </style>
 </head>
 <body style="margin: 0; padding: 0;">
 <p th:text="${invitedText}"/>,
 <br/>
 <p> Why don't you join with me in this chat by
-  clicking:
-  <a th:href="${url}">tone analyzer </a>
-  <br/>
+    clicking:
+    <a th:href="${url}">tone analyzer </a>
+    <br/>
 <p>Talk to you there soon!</p>
 <br/><br/>
 --&nbsp;<p th:text="${sender}"></p>

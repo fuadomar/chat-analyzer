@@ -12,42 +12,42 @@ import java.io.Serializable;
 @Document
 public class ToneAnalyzerChartImageDetails implements Serializable {
 
-  @Id
-  private String id;
+    @Id
+    private String id;
 
-  private DocumentMetaData documentMetaData;
+    private DocumentMetaData documentMetaData;
 
-  private String chatSessionEndBy;
+    private String chatSessionEndBy;
 
-  public ToneAnalyzerChartImageDetails() {
-  }
+    public ToneAnalyzerChartImageDetails() {
+    }
 
-  public ToneAnalyzerChartImageDetails(String chatSessionEndBy, DocumentMetaData documentMetaData) {
-    this.chatSessionEndBy = chatSessionEndBy;
-    this.documentMetaData = documentMetaData;
-  }
+    public ToneAnalyzerChartImageDetails(String chatSessionEndBy, DocumentMetaData documentMetaData) {
+        this.chatSessionEndBy = chatSessionEndBy;
+        this.documentMetaData = documentMetaData;
+    }
 
-  public String getChatSessionEndBy() {
-    return chatSessionEndBy;
-  }
+    public String getChatSessionEndBy() {
+        return chatSessionEndBy;
+    }
 
-  public void setChatSessionEndBy(String chatSessionEndBy) {
-    this.chatSessionEndBy = chatSessionEndBy;
-  }
+    public void setChatSessionEndBy(String chatSessionEndBy) {
+        this.chatSessionEndBy = chatSessionEndBy;
+    }
 
-  public DocumentMetaData getDocumentMetaData() {
-    return documentMetaData;
-  }
+    public DocumentMetaData getDocumentMetaData() {
+        return documentMetaData;
+    }
 
-  public void setDocumentMetaData(DocumentMetaData documentMetaData) {
-    this.documentMetaData = documentMetaData;
-  }
+    public void setDocumentMetaData(DocumentMetaData documentMetaData) {
+        this.documentMetaData = documentMetaData;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 }

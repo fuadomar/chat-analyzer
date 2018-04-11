@@ -3,82 +3,79 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
 
-  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/login.css}"/>
 
-  <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
-  <script src='https://www.google.com/recaptcha/api.js'></script>
+    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 
 </head>
 <body>
 <div class="container">
-      <form id="registration-form" autocomplete="off" action="#" th:action="@{/userRegistration}"
-            th:object="${accountForm}" method="post" class="form-horizontal signup-div"
-            name="form">
-        <h3 align="center">User SignUp</h3>
+    <form id="registration-form" autocomplete="off" action="#" th:action="@{/userRegistration}"
+          th:object="${accountForm}" method="post" class="form-horizontal signup-div"
+          name="form">
         <div class="form-group">
             <input type="text" th:field="*{name}" placeholder="UserName"
                    class="form-control"/> <label
                 th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
                 class="validation-message"></label>
-
-          </div>
+        </div>
         <div class="form-group">
             <input type="password" th:field="*{password}"
                    placeholder="Password" class="form-control"/> <label
                 th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                 class="validation-message"></label>
-          </div>
+        </div>
         <div class="form-group row">
-          <label class="">Captcha</label>
-          <div class="g-recaptcha" data-sitekey="6LeDflAUAAAAAB2lkhhSQGl87C42sUd6phVxbeZJ"  data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
-          <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
+            <label class="">Captcha</label>
+            <div class="g-recaptcha" data-sitekey="6LeDflAUAAAAAB2lkhhSQGl87C42sUd6phVxbeZJ"
+                 data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
+            <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
         </div>
         <br/>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Register User</button>
         </div>
-
-
         <span th:utext="${successMessage}"></span>
-        <p class="login-signup-div" align="center">Already have an account? <a>Login</a></p>
-      </form>
+        <p class="login-signup-div" align="center">Already have an account? <a href="/login">Login</a></p>
+    </form>
 </div>
 
-<!--<script th:inline="javascript">
-  /*<![CDATA[*/
+<script th:inline="javascript">
+    /*<![CDATA[*/
 
-  $(document).ready(function () {
+    $(document).ready(function () {
 
-    $('form#registration-form').submit(function () {
-      if (typeof grecaptcha !== 'undefined') {
-        var resp = grecaptcha.getResponse();
-        if (resp.length == 0) {
-          $("#captchaError").show().html("Please verify that you are not a robot.");
-          return false;
+        $('form#registration-form').submit(function () {
+            if (typeof grecaptcha !== 'undefined') {
+                var resp = grecaptcha.getResponse();
+                if (resp.length == 0) {
+                    $("#captchaError").show().html("Please verify that you are not a robot.");
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        });
+
+        function register(event) {
+
         }
-        return true;
-      }
-      return false;
     });
 
-    function register(event) {
+    /*]]>*/
+    var onReCaptchaSuccess = function (response) {
+        $("#captchaError").html("").hide();
+    };
+    var onReCaptchaExpired = function (response) {
+        $("#captchaError").html("reCaptcha has expired.  Please solve a new reCaptcha").show();
+        grecaptcha.reset();
+    };
 
-    }
-  });
-
-  /*]]>*/
-  var onReCaptchaSuccess = function (response) {
-    $("#captchaError").html("").hide();
-  };
-  var onReCaptchaExpired = function (response) {
-    $("#captchaError").html("reCaptcha has expired.  Please solve a new reCaptcha").show();
-    grecaptcha.reset();
-  };
-
-</script>-->
+</script>
 
 </body>
 </html>

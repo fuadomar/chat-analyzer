@@ -1,6 +1,7 @@
 package tone.analyzer.domain.entity;
 
 import java.io.Serializable;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,42 +11,42 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document
 public class Review implements Serializable {
 
-  @Id
-  private String id;
+    @Id
+    private String id;
 
-  private String user;
+    private String user;
 
-  private String content;
+    private String content;
 
-  public Review() {
-  }
+    public Review() {
+    }
 
-  public Review(String user, String content) {
-    this.user = user;
-    this.content = content;
-  }
+    public Review(String user, String content) {
+        this.user = user;
+        this.content = content;
+    }
 
-  public String getContent() {
-    return content;
-  }
+    public String getContent() {
+        return content;
+    }
 
-  public void setContent(String content) {
-    this.content = content;
-  }
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-  public String getUser() {
-    return user;
-  }
+    public String getUser() {
+        return user;
+    }
 
-  public void setUser(String user) {
-    this.user = user;
-  }
+    public void setUser(String user) {
+        this.user = user;
+    }
 
-  public String getId() {
-    return id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 }

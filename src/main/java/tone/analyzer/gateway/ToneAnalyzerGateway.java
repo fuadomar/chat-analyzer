@@ -16,47 +16,47 @@ import java.net.URISyntaxException;
 @Component
 public class ToneAnalyzerGateway {
 
-  @Autowired
-  private ToneAnalyzerService toneAnalyzerService;
+    @Autowired
+    private ToneAnalyzerService toneAnalyzerService;
 
-  public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
+    public ToneAnalyzerFeedBackDTO analyzerConversationalTone(ChatMessage chatMessage) {
 
-    return toneAnalyzerService.analyzerConversationalToneBetweenTwoUser(chatMessage);
-  }
+        return toneAnalyzerService.analyzerConversationalToneBetweenTwoUser(chatMessage);
+    }
 
-  public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(ChatMessage chatMessage) {
+    public ToneAnalyzerFeedBackDTO analyzerIndividualConversationalTone(ChatMessage chatMessage) {
 
-    return toneAnalyzerService.analyzerIndividualConversationalTone(chatMessage);
-  }
+        return toneAnalyzerService.analyzerIndividualConversationalTone(chatMessage);
+    }
 
-  public ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage) {
+    public ToneAnalyzerFeedBackDTO analyzeReviewTone(ChatMessage chatMessage) {
 
-    return toneAnalyzerService.analyzeReviewTone(chatMessage);
-  }
+        return toneAnalyzerService.analyzeReviewTone(chatMessage);
+    }
 
-  public String analyzeIndividualAspect(ChatMessage chatMessage)
-      throws IOException, IndicoException, URISyntaxException {
-    return toneAnalyzerService.analyzeIndividualAspect(chatMessage);
-  }
+    public String analyzeIndividualAspect(ChatMessage chatMessage)
+            throws IOException, IndicoException, URISyntaxException {
+        return toneAnalyzerService.analyzeIndividualAspect(chatMessage);
+    }
 
-  public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
-      throws IndicoException, IOException, URISyntaxException {
-    return toneAnalyzerService.analyzeStatedOrganizationsTone(chatMessage);
-  }
+    public OrganizationsDTO analyzeStatedOrganizationsTone(ChatMessage chatMessage)
+            throws IndicoException, IOException, URISyntaxException {
+        return toneAnalyzerService.analyzeStatedOrganizationsTone(chatMessage);
+    }
 
-  public PlacesDTO analyzeStatedPlacesTone(ChatMessage chatMessage)
-      throws IndicoException, IOException, URISyntaxException {
-    return toneAnalyzerService.analyzeStatedPlacesTone(chatMessage);
-  }
+    public PlacesDTO analyzeStatedPlacesTone(ChatMessage chatMessage)
+            throws IndicoException, IOException, URISyntaxException {
+        return toneAnalyzerService.analyzeStatedPlacesTone(chatMessage);
+    }
 
-  public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
-      throws IOException, IndicoException {
-    return toneAnalyzerService.analyzeStatedPeopleTone(chatMessage);
-  }
+    public PeopleDTO analyzeStatedPeopleTone(ChatMessage chatMessage)
+            throws IOException, IndicoException {
+        return toneAnalyzerService.analyzeStatedPeopleTone(chatMessage);
+    }
 
-  public TextTagDTO analyzeIndividualTextTag(ChatMessage chatMessage)
-      throws IndicoException, IOException, URISyntaxException {
+    public TextTagDTO analyzeIndividualTextTag(ChatMessage chatMessage)
+            throws IndicoException, IOException, URISyntaxException {
 
-    return toneAnalyzerService.analyzeIndividualTextTag(chatMessage);
-  }
+        return toneAnalyzerService.analyzeIndividualTextTag(chatMessage);
+    }
 }

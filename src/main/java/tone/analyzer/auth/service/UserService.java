@@ -7,9 +7,9 @@ import tone.analyzer.domain.entity.Account;
  */
 public interface UserService {
 
-  Account save(Account account);
+    Account save(Account account);
 
-  Account findByName(String username);
+    Account findByName(String username);
 
-  public void addBudyyToUser(Account emailInvitationSenser, Account emailInvitationEeceiver);
+    public void addBudyyToUser(Account emailInvitationSenser, Account emailInvitationEeceiver);
 }

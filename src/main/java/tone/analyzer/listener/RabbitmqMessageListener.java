@@ -17,21 +17,21 @@ import javax.mail.MessagingException;
 @Service
 public class RabbitmqMessageListener {
 
-  public static final String RABBITMQ_QUEUE = "registered.user.email";
+    public static final String RABBITMQ_QUEUE = "registered.user.email";
 
-  private static Logger logger = LoggerFactory.getLogger(RabbitmqMessageListener.class);
+    private static Logger logger = LoggerFactory.getLogger(RabbitmqMessageListener.class);
 
-  @Autowired
-  private MailService mailService;
+    @Autowired
+    private MailService mailService;
 
-  @Value("${mail.from}")
-  private String from;
+    @Value("${mail.from}")
+    private String from;
 
-  @RabbitListener(queues = RABBITMQ_QUEUE)
-  public void receiveMessage(UserEmailInvitationNotification newuser) throws MessagingException {
+    @RabbitListener(queues = RABBITMQ_QUEUE)
+    public void receiveMessage(UserEmailInvitationNotification newuser) throws MessagingException {
 
-    logger.info("Received message for sending email" + newuser.toString());
+        logger.info("Received message for sending email" + newuser.toString());
 
-    mailService.sendMail(newuser);
-  }
+        mailService.sendMail(newuser);
+    }
 }

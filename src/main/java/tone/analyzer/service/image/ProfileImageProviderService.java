@@ -2,6 +2,7 @@ package tone.analyzer.service.image;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,50 +23,50 @@ import tone.analyzer.service.amazon.AmazonFileUploaderClient;
 @Service
 public class ProfileImageProviderService {
 
-  @Value("${profile.thumb.image.repository}")
-  private String profileImageStorageLocation;
+    @Value("${profile.thumb.image.repository}")
+    private String profileImageStorageLocation;
 
-  @Value("${tone.analyzer.image.repository}")
-  private String toneAnalyzerImageStorageLocation;
+    @Value("${tone.analyzer.image.repository}")
+    private String toneAnalyzerImageStorageLocation;
 
-  @Autowired
-  private AmazonFileUploaderClient amazonFileUploaderClient;
+    @Autowired
+    private AmazonFileUploaderClient amazonFileUploaderClient;
 
-  public void getImageAsByteArray(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      String image, boolean isBase64Image)
-      throws IOException {
+    public void getImageAsByteArray(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String image, boolean isBase64Image)
+            throws IOException {
 
-    InputStream s3ObjectInputStream = null;
-    OutputStream outputStream = null;
-    OutputStream out = null;
-    S3Object s3Object = null;
-    try {
+        InputStream s3ObjectInputStream = null;
+        OutputStream outputStream = null;
+        OutputStream out = null;
+        S3Object s3Object = null;
+        try {
 
-      s3Object = amazonFileUploaderClient
-          .downloadFileFromS3bucket(image);
-      s3ObjectInputStream = s3Object.getObjectContent();
-      String contentType = s3Object.getObjectMetadata().getContentType();
-      byte[] bytes = IOUtils.toByteArray(s3ObjectInputStream);
-      response.setContentLength((int) bytes.length);
+            s3Object = amazonFileUploaderClient
+                    .downloadFileFromS3bucket(image);
+            s3ObjectInputStream = s3Object.getObjectContent();
+            String contentType = s3Object.getObjectMetadata().getContentType();
+            byte[] bytes = IOUtils.toByteArray(s3ObjectInputStream);
+            response.setContentLength((int) bytes.length);
 
-      s3Object = amazonFileUploaderClient
-          .downloadFileFromS3bucket(image);
-      s3ObjectInputStream = s3Object.getObjectContent();
-      String mimeType = request.getServletContext().getMimeType(image);
-      response.setContentType(mimeType);
-      outputStream = response.getOutputStream();
-      IOUtils.copy(s3ObjectInputStream, outputStream);
-    } catch (Exception ex) {
-    } finally {
+            s3Object = amazonFileUploaderClient
+                    .downloadFileFromS3bucket(image);
+            s3ObjectInputStream = s3Object.getObjectContent();
+            String mimeType = request.getServletContext().getMimeType(image);
+            response.setContentType(mimeType);
+            outputStream = response.getOutputStream();
+            IOUtils.copy(s3ObjectInputStream, outputStream);
+        } catch (Exception ex) {
+        } finally {
 
-      if (outputStream != null) {
-        outputStream.close();
-      }
-      if (s3ObjectInputStream != null) {
-        s3ObjectInputStream.close();
-      }
+            if (outputStream != null) {
+                outputStream.close();
+            }
+            if (s3ObjectInputStream != null) {
+                s3ObjectInputStream.close();
+            }
+        }
     }
-  }
 }

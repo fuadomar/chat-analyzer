@@ -1,6 +1,7 @@
 package tone.analyzer.dao;
 
 import java.io.IOException;
+
 import tone.analyzer.domain.model.Document;
 
 /**
@@ -8,5 +9,5 @@ import tone.analyzer.domain.model.Document;
  */
 public interface ImageRepository {
 
-  public void add(Document document, boolean isBAse64Image) throws IOException;
+    public void add(Document document, boolean isBAse64Image) throws IOException;
 }

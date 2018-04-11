@@ -2,34 +2,34 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
-  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
 
-  <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
-  <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
-  <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
-  <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+    <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
+    <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
 </head>
 <body>
 
 <div class="container">
-  <select class="form-control" id="sender">
-    <option th:value="${user.name}" th:each="user : ${userList}">
-      <p th:text="${user.name}"/></option>
-  </select>
-  <button type="button" class="btn btn-default" id="button-analyze-tone">Analyze Chat Tone</button>
-  <button type="button" class="btn btn-default" id="button-analyze-aspect">Analyze Aspect</button>
-  <button type="button" class="btn btn-default" id="button-analyze-texttag">Analyze TextTag</button>
-  <button type="button" class="btn btn-default" id="button-analyze-tone-organizations">Analyze
-    Organizations
-  </button>
-  <button type="button" class="btn btn-default" id="button-analyze-tone-places">Analyze Places
-  </button>
-  <button type="button" class="btn btn-default" id="button-analyze-tone-people">Analyze People
-  </button>
+    <select class="form-control" id="sender">
+        <option th:value="${user.name}" th:each="user : ${userList}">
+            <p th:text="${user.name}"/></option>
+    </select>
+    <button type="button" class="btn btn-default" id="button-analyze-tone">Analyze Chat Tone</button>
+    <button type="button" class="btn btn-default" id="button-analyze-aspect">Analyze Aspect</button>
+    <button type="button" class="btn btn-default" id="button-analyze-texttag">Analyze TextTag</button>
+    <button type="button" class="btn btn-default" id="button-analyze-tone-organizations">Analyze
+        Organizations
+    </button>
+    <button type="button" class="btn btn-default" id="button-analyze-tone-places">Analyze Places
+    </button>
+    <button type="button" class="btn btn-default" id="button-analyze-tone-people">Analyze People
+    </button>
 </div>
 
 <script type="text/javascript" th:src="@{/js/admin.js}"></script>
@@ -42,9 +42,9 @@
 
 
 <form th:action="@{/logout}" method="get">
-  <button class="btn btn-md btn-danger btn-block" name="registration"
-          type="Submit">Logout
-  </button>
+    <button class="btn btn-md btn-danger btn-block" name="registration"
+            type="Submit">Logout
+    </button>
 </form>
 </body>
 </html>

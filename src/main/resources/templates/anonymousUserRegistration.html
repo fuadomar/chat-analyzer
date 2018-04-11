@@ -2,29 +2,29 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="utf-8"/>
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <meta name="description" content=""/>
-  <meta name="author" content=""/>
-  <link rel="icon" href="favicon.ico"/>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <link rel="icon" href="favicon.ico"/>
 
-  <title>User Registration</title>
+    <title>User Registration</title>
 
-  <!-- Bootstrap core CSS -->
-  <link
-      href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-      crossorigin="anonymous"/>
+    <!-- Bootstrap core CSS -->
+    <link
+            href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+            crossorigin="anonymous"/>
 
-  <link th:href="@{css/style.css}" rel="stylesheet"/>
-  <link th:href="@{css/fv.css}" rel="stylesheet"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/css/chatAnalyzer.css}"/>
+    <link th:href="@{css/style.css}" rel="stylesheet"/>
+    <link th:href="@{css/fv.css}" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/chatAnalyzer.css}"/>
 
-  <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
 
 </head>
 
@@ -32,67 +32,68 @@
 
 
 <div class="main-panel">
-  <div class="main-content">
-    <div class="content-header">
-      <img src="../images/logo.png" alt="logo">
-    </div>
-    <div class="content-body">
-      <div class="make-it-center">
-
-        <form  th:action="@{/chat/anonymous}" method="post">
-          <div class="form-group">
-            <input type="hidden" name="token" th:value="${confirmationToken}"/>
-            <input type="text" name="name"  pattern=".{3,32}" required title="3 to 32 characters" class="form-control margin-0-auto" id="name" placeholder="name/email" required>
-
-          </div>
-          <input type="hidden"
-                 th:name="${_csrf.parameterName}"
-                 th:value="${_csrf.token}"/>
-          <div class="form-group">
-            <button type="submit" class="btn start-btn"
-                    style="margin: 60px 0 100px 0;">Start Chat
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="footer">
-      <span>© Nascenia Limited</span>
-      <span class="pull-right"> Developed using <a href="#">IBM Watson </a> and Ruby on Rails</span>
-    </div>
-
-
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-         aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content vanish-background">
-          <div class="modal-body white-background">
-            <p>Dear XYZ,</p>
-            <p>I have found a great chatting tool where they will sh Dear XYZ, I have found a
-              great chatting tool where they will sh Dear XYZ, I have found a great chatting tool
-              where they will sh Dear XYZ, I have found a great chatting tool where they will sh
-              Dear XYZ, I have found a great chatting tool where they will sh</p>
-            <p>- Faruk</p>
-          </div>
-          <div class="modal-footer vanish-background keep-it-center">
-            <button type="button" class="btn btn-secondary start-btn" data-dismiss="modal">send
-            </button>
-          </div>
+    <div class="main-content">
+        <div class="content-header">
+            <img src="../images/logo.png" alt="logo">
         </div>
-      </div>
-    </div>
+        <div class="content-body">
+            <div class="make-it-center">
+
+                <form th:action="@{/chat/anonymous}" method="post">
+                    <div class="form-group">
+                        <input type="hidden" name="token" th:value="${confirmationToken}"/>
+                        <input type="text" name="name" pattern=".{3,32}" required title="3 to 32 characters"
+                               class="form-control margin-0-auto" id="name" placeholder="name/email" required>
+
+                    </div>
+                    <input type="hidden"
+                           th:name="${_csrf.parameterName}"
+                           th:value="${_csrf.token}"/>
+                    <div class="form-group">
+                        <button type="submit" class="btn start-btn"
+                                style="margin: 60px 0 100px 0;">Start Chat
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="footer">
+            <span>© Nascenia Limited</span>
+            <span class="pull-right"> Developed using <a href="#">IBM Watson </a> and Ruby on Rails</span>
+        </div>
 
 
-    <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
-    <script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
-    <script type="text/javascript" th:src="@{/js/sockjs-0.3.min.js}"></script>
-    <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
-    <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
-    <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
-    <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
-    <script type="text/javascript" th:src="@{/js/hoy3lrg.js}"></script>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+             aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content vanish-background">
+                    <div class="modal-body white-background">
+                        <p>Dear XYZ,</p>
+                        <p>I have found a great chatting tool where they will sh Dear XYZ, I have found a
+                            great chatting tool where they will sh Dear XYZ, I have found a great chatting tool
+                            where they will sh Dear XYZ, I have found a great chatting tool where they will sh
+                            Dear XYZ, I have found a great chatting tool where they will sh</p>
+                        <p>- Faruk</p>
+                    </div>
+                    <div class="modal-footer vanish-background keep-it-center">
+                        <button type="button" class="btn btn-secondary start-btn" data-dismiss="modal">send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <script th:src="@{js/fv.min.js}"></script>
+
+        <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/stomp.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/sockjs-0.3.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/highcharts.js}"></script>
+        <script type="text/javascript" th:src="@{/js/highcharts-3d.js}"></script>
+        <script type="text/javascript" th:src="@{/js/exporting.js}"></script>
+        <script type="text/javascript" th:src="@{/js/hoy3lrg.js}"></script>
+
+        <script th:src="@{js/fv.min.js}"></script>
 </body>
 
 </html>

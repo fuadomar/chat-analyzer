@@ -5,5 +5,5 @@ package tone.analyzer.redis;
  */
 public interface MessagePublisher {
 
-  void publish(String message);
+    void publish(String message);
 }

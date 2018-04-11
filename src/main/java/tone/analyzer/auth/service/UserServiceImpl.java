@@ -15,29 +15,29 @@ import java.util.Arrays;
 @Service
 public class UserServiceImpl implements UserService {
 
-  @Autowired
-  private AccountRepository userRepository;
+    @Autowired
+    private AccountRepository userRepository;
 
-  @Override
-  public Account save(Account user) {
+    @Override
+    public Account save(Account user) {
 
-    user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
-    user.setEnabled(true);
-    Role role = new Role("ROLE_USER");
-    user.setRole(Arrays.asList(role));
-    userRepository.save(user);
-    return user;
-  }
+        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setEnabled(true);
+        Role role = new Role("ROLE_USER");
+        user.setRole(Arrays.asList(role));
+        userRepository.save(user);
+        return user;
+    }
 
-  @Override
-  public Account findByName(String username) {
-    return userRepository.findByName(username);
-  }
+    @Override
+    public Account findByName(String username) {
+        return userRepository.findByName(username);
+    }
 
-  @Override
-  public void addBudyyToUser(Account emailInvitationSender, Account emailInvitationReceiver) {
+    @Override
+    public void addBudyyToUser(Account emailInvitationSender, Account emailInvitationReceiver) {
 
-    userRepository.save(emailInvitationSender);
-    userRepository.save(emailInvitationReceiver);
-  }
+        userRepository.save(emailInvitationSender);
+        userRepository.save(emailInvitationReceiver);
+    }
 }

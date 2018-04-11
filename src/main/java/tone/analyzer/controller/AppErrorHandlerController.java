@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 
 @Controller
-public class AppErrorHandlerController implements ErrorController{
+public class AppErrorHandlerController implements ErrorController {
 
     private static final String PATH = "/error";
 

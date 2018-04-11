@@ -16,29 +16,29 @@ import java.util.concurrent.ConcurrentHashMap;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ParticipantRepository {
 
-  private Map<String, LoginEvent> activeSessions;
+    private Map<String, LoginEvent> activeSessions;
 
-  public ParticipantRepository() {
-    this.activeSessions = new ConcurrentHashMap<>();
-  }
+    public ParticipantRepository() {
+        this.activeSessions = new ConcurrentHashMap<>();
+    }
 
-  public void add(String sessionId, LoginEvent event) {
-    activeSessions.putIfAbsent(sessionId, event);
-  }
+    public void add(String sessionId, LoginEvent event) {
+        activeSessions.putIfAbsent(sessionId, event);
+    }
 
-  public LoginEvent getParticipant(String sessionId) {
-    return activeSessions.get(sessionId);
-  }
+    public LoginEvent getParticipant(String sessionId) {
+        return activeSessions.get(sessionId);
+    }
 
-  public void removeParticipant(String sessionId) {
-    activeSessions.remove(sessionId);
-  }
+    public void removeParticipant(String sessionId) {
+        activeSessions.remove(sessionId);
+    }
 
-  public Map<String, LoginEvent> getActiveSessions() {
-    return activeSessions;
-  }
+    public Map<String, LoginEvent> getActiveSessions() {
+        return activeSessions;
+    }
 
-  public void setActiveSessions(Map<String, LoginEvent> activeSessions) {
-    this.activeSessions = activeSessions;
-  }
+    public void setActiveSessions(Map<String, LoginEvent> activeSessions) {
+        this.activeSessions = activeSessions;
+    }
 }

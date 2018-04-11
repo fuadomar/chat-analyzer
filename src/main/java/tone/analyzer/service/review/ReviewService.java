@@ -7,5 +7,5 @@ import tone.analyzer.domain.entity.Review;
  */
 public interface ReviewService {
 
-  public void saveReview(Review review);
+    public void saveReview(Review review);
 }

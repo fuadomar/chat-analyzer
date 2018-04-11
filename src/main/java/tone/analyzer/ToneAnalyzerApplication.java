@@ -1,6 +1,7 @@
 package tone.analyzer;
 
 import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,45 +21,45 @@ import tone.analyzer.domain.repository.AccountRepository;
 @SpringBootApplication
 public class ToneAnalyzerApplication {
 
-  public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
 
-  public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_USER = "ROLE_USER";
 
-  public static final String SEARCH_BY_ADMIN = "admin";
+    public static final String SEARCH_BY_ADMIN = "admin";
 
-  public static final String ROLE_ACTUATOR = "ROLE_ACTUATOR";
+    public static final String ROLE_ACTUATOR = "ROLE_ACTUATOR";
 
-  @Autowired
-  private AccountRepository accountRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
-  @Autowired
-  private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  @Value("${app.admin.name}")
-  private String adminName;
+    @Value("${app.admin.name}")
+    private String adminName;
 
-  @Value("${app.admin.password}")
-  private String plainTextPassword;
+    @Value("${app.admin.password}")
+    private String plainTextPassword;
 
-  private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerApplication.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ToneAnalyzerApplication.class);
 
-  public static void main(String[] args) {
-    SpringApplication.run(ToneAnalyzerApplication.class, args);
+    public static void main(String[] args) {
+        SpringApplication.run(ToneAnalyzerApplication.class, args);
 
 
-  }
+    }
 
-  @Bean
-  CommandLineRunner sendMessage() {
-    return args -> {
-      Account admin = accountRepository.findByName(SEARCH_BY_ADMIN);
-      if (admin == null) {
-        String encodedPassword = bCryptPasswordEncoder.encode(plainTextPassword);
-        admin = new Account(adminName, encodedPassword);
-        admin.setRole(
-            Arrays.asList(new Role(ROLE_ADMIN), new Role(ROLE_USER), new Role(ROLE_ACTUATOR)));
-        accountRepository.save(admin);
-      }
-    };
-  }
+    @Bean
+    CommandLineRunner sendMessage() {
+        return args -> {
+            Account admin = accountRepository.findByName(SEARCH_BY_ADMIN);
+            if (admin == null) {
+                String encodedPassword = bCryptPasswordEncoder.encode(plainTextPassword);
+                admin = new Account(adminName, encodedPassword);
+                admin.setRole(
+                        Arrays.asList(new Role(ROLE_ADMIN), new Role(ROLE_USER), new Role(ROLE_ACTUATOR)));
+                accountRepository.save(admin);
+            }
+        };
+    }
 }

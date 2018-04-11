@@ -20,24 +20,24 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  @Autowired
-  private AccountRepository userRepository;
+    @Autowired
+    private AccountRepository userRepository;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    Account user = userRepository.findByName(username);
-    if (user == null) {
-      throw new UsernameNotFoundException("Account not found");
+        Account user = userRepository.findByName(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("Account not found");
+        }
+
+
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Role role : user.getRole()) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getName(), user.getPassword(), grantedAuthorities);
     }
-
-
-    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-    for (Role role : user.getRole()) {
-      grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
-    }
-
-    return new org.springframework.security.core.userdetails.User(
-        user.getName(), user.getPassword(), grantedAuthorities);
-  }
 }

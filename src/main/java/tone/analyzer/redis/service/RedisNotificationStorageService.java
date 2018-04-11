@@ -15,61 +15,61 @@ import tone.analyzer.event.LoginEvent;
 @Service
 public class RedisNotificationStorageService {
 
-  @Autowired
-  RedisTemplate<String, AwaitingMessagesNotificationDetailsDTO> genericDTORedisTemplate;
+    @Autowired
+    RedisTemplate<String, AwaitingMessagesNotificationDetailsDTO> genericDTORedisTemplate;
 
-  public AwaitingMessagesNotificationDetailsDTO findCachedUserAwaitingMessagesNotifications(
-      String key) {
+    public AwaitingMessagesNotificationDetailsDTO findCachedUserAwaitingMessagesNotifications(
+            String key) {
 
-    Set<AwaitingMessagesNotificationDetailsDTO> cachedAggregateUserAwaitingMessagesNotifications =
-        genericDTORedisTemplate.opsForSet().members(key);
+        Set<AwaitingMessagesNotificationDetailsDTO> cachedAggregateUserAwaitingMessagesNotifications =
+                genericDTORedisTemplate.opsForSet().members(key);
 
-    if (cachedAggregateUserAwaitingMessagesNotifications != null) {
-      for (AwaitingMessagesNotificationDetailsDTO userAwaitingMessageNotifcation :
-          cachedAggregateUserAwaitingMessagesNotifications) {
-        return userAwaitingMessageNotifcation;
-      }
-    }
-    return null;
-  }
-
-  public AwaitingMessagesNotificationDetailsDTO cacheUserAwaitingMessagesNotification(
-      String key, AwaitingMessagesNotificationDetailsDTO notificationDetailsDTO) {
-
-    AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
-        findCachedUserAwaitingMessagesNotifications(key);
-    if (cachedUserAwaitingMessagesNotifications != null) {
-      cachedUserAwaitingMessagesNotifications
-          .getSender()
-          .addAll(notificationDetailsDTO.getSender());
-    } else {
-      cachedUserAwaitingMessagesNotifications =
-          new AwaitingMessagesNotificationDetailsDTO(
-              notificationDetailsDTO.getReceiver(), notificationDetailsDTO.getSender());
-    }
-    genericDTORedisTemplate.delete(key);
-    genericDTORedisTemplate.opsForSet().add(key, cachedUserAwaitingMessagesNotifications);
-
-    return cachedUserAwaitingMessagesNotifications;
-  }
-
-  public void deleteAwaitingMessageNotificationByUser(
-      String key, LoginEvent loginEvent) {
-
-    if (loginEvent == null) {
-      genericDTORedisTemplate.delete(key);
-    } else {
-      AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications = findCachedUserAwaitingMessagesNotifications(
-          key);
-      if (cachedUserAwaitingMessagesNotifications != null && cachedUserAwaitingMessagesNotifications
-          .getSender().contains(loginEvent)) {
-        cachedUserAwaitingMessagesNotifications.getSender().remove(loginEvent);
-        genericDTORedisTemplate.delete(key);
-        if (cachedUserAwaitingMessagesNotifications.getSender().size() > 0) {
-          genericDTORedisTemplate.opsForSet().add(key, cachedUserAwaitingMessagesNotifications);
+        if (cachedAggregateUserAwaitingMessagesNotifications != null) {
+            for (AwaitingMessagesNotificationDetailsDTO userAwaitingMessageNotifcation :
+                    cachedAggregateUserAwaitingMessagesNotifications) {
+                return userAwaitingMessageNotifcation;
+            }
         }
-      }
+        return null;
     }
 
-  }
+    public AwaitingMessagesNotificationDetailsDTO cacheUserAwaitingMessagesNotification(
+            String key, AwaitingMessagesNotificationDetailsDTO notificationDetailsDTO) {
+
+        AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
+                findCachedUserAwaitingMessagesNotifications(key);
+        if (cachedUserAwaitingMessagesNotifications != null) {
+            cachedUserAwaitingMessagesNotifications
+                    .getSender()
+                    .addAll(notificationDetailsDTO.getSender());
+        } else {
+            cachedUserAwaitingMessagesNotifications =
+                    new AwaitingMessagesNotificationDetailsDTO(
+                            notificationDetailsDTO.getReceiver(), notificationDetailsDTO.getSender());
+        }
+        genericDTORedisTemplate.delete(key);
+        genericDTORedisTemplate.opsForSet().add(key, cachedUserAwaitingMessagesNotifications);
+
+        return cachedUserAwaitingMessagesNotifications;
+    }
+
+    public void deleteAwaitingMessageNotificationByUser(
+            String key, LoginEvent loginEvent) {
+
+        if (loginEvent == null) {
+            genericDTORedisTemplate.delete(key);
+        } else {
+            AwaitingMessagesNotificationDetailsDTO cachedUserAwaitingMessagesNotifications = findCachedUserAwaitingMessagesNotifications(
+                    key);
+            if (cachedUserAwaitingMessagesNotifications != null && cachedUserAwaitingMessagesNotifications
+                    .getSender().contains(loginEvent)) {
+                cachedUserAwaitingMessagesNotifications.getSender().remove(loginEvent);
+                genericDTORedisTemplate.delete(key);
+                if (cachedUserAwaitingMessagesNotifications.getSender().size() > 0) {
+                    genericDTORedisTemplate.opsForSet().add(key, cachedUserAwaitingMessagesNotifications);
+                }
+            }
+        }
+
+    }
 }

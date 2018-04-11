@@ -1,6 +1,7 @@
 package tone.analyzer.gateway;
 
 import java.io.IOException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,21 +17,21 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class ProfileImageGateway {
 
-  @Autowired
-  private FileUploadService fileUploadService;
+    @Autowired
+    private FileUploadService fileUploadService;
 
-  @Autowired
-  private ProfileImageProviderService profileImageService;
+    @Autowired
+    private ProfileImageProviderService profileImageService;
 
-  public String upload(MultipartFile file) throws IOException {
+    public String upload(MultipartFile file) throws IOException {
 
-    return fileUploadService.upload(file);
-  }
+        return fileUploadService.upload(file);
+    }
 
-  public void retrieveImageAsByteArray(HttpServletRequest request, HttpServletResponse response,
-      String image, boolean isBase64Image) throws IOException {
+    public void retrieveImageAsByteArray(HttpServletRequest request, HttpServletResponse response,
+                                         String image, boolean isBase64Image) throws IOException {
 
-    profileImageService.getImageAsByteArray(request, response, image, isBase64Image);
+        profileImageService.getImageAsByteArray(request, response, image, isBase64Image);
 
-  }
+    }
 }

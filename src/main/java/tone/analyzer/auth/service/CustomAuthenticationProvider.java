@@ -41,7 +41,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
         if (password != null)
             matchesPassword = new BCryptPasswordEncoder().matches(password, user.getPassword());
-        if (authentication.getCredentials() != null && !matchesPassword){
+        if (authentication.getCredentials() != null && !matchesPassword) {
             return null;
         }
 

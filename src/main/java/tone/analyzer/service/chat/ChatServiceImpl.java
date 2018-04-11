@@ -19,41 +19,41 @@ import java.util.Date;
 @Component
 public class ChatServiceImpl implements ChatService {
 
-  @Autowired
-  private ChatMessageProducer messageProducer;
+    @Autowired
+    private ChatMessageProducer messageProducer;
 
-  @Autowired
-  private ConversationRepository conversationRepository;
+    @Autowired
+    private ConversationRepository conversationRepository;
 
-  @Autowired
-  private MessageRepository messageRepository;
+    @Autowired
+    private MessageRepository messageRepository;
 
-  @Autowired
-  private AccountRepository accountRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
-  @Override
-  public void sendMessageTo(ChatMessage chatMessage) {
+    @Override
+    public void sendMessageTo(ChatMessage chatMessage) {
 
-    Account recipent = accountRepository.findOne(chatMessage.getRecipient());
-    if (recipent == null) {
-      return;
+        Account recipent = accountRepository.findOne(chatMessage.getRecipient());
+        if (recipent == null) {
+            return;
+        }
+        chatMessage.setRecipient(recipent.getName());
+        messageProducer.sendMessageToRecipient(chatMessage);
+        Conversation conversation =
+                conversationRepository.findConversationBySenderAndRecipient(
+                        chatMessage.getSender(), chatMessage.getRecipient());
+        if (conversation == null) {
+            conversation =
+                    conversationRepository.save(
+                            new Conversation(chatMessage.getSender(), chatMessage.getRecipient()));
+        }
+        messageRepository.save(
+                new Message(
+                        conversation.getId(),
+                        chatMessage.getSender(),
+                        chatMessage.getRecipient(),
+                        chatMessage.getMessage(),
+                        new Date()));
     }
-    chatMessage.setRecipient(recipent.getName());
-    messageProducer.sendMessageToRecipient(chatMessage);
-    Conversation conversation =
-        conversationRepository.findConversationBySenderAndRecipient(
-            chatMessage.getSender(), chatMessage.getRecipient());
-    if (conversation == null) {
-      conversation =
-          conversationRepository.save(
-              new Conversation(chatMessage.getSender(), chatMessage.getRecipient()));
-    }
-    messageRepository.save(
-        new Message(
-            conversation.getId(),
-            chatMessage.getSender(),
-            chatMessage.getRecipient(),
-            chatMessage.getMessage(),
-            new Date()));
-  }
 }

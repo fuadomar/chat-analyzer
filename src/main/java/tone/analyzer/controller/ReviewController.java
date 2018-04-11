@@ -19,16 +19,16 @@ import tone.analyzer.gateway.ReviewGateway;
 @RestController
 public class ReviewController {
 
-  private static final Logger log = LoggerFactory.getLogger(ReviewController.class);
+    private static final Logger log = LoggerFactory.getLogger(ReviewController.class);
 
-  @Autowired
-  private ReviewGateway reviewGateway;
+    @Autowired
+    private ReviewGateway reviewGateway;
 
-  /*@PreAuthorize("hasRole('ROLE_USER')")*/
-  @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = "application/json")
-  public ResponseEntity<String> sendChatMessageToDestination(@RequestBody Review review) {
-    reviewGateway.saveReview(review);
-    String success = "Success";
-    return new ResponseEntity<>(success, new HttpHeaders(), HttpStatus.CREATED);
-  }
+    /*@PreAuthorize("hasRole('ROLE_USER')")*/
+    @RequestMapping(value = "/review", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity<String> sendChatMessageToDestination(@RequestBody Review review) {
+        reviewGateway.saveReview(review);
+        String success = "Success";
+        return new ResponseEntity<>(success, new HttpHeaders(), HttpStatus.CREATED);
+    }
 }

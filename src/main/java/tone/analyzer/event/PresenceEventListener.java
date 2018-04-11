@@ -53,6 +53,7 @@ public class PresenceEventListener {
     @Autowired
     SimpUserRegistry simpUserRegistry;
 
+    @Autowired
     public PresenceEventListener(
             SimpMessagingTemplate messagingTemplate, ParticipantRepository participantRepository) {
         this.messagingTemplate = messagingTemplate;

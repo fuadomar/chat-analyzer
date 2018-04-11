@@ -3,8 +3,10 @@ package tone.analyzer.config;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
@@ -28,34 +30,34 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
   @Bean
   public AppErrorController appErrorController(){return new AppErrorController(errorAttributes);}*/
 
-  @Bean
-  public BCryptPasswordEncoder passwordEncoder() {
-    BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-    return bCryptPasswordEncoder;
-  }
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
+    }
 
-  @Autowired(required = true)
-  public void configeJackson(ObjectMapper jackson2ObjectMapper) {
-    jackson2ObjectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
-  }
+    @Autowired(required = true)
+    public void configeJackson(ObjectMapper jackson2ObjectMapper) {
+        jackson2ObjectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true);
+    }
 
-  @Override
-  public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-    converters.add(byteArrayHttpMessageConverter());
-  }
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(byteArrayHttpMessageConverter());
+    }
 
-  @Bean
-  public ByteArrayHttpMessageConverter byteArrayHttpMessageConverter() {
-    ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
-    arrayHttpMessageConverter.setSupportedMediaTypes(getSupportedMediaTypes());
-    return arrayHttpMessageConverter;
-  }
+    @Bean
+    public ByteArrayHttpMessageConverter byteArrayHttpMessageConverter() {
+        ByteArrayHttpMessageConverter arrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
+        arrayHttpMessageConverter.setSupportedMediaTypes(getSupportedMediaTypes());
+        return arrayHttpMessageConverter;
+    }
 
-  private List<MediaType> getSupportedMediaTypes() {
-    List<MediaType> list = new ArrayList<MediaType>();
-    list.add(MediaType.IMAGE_JPEG);
-    list.add(MediaType.IMAGE_PNG);
-    list.add(MediaType.APPLICATION_OCTET_STREAM);
-    return list;
-  }
+    private List<MediaType> getSupportedMediaTypes() {
+        List<MediaType> list = new ArrayList<MediaType>();
+        list.add(MediaType.IMAGE_JPEG);
+        list.add(MediaType.IMAGE_PNG);
+        list.add(MediaType.APPLICATION_OCTET_STREAM);
+        return list;
+    }
 }

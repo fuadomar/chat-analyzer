@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 
 @Component
-public class EmailInvitationValidator implements Validator{
+public class EmailInvitationValidator implements Validator {
 
     @Value("${user.name.minimum.length}")
     private Integer USER_NAME_MINIMUM_LENGTH;

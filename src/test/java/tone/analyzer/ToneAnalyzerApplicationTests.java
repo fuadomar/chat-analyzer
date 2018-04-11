@@ -34,84 +34,84 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Import(WebSecurityConfig.class)
 public class ToneAnalyzerApplicationTests {
 
-  public static final String REGISTRATION_VIEW_NAME = "users-registration";
+    public static final String REGISTRATION_VIEW_NAME = "users-registration";
 
-  public static final String USER_REGISTRATION_URI = "/user-registration";
+    public static final String USER_REGISTRATION_URI = "/user-registration";
 
-  @Autowired
-  private WebApplicationContext context;
+    @Autowired
+    private WebApplicationContext context;
 
-  @Autowired
-  org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+    @Autowired
+    org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
 
-  private MockMvc mockMvc;
+    private MockMvc mockMvc;
 
-  private MockMvc mvc;
+    private MockMvc mvc;
 
-  @Before
-  public void setUp() {
+    @Before
+    public void setUp() {
 
-    this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
-    this.mvc = MockMvcBuilders.webAppContextSetup(context).build();
-  }
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context).apply(springSecurity()).build();
+        this.mvc = MockMvcBuilders.webAppContextSetup(context).build();
+    }
 
-  @After
-  public void tearUp() {
+    @After
+    public void tearUp() {
 
-    mongoTemplate.getDb().dropDatabase();
-  }
+        mongoTemplate.getDb().dropDatabase();
+    }
 
-  @Test
-  public void contextLoads() {
-  }
+    @Test
+    public void contextLoads() {
+    }
 
-  @Test
-  public void testShouldRedirectUnauthorizedUser() throws Exception {
-    this.mockMvc.perform(get("/")).andExpect(status().is3xxRedirection());
-  }
+    @Test
+    public void testShouldRedirectUnauthorizedUser() throws Exception {
+        this.mockMvc.perform(get("/")).andExpect(status().is3xxRedirection());
+    }
 
-  @Test
-  @WithMockUser(username = "test", roles = "USER")
-  public void testShouldReturnChatView() throws Exception {
+    @Test
+    @WithMockUser(username = "test", roles = "USER")
+    public void testShouldReturnChatView() throws Exception {
 
-    this.mockMvc
-        .perform(get("/live-chat"))
-        .andExpect(status().isOk())
-        .andExpect(view().name("chat"));
-  }
+        this.mockMvc
+                .perform(get("/live-chat"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("chat"));
+    }
 
-  @Test
-  public void testShouldReturnRegistrationView() throws Exception {
+    @Test
+    public void testShouldReturnRegistrationView() throws Exception {
 
-    this.mockMvc
-        .perform(get(USER_REGISTRATION_URI))
-        .andExpect(status().isOk())
-        .andExpect(view().name(REGISTRATION_VIEW_NAME))
-        .andDo(print());
-  }
+        this.mockMvc
+                .perform(get(USER_REGISTRATION_URI))
+                .andExpect(status().isOk())
+                .andExpect(view().name(REGISTRATION_VIEW_NAME))
+                .andDo(print());
+    }
 
-  @Test
-  public void testShouldReturnRegistrationIfUserNameLengthLessThanThreshold() throws Exception {
+    @Test
+    public void testShouldReturnRegistrationIfUserNameLengthLessThanThreshold() throws Exception {
 
-    RequestBuilder requestBuilder = getPostRequestBuilder("te", "121212121212");
-    this.mvc.perform(requestBuilder).andExpect(view().name(REGISTRATION_VIEW_NAME));
-  }
+        RequestBuilder requestBuilder = getPostRequestBuilder("te", "121212121212");
+        this.mvc.perform(requestBuilder).andExpect(view().name(REGISTRATION_VIEW_NAME));
+    }
 
-  private RequestBuilder getPostRequestBuilder(String name, String password) {
-    return post("/user-registration")
-        .param("name", name)
-        .param("password", password)
-        .param("role", "USER")
-        .accept(MediaType.TEXT_PLAIN);
-  }
+    private RequestBuilder getPostRequestBuilder(String name, String password) {
+        return post("/user-registration")
+                .param("name", name)
+                .param("password", password)
+                .param("role", "USER")
+                .accept(MediaType.TEXT_PLAIN);
+    }
 
-  @Test
-  public void testShouldCreateNewAccount() throws Exception {
+    @Test
+    public void testShouldCreateNewAccount() throws Exception {
 
-    RequestBuilder requestBuilder = getPostRequestBuilder("test2", "test2test2");
-    this.mvc
-        .perform(requestBuilder)
-        .andExpect(status().is3xxRedirection())
-        .andExpect(view().name("redirect:/live-chat"));
-  }
+        RequestBuilder requestBuilder = getPostRequestBuilder("test2", "test2test2");
+        this.mvc
+                .perform(requestBuilder)
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/live-chat"));
+    }
 }

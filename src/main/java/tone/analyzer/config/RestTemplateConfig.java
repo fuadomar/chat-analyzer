@@ -16,21 +16,21 @@ import org.springframework.web.client.RestTemplate;
 @Configuration
 public class RestTemplateConfig {
 
-  @Bean
-  public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory) {
-    RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
-    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-    return restTemplate;
-  }
+    @Bean
+    public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory) {
+        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+        return restTemplate;
+    }
 
-  @Bean
-  public ClientHttpRequestFactory httpRequestFactory(HttpClient httpClient) {
-    return new HttpComponentsClientHttpRequestFactory(httpClient);
-  }
+    @Bean
+    public ClientHttpRequestFactory httpRequestFactory(HttpClient httpClient) {
+        return new HttpComponentsClientHttpRequestFactory(httpClient);
+    }
 
-  @Bean
-  public HttpClient httpClient() {
-    return HttpClientBuilder.create().build();
-  }
+    @Bean
+    public HttpClient httpClient() {
+        return HttpClientBuilder.create().build();
+    }
 
 }
