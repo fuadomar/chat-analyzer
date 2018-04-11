@@ -200,7 +200,7 @@
 
           <ul class="social-share-area">
             <li>Share</li>
-            <li><a><img th:height="25" id="share_button1" th:width="auto"
+            <li><a><img th:height="25" id="share_facebook_button" th:width="auto"
                         th:src="@{/images/facebook.png}"/></a></li>
             <li><a><img th:height="25" id="share_button" th:width="auto"
                         th:src="@{/images/message-icon.png}"/></a></li>
@@ -283,7 +283,7 @@ window.fbAsyncInit = function () {
 // FB Share with custom OG data.
 (function ($) {
 
-  $('#share_button').on('click', function (event) {
+  $('#share_facebook_button').on('click', function (event) {
     event.preventDefault();
     event.stopPropagation();
     event.stopImmediatePropagation();
