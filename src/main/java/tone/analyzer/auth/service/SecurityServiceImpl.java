@@ -23,42 +23,42 @@ import java.util.Collection;
 @Service
 public class SecurityServiceImpl implements SecurityService {
 
-  @Autowired
-  private AuthenticationManager authenticationManager;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-  @Autowired
-  private UserDetailsService userDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
 
-  private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
-  @Override
-  public String findLoggedInUsername() {
+    @Override
+    public String findLoggedInUsername() {
 
-    Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
-    if (userDetails instanceof UserDetails) {
-      return ((UserDetails) userDetails).getUsername();
+        Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
+        if (userDetails instanceof UserDetails) {
+            return ((UserDetails) userDetails).getUsername();
+        }
+
+        return null;
     }
 
-    return null;
-  }
+    @Override
+    public void autoLogin(
+            String username, String password, HttpServletRequest request, HttpServletResponse response) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                new UsernamePasswordAuthenticationToken(userDetails, password, authorities);
 
-  @Override
-  public void autoLogin(
-      String username, String password, HttpServletRequest request, HttpServletResponse response) {
-    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-        new UsernamePasswordAuthenticationToken(userDetails, password, authorities);
+        // generate session if one doesn't exist
+        request.getSession();
+        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
+        Authentication authenticatedUser =
+                authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-    // generate session if one doesn't exist
-    request.getSession();
-    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
-    Authentication authenticatedUser =
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
-
-    if (authenticatedUser.isAuthenticated()) {
-      SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-      logger.info(String.format("Auto login %s successfully!", username));
+        if (authenticatedUser.isAuthenticated()) {
+            SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+            logger.info(String.format("Auto login %s successfully!", username));
+        }
     }
-  }
 }
