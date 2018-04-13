@@ -223,8 +223,8 @@ $(document).ready(function () {
                         !== null || userClickedOnWhcihBuddyMessageBox !== "") {
                         if (userClickedOnWhcihBuddyMessageBox) {
                             if (userClickedOnWhcihBuddyMessageBox == payload.sender) {
-                                receiveMessage(payload.message, payload.sender,
-                                    profileImageBuddy)
+                                receiveMessage(escapeHtml(payload.message), payload.sender,
+                                    profileImageBuddy);
                             }
                         }
                     }
@@ -324,6 +324,7 @@ $(document).ready(function () {
                         console.log("user list: " + messageArray[i].userName)
 
                         if (sessionName === messageArray[i].userName) {
+                            alert(messageArray[i].id);
                             $("#cur-user-uuid").val(messageArray[i].id);
                             console.log("user own uuid: " + messageArray[i].id);
                             continue;
@@ -433,11 +434,11 @@ $(document).ready(function () {
             })
             $("#send-invitation-modal").click(function (e) {
 
-                var email = $("#exampleInputEmail1").val();
-                var invitedText = $("#email-invitation-text-area").val();
-                var invitedUser = $("#name").val();
+                var email = $("#exampleInputEmail1").text();
+                var invitedText = $("#email-invitation-text-area").text();
+                var invitedUser = escapeHtml($("#name").val());
                 console.log("cur usr id " + $("#cur-user-uuid").val());
-
+                alert(email+" "+invitedUser);
                 $.get({
                     type: 'get',
                     url: '/invitationEmail',
@@ -463,14 +464,14 @@ $(document).ready(function () {
 
             $("#userInvitationTextAreaModal").on("show.bs.modal", function (e) {
                 $("#userInvitationMainModal").modal('hide');
-                var email = $("#exampleInputEmail1").val();
+                var email = $("#exampleInputEmail1").text();
                 var name = $("#name").val();
                 var emailTemplate = "Dear " + name + ", \n\n"
                     + " I have found a great chatting tool where they will show us some really cool insights \n\nbased on our conversation. I think, it will be a lot of fun!";
                 $("#send-invitation-modal").show();
-                $("#email-invitation-text-area").val("");
-                var text = $("textarea#email-invitation-text-area")
-                text.val(emailTemplate);
+                $("#email-invitation-text-area").text("");
+                var text =$("textarea#email-invitation-text-area");
+                text.text(emailTemplate);
             });
 
             $("body").mouseup(function (e) {
@@ -489,7 +490,7 @@ $(document).ready(function () {
                     dataType: "text",
                     success: function (data) {
                         $("#send-invitation-modal").hide();
-                        $("#email-invitation-text-area").val(data);
+                        $("#email-invitation-text-area").text(escapeHtml(data));
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         console.log(textStatus, errorThrown);
@@ -543,17 +544,17 @@ $(document).ready(function () {
 
                                 if (item.sender === userName) {
 
-                                    $('<li class="sent"><p>' + item.content
+                                    $('<li class="sent"><p>' + escapeHtml(item.content)
                                         + '</p></li>').appendTo(
                                         $('.messages ul'));
                                     $('.message-input input').val(null);
                                     $('.contact.online .preview').html(
-                                        '<span>You: </span>' + item.content);
+                                        '<span>You: </span>' + escapeHtml(item.content));
                                     $(".messages").animate({scrollTop: $(document).height()},
                                         "fast");
                                 }
                                 else {
-                                    receiveMessage(item.content, item.sender, profileImageBuddy)
+                                    receiveMessage(escapeHtml(item.content), item.sender, profileImageBuddy)
                                 }
                             })
                         }
@@ -621,7 +622,7 @@ $(document).ready(function () {
                         }));
 
                         if (msg != '') {
-                            $('<div class="msg_b">' + sessionName + ": " + msg
+                            $('<div class="msg_b">' + sessionName + ": " + escapeHtml(msg)
                                 + '</div>').insertBefore('#msg_push' + recipientId);
                         }
                         $('#msg_body' + recipientId).scrollTop(
@@ -630,6 +631,7 @@ $(document).ready(function () {
                 });
 
             function receiveMessage(message, sender, profileImageBuddy) {
+
 
                 if ($.trim(message) == '') {
                     return false;
@@ -664,12 +666,29 @@ $(document).ready(function () {
                     'topic': "message", 'message': message,
                     'recipient': recipientId
                 }));
-                $('<li class="sent"> <p>' + message + '</p></li>').appendTo(
+                $('<li class="sent"> <p>' + escapeHtml(message) + '</p></li>').appendTo(
                     $('.messages ul'));
                 $('.message-input input').val(null);
-                $('.contact.online .preview').html('<span>You: </span>' + message);
+                $('.contact.online .preview').html('<span>You: </span>' + escapeHtml(message));
                 $(".messages").animate({scrollTop: $(document).height()}, "fast");
             };
+
+          var entityMap = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;',
+            '/': '&#x2F;',
+            '`': '&#x60;',
+            '=': '&#x3D;'
+          };
+
+          function escapeHtml (string) {
+            return String(string).replace(/[&<>"'`=\/]/g, function (s) {
+              return entityMap[s];
+            });
+          }
 
             $('#btn-chat').click(function () {
                 newMessage();
