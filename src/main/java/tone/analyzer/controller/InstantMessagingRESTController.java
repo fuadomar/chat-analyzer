@@ -107,10 +107,6 @@ public class InstantMessagingRESTController {
         chatMessage.setSender(sender);
         chatGateway.sendMessageTo(chatMessage);
 
-/*    SimpleDateFormat sdf = new SimpleDateFormat();
-    sdf.setTimeZone(new SimpleTimeZone(SimpleTimeZone.UTC_TIME, "UTC"));
-    Date utcDate = sdf.parse(new Date().toString());*/
-
         LoginEvent loginEvent = new LoginEvent(chatMessage.getRecipient(), false);
         Date date = new Date();
         LOG.info("date {}", date.toString());

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,17 +26,23 @@ import tone.analyzer.capcha.service.ICaptchaService;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.EmailInvitation;
+import tone.analyzer.domain.entity.Role;
 import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.utility.ToneAnalyzerUtility;
 import tone.analyzer.validator.AccountValidator;
+import tone.analyzer.validator.AnonymousInvitationValidator;
 import tone.analyzer.validator.EmailInvitationValidator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
+
+import static java.util.stream.Collectors.joining;
 
 /**
  * Created by mozammal on 4/18/17.
@@ -104,6 +110,9 @@ public class UserDetailsWebController {
     private EmailInvitationValidator emailInvitationValidator;
 
     @Autowired
+    private AnonymousInvitationValidator anonymousInvitationValidator;
+
+    @Autowired
     private AdminService adminService;
 
     @Autowired
@@ -128,14 +137,13 @@ public class UserDetailsWebController {
     public String adminPanel(Model model) {
 
         model.addAttribute(ACCOUNT_FORM, new Account());
-
         return ADMIN_LOGIN_VIEW;
     }
 
     @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.GET)
     public String registration(Model model) {
-        model.addAttribute(ACCOUNT_FORM, new Account());
 
+        model.addAttribute(ACCOUNT_FORM, new Account());
         return USERS_REGISTRATION_VIEW;
     }
 
@@ -187,10 +195,10 @@ public class UserDetailsWebController {
     )
     public String chat(Model model, HttpServletResponse response) throws IOException {
 
+        Account loggedInUser = null;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String loggedInUserName = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
-        Account loggedInUser = userAccountRepository.findByName(loggedInUserName);
-
+        loggedInUser = userAccountRepository.findByName(loggedInUserName);
         model.addAttribute("username", loggedInUserName);
         String fileLocation =
                 loggedInUser.getDocumentMetaData() != null
@@ -231,6 +239,7 @@ public class UserDetailsWebController {
 
         model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
         model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
+        model.addAttribute("invitedTo", emailInvitationServiceByToekn.getReceiver());
         model.addAttribute("accountFromRegistrationByEmail", new Account());
         return "userRegistrationEmail";
     }
@@ -264,7 +273,7 @@ public class UserDetailsWebController {
             HttpServletRequest request,
             HttpServletResponse response,
             RedirectAttributes redir)
-            throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException, MalformedURLException {
 
         emailInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -275,10 +284,11 @@ public class UserDetailsWebController {
 
         if (token == null) {
             bindingResult.reject("password");
-            redir.addFlashAttribute("errorMessage", "Your token has expired or invalid.");
+            redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
             return "redirect:/login";
         }
 
+        Map<String, String> responseParams = new HashMap<>();
         Object userPassword = requestParams.get("password");
         Object userName = requestParams.get("name");
 
@@ -288,6 +298,21 @@ public class UserDetailsWebController {
             return "redirect:/login";
         }
 
+        Account userAccount = userAccountRepository.findByName((String) userName);
+        if (userAccount != null) {
+            boolean matches = new BCryptPasswordEncoder().matches((String) userPassword, userAccount.getPassword());
+            if (!matches) {
+                responseParams.put("token", (String) requestParams.get("token"));
+                responseParams.put("sender", (String) requestParams.get("sender"));
+                responseParams.put("receiver", (String) requestParams.get("receiver"));
+                String url = "confirmationEmail?";
+                String queryParams = responseParams.keySet().stream()
+                        .map(key -> key + "=" + encodeValue(responseParams.get(key)))
+                        .collect(joining("&", "", ""));
+                redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
+                return "redirect:/" + url + queryParams;
+            }
+        }
         String password = (String) userPassword;
         String name = (String) userName;
         Account account = new Account(name.trim(), password.trim());
@@ -334,6 +359,13 @@ public class UserDetailsWebController {
         Boolean alreadyLoggedIn = false;
         String name = null;
         Object userName = requestParams.get("name");
+        Map<String, String> responseParams = new HashMap<>();
+
+        anonymousInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
+        if (bindingResult.hasErrors()) {
+            LOG.info("error bind error inside method processConfirmationForm: ");
+            return "redirect:/login";
+        }
 
         if (userName == null || StringUtils.isBlank((String) userName)) {
             return "redirect:/login";
@@ -346,6 +378,17 @@ public class UserDetailsWebController {
         Account account = userAccountRepository.findByName((String) userName);
         if (account == null) {
             account = new Account(((String) userName).trim(), UUID.randomUUID().toString());
+        } else if (!isAnonymousUser(account.getRole())) {
+
+            responseParams.put("token", (String) requestParams.get("token"));
+            String url = "chat/anonymous?";
+            String queryParams = responseParams.keySet().stream()
+                    .map(key -> key + "=" + encodeValue(responseParams.get(key)))
+                    .collect(joining("&", "", ""));
+            redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
+            return "redirect:/" + url + queryParams;
+
+
         }
 
         userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account,
@@ -354,5 +397,21 @@ public class UserDetailsWebController {
                 .autoLogin(account.getName(), account.getPassword(), request, response);
         redir.addFlashAttribute(USER_NAME, userName);
         return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
+    }
+
+    private boolean isAnonymousUser(List<Role> roles) {
+
+        for (Role rol : roles)
+            if (rol.getName().equals("ROLE_ANONYMOUS_CHAT"))
+                return true;
+        return false;
+    }
+
+    private String encodeValue(String value) {
+        try {
+            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 }

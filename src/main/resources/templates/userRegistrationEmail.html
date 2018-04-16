@@ -41,6 +41,8 @@
                 <h2>Start chat with <p th:text="${invitedBy}"></p>   <br>Plesae enter your name</h2>
                 <form th:object="${accountFromRegistrationByEmail}" th:action="@{/confirmationEmail}" method="post">
                     <input type="hidden" name="token" th:value="${confirmationToken}"/>
+                    <input type="hidden" name="sender" th:value="${invitedBy}"/>
+                    <input type="hidden" name="receiver" th:value="${invitedTo}"/>
                     <div class="form-group">
                         <input type="text" th:field="*{name}" pattern=".{3,32}" required title="3 to 32 characters"
                                class="form-control margin-0-auto" id="name" placeholder="Name/Email" required>
@@ -56,6 +58,9 @@
                                 th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                                 class="validation-message"></label>
                     </div>
+                    <div align="center" th:if="${errorMsg}">
+                        <p style="font-size: 20; color: #FF1C19;">Name/Email or Password invalid, please verify</p>
+                    </div>
                     <input type="hidden"
                            th:name="${_csrf.parameterName}"
                            th:value="${_csrf.token}"/>
@@ -69,7 +74,7 @@
         </div>
         <div class="footer">
             <span>© Nascenia Limited</span>
-            <span class="pull-right"> Developed using <a href="#">IBM Watson </a> and Ruby on Rails</span>
+            <span class="pull-right"> Developed using <a href="https://www.ibm.com/watson/" target="_blank">IBM Watson </a> and Spring Boot</span>
         </div>
 
 

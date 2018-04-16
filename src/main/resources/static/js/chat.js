@@ -493,7 +493,7 @@ $(document).ready(function () {
           dataType: "text",
           success: function (data) {
             $("#send-invitation-modal").hide();
-            $("#email-invitation-text-area").text(escapeHtml(data));
+            $("#email-invitation-text-area").text(data);
           },
           error: function (jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
