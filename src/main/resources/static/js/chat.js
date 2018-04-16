@@ -387,7 +387,7 @@ $(document).ready(function () {
 
         $(".notification-list li").each(function (index) {
           var value = findTimeDiffFromCurrentDate(dates[index]);
-          $("#" + $(this).attr('id') + " user-content#id-time").val(value);
+          $("#" + $(this).attr('id') + " .user-content #id-time").text(value);
         });
         dates = [];
         hideNotificationPanel();
