@@ -51,367 +51,370 @@ import static java.util.stream.Collectors.joining;
 public class UserDetailsWebController {
 
 
-    private static final Logger LOG = LoggerFactory.getLogger(UserDetailsWebController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UserDetailsWebController.class);
 
-    public static final String ERROR_ATTRIBUTED = "error";
+  public static final String ERROR_ATTRIBUTED = "error";
 
-    public static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
-            "Your username and password is invalid.";
+  public static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
+      "Your username and password is invalid.";
 
-    public static final String MESSAGE_ATTRIBUTED = "message";
+  public static final String MESSAGE_ATTRIBUTED = "message";
 
-    public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
-            "You have been logged out successfully.";
+  public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
+      "You have been logged out successfully.";
 
-    public static final String ADMIN_LOGIN_VIEW = "adminLogin";
+  public static final String ADMIN_LOGIN_VIEW = "adminLogin";
 
-    public static final String USERS_REGISTRATION_VIEW = "userRegistration";
+  public static final String USERS_REGISTRATION_VIEW = "userRegistration";
 
-    public static final String LOGIN_VIEW = "login";
+  public static final String LOGIN_VIEW = "login";
 
-    public static final String CHAT_VIEW = "chat";
+  public static final String CHAT_VIEW = "chat";
 
-    public static final String ADMIN_PANEL_VIEW = "adminPanel";
+  public static final String ADMIN_PANEL_VIEW = "adminPanel";
 
-    public static final String USER_NAME = "userName";
+  public static final String USER_NAME = "userName";
 
-    public static final String USER_LIST = "userList";
+  public static final String USER_LIST = "userList";
 
-    public static final String USER_REGISTRATION_URI = "/userRegistration";
+  public static final String USER_REGISTRATION_URI = "/userRegistration";
 
-    public static final String LIVE_CHAT_URI = "/chat";
+  public static final String LIVE_CHAT_URI = "/chat";
 
-    public static final String ROOT_URI = "/";
+  public static final String ROOT_URI = "/";
 
-    public static final String ACCOUNT_FORM = "accountForm";
+  public static final String ACCOUNT_FORM = "accountForm";
 
-    public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
+  public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
 
-    @Autowired
-    @Qualifier("securityServiceImpl")
-    private SecurityService securityServiceImpl;
+  @Autowired
+  @Qualifier("securityServiceImpl")
+  private SecurityService securityServiceImpl;
 
-    @Autowired
-    @Qualifier("anonymousSecurityServiceImpl")
-    private SecurityService anonymousSecurityServiceImpl;
+  @Autowired
+  @Qualifier("anonymousSecurityServiceImpl")
+  private SecurityService anonymousSecurityServiceImpl;
 
-    @Autowired
-    @Qualifier("userServiceImpl")
-    private UserService userServiceImpl;
+  @Autowired
+  @Qualifier("userServiceImpl")
+  private UserService userServiceImpl;
 
-    @Autowired
-    @Qualifier("anonymousUserServiceImpl")
-    private UserService anonymousUserServiceImpl;
+  @Autowired
+  @Qualifier("anonymousUserServiceImpl")
+  private UserService anonymousUserServiceImpl;
 
-    @Autowired
-    private AccountValidator accountValidator;
+  @Autowired
+  private AccountValidator accountValidator;
 
-    @Autowired
-    private EmailInvitationValidator emailInvitationValidator;
+  @Autowired
+  private EmailInvitationValidator emailInvitationValidator;
 
-    @Autowired
-    private AnonymousInvitationValidator anonymousInvitationValidator;
+  @Autowired
+  private AnonymousInvitationValidator anonymousInvitationValidator;
 
-    @Autowired
-    private AdminService adminService;
+  @Autowired
+  private AdminService adminService;
 
-    @Autowired
-    private IEmailInvitationService emailInvitationService;
+  @Autowired
+  private IEmailInvitationService emailInvitationService;
 
-    @Autowired
-    private UserAccountDao userAccountDao;
+  @Autowired
+  private UserAccountDao userAccountDao;
 
-    @Autowired
-    private AccountRepository userAccountRepository;
+  @Autowired
+  private AccountRepository userAccountRepository;
 
-    @Autowired
-    private ToneAnalyzerUtility toneAnalyzerUtility;
+  @Autowired
+  private ToneAnalyzerUtility toneAnalyzerUtility;
 
-    @Autowired
-    private ICaptchaService captchaService;
+  @Autowired
+  private ICaptchaService captchaService;
 
-    @Autowired
-    private ServletContext servletContext;
+  @Autowired
+  private ServletContext servletContext;
 
-    @RequestMapping(value = "/adminLogin", method = RequestMethod.GET)
-    public String adminPanel(Model model) {
+  @RequestMapping(value = "/adminLogin", method = RequestMethod.GET)
+  public String adminPanel(Model model) {
 
-        model.addAttribute(ACCOUNT_FORM, new Account());
-        return ADMIN_LOGIN_VIEW;
+    model.addAttribute(ACCOUNT_FORM, new Account());
+    return ADMIN_LOGIN_VIEW;
+  }
+
+  @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.GET)
+  public String registration(Model model) {
+
+    model.addAttribute(ACCOUNT_FORM, new Account());
+    return USERS_REGISTRATION_VIEW;
+  }
+
+  @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.POST)
+  public String registration(
+      @ModelAttribute("accountForm") Account accountForm,
+      BindingResult bindingResult,
+      Model model,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redirectAttributes)
+      throws Exception {
+
+    accountValidator.validate(accountForm, bindingResult);
+    ModelAndView modelAndView = new ModelAndView();
+    if (bindingResult.hasErrors()) {
+      return USERS_REGISTRATION_VIEW;
     }
 
-    @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.GET)
-    public String registration(Model model) {
+    String googleReCapcha = request.getParameter("g-recaptcha-response");
+    captchaService.processResponse(googleReCapcha);
 
-        model.addAttribute(ACCOUNT_FORM, new Account());
-        return USERS_REGISTRATION_VIEW;
+    String plainTextPassword = accountForm.getPassword();
+    userServiceImpl.save(accountForm);
+    securityServiceImpl.autoLogin(accountForm.getName(), plainTextPassword, request, response);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Account user = userServiceImpl.findByName(auth.getName());
+    redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
+
+    return "redirect:/chat";
+  }
+
+  @RequestMapping(value = "/login", method = RequestMethod.GET)
+  public String login(Model model, String error, String logout) {
+
+    if (error != null) {
+      model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
+    }
+    if (logout != null) {
+      model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
+    }
+    return LOGIN_VIEW;
+  }
+
+  @PreAuthorize("hasRole('ROLE_USER')")
+  @RequestMapping(
+      value = {ROOT_URI, LIVE_CHAT_URI},
+      method = RequestMethod.GET
+  )
+  public String chat(Model model, HttpServletResponse response) throws IOException {
+
+    Account loggedInUser = null;
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String loggedInUserName = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
+    loggedInUser = userAccountRepository.findByName(loggedInUserName);
+    model.addAttribute("username", loggedInUserName);
+    String fileLocation =
+        loggedInUser.getDocumentMetaData() != null
+            ? loggedInUser.getDocumentMetaData().getThumbNail()
+            : null;
+    model.addAttribute("userAvatar", fileLocation);
+
+    return CHAT_VIEW;
+  }
+
+  @PreAuthorize("hasRole('ROLE_ADMIN')")
+  @RequestMapping(value = "/admin", method = RequestMethod.GET)
+  public String admin(Model model) {
+
+    List<Account> userList = adminService.fetchAllUsers();
+    model.addAttribute(USER_LIST, userList);
+    return ADMIN_PANEL_VIEW;
+  }
+
+  @RequestMapping(value = "/confirmationEmail", method = RequestMethod.GET)
+  public String confirmationUserByEmail(
+      Model model,
+      @RequestParam("token") String token,
+      @RequestParam("sender") String sender,
+      @RequestParam("receiver") String receiver) {
+
+    if (token == null ||
+        StringUtils.isBlank((String) token)) {
+      return "redirect:/login";
     }
 
-    @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.POST)
-    public String registration(
-            @ModelAttribute("accountForm") Account accountForm,
-            BindingResult bindingResult,
-            Model model,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            RedirectAttributes redirectAttributes)
-            throws Exception {
+    EmailInvitation emailInvitationServiceByToekn = emailInvitationService
+        .findByToeknAndSenderAndReceiver(token, sender, receiver);
 
-        accountValidator.validate(accountForm, bindingResult);
-        ModelAndView modelAndView = new ModelAndView();
-        if (bindingResult.hasErrors()) {
-            return USERS_REGISTRATION_VIEW;
-        }
-
-   /* String googleReCapcha = request.getParameter("g-recaptcha-response");
-    captchaService.processResponse(googleReCapcha);*/
-
-        String plainTextPassword = accountForm.getPassword();
-        userServiceImpl.save(accountForm);
-        securityServiceImpl.autoLogin(accountForm.getName(), plainTextPassword, request, response);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Account user = userServiceImpl.findByName(auth.getName());
-        redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
-
-        return "redirect:/chat";
+    if (emailInvitationServiceByToekn == null) {
+      return "redirect:/login";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String login(Model model, String error, String logout) {
+    model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
+    model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
+    model.addAttribute("invitedTo", emailInvitationServiceByToekn.getReceiver());
+    model.addAttribute("accountFromRegistrationByEmail", new Account());
+    return "userRegistrationEmail";
+  }
 
-        if (error != null) {
-            model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
-        }
-        if (logout != null) {
-            model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
-        }
-        return LOGIN_VIEW;
+
+  @RequestMapping(value = "/errorConfirmationEmail", method = RequestMethod.GET)
+  public String confirmationUserByEmail(
+      Model model,
+      @RequestParam("token") String token) {
+
+    EmailInvitation emailInvitationServiceByToekn = emailInvitationService
+        .findByToken(token);
+
+    if (emailInvitationServiceByToekn == null) {
+      return "redirect:/login";
     }
 
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @RequestMapping(
-            value = {ROOT_URI, LIVE_CHAT_URI},
-            method = RequestMethod.GET
-    )
-    public String chat(Model model, HttpServletResponse response) throws IOException {
+    model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
+    model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
+    model.addAttribute("accountFromRegistrationByEmail", new Account());
+    return "userRegistrationEmail";
+  }
 
-        Account loggedInUser = null;
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String loggedInUserName = toneAnalyzerUtility.findPrincipalNameFromAuthentication(auth);
-        loggedInUser = userAccountRepository.findByName(loggedInUserName);
-        model.addAttribute("username", loggedInUserName);
-        String fileLocation =
-                loggedInUser.getDocumentMetaData() != null
-                        ? loggedInUser.getDocumentMetaData().getThumbNail()
-                        : null;
-        model.addAttribute("userAvatar", fileLocation);
 
-        return CHAT_VIEW;
+  @RequestMapping(value = "/confirmationEmail", method = RequestMethod.POST)
+  public String processConfirmationForm(
+      @ModelAttribute("accountFromRegistrationByEmail") Account accountFromRegistrationByEmail,
+      BindingResult bindingResult,
+      @RequestParam Map requestParams,
+      Model model,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redir)
+      throws UnsupportedEncodingException, MalformedURLException {
+
+    emailInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
+    if (bindingResult.hasErrors()) {
+      LOG.info("error bind error inside method processConfirmationForm: ");
+      return "redirect:/login";
+    }
+    EmailInvitation token = emailInvitationService.findByToken((String) requestParams.get("token"));
+
+    if (token == null) {
+      bindingResult.reject("password");
+      redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
+      return "redirect:/login";
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public String admin(Model model) {
+    Map<String, String> responseParams = new HashMap<>();
+    Object userPassword = requestParams.get("password");
+    Object userName = requestParams.get("name");
 
-        List<Account> userList = adminService.fetchAllUsers();
-        model.addAttribute(USER_LIST, userList);
-        return ADMIN_PANEL_VIEW;
+    if (userPassword == null ||
+        StringUtils.isBlank((String) userPassword) || userName == null
+        || StringUtils.isBlank((String) userName)) {
+      return "redirect:/login";
     }
 
-    @RequestMapping(value = "/confirmationEmail", method = RequestMethod.GET)
-    public String confirmationUserByEmail(
-            Model model,
-            @RequestParam("token") String token,
-            @RequestParam("sender") String sender,
-            @RequestParam("receiver") String receiver) {
+    Account userAccount = userAccountRepository.findByName((String) userName);
+    if (userAccount != null) {
+      boolean matches = new BCryptPasswordEncoder()
+          .matches((String) userPassword, userAccount.getPassword());
+      if (!matches) {
+        responseParams.put("token", (String) requestParams.get("token"));
+        responseParams.put("sender", (String) requestParams.get("sender"));
+        responseParams.put("receiver", (String) requestParams.get("receiver"));
+        String url = "confirmationEmail?";
+        String queryParams = responseParams.keySet().stream()
+            .map(key -> key + "=" + encodeValue(responseParams.get(key)))
+            .collect(joining("&", "", ""));
+        redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
+        return "redirect:/" + url + queryParams;
+      }
+    }
+    String password = (String) userPassword;
+    String name = (String) userName;
+    Account account = new Account(name.trim(), password.trim());
+    userAccountDao
+        .processEmailInvitationAndUpdateBuddyListIfAbsent(token, account, userServiceImpl);
 
-        if (token == null ||
-                StringUtils.isBlank((String) token)) {
-            return "redirect:/login";
-        }
+    securityServiceImpl.autoLogin(account.getName(), password, request, response);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    Account user = userServiceImpl.findByName(auth.getName());
+    redir.addFlashAttribute(USER_NAME, user.getName());
+    return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
+  }
 
-        EmailInvitation emailInvitationServiceByToekn = emailInvitationService
-                .findByToeknAndSenderAndReceiver(token, sender, receiver);
+  @RequestMapping(value = "/chat/anonymous", method = RequestMethod.GET)
+  public String anonymousLoginForChat(Model model, @RequestParam("token") String token) {
 
-        if (emailInvitationServiceByToekn == null) {
-            return "redirect:/login";
-        }
-
-        model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
-        model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
-        model.addAttribute("invitedTo", emailInvitationServiceByToekn.getReceiver());
-        model.addAttribute("accountFromRegistrationByEmail", new Account());
-        return "userRegistrationEmail";
+    if (token == null ||
+        StringUtils.isBlank((String) token)) {
+      return "redirect:/login";
     }
 
+    EmailInvitation anonymousInvitationToken = emailInvitationService
+        .findByToken(token);
 
-    @RequestMapping(value = "/errorConfirmationEmail", method = RequestMethod.GET)
-    public String confirmationUserByEmail(
-            Model model,
-            @RequestParam("token") String token) {
+    if (anonymousInvitationToken == null) {
+      return "redirect:/login";
+    }
+    model.addAttribute("confirmationToken", anonymousInvitationToken.getToken());
+    model.addAttribute("invitedBy", anonymousInvitationToken.getSender());
+    return "anonymousUserRegistration";
+  }
 
-        EmailInvitation emailInvitationServiceByToekn = emailInvitationService
-                .findByToken(token);
+  @RequestMapping(value = "/chat/anonymous", method = RequestMethod.POST)
+  public String processInvitationForAnonymousUsers(
+      @ModelAttribute("accountFromRegistrationByEmail") Account accountFromRegistrationByEmail,
+      BindingResult bindingResult,
+      @RequestParam Map requestParams,
+      Model model,
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redir)
+      throws UnsupportedEncodingException {
 
-        if (emailInvitationServiceByToekn == null) {
-            return "redirect:/login";
-        }
+    Boolean alreadyLoggedIn = false;
+    String name = null;
+    Object userName = requestParams.get("name");
+    Map<String, String> responseParams = new HashMap<>();
 
-        model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
-        model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
-        model.addAttribute("accountFromRegistrationByEmail", new Account());
-        return "userRegistrationEmail";
+    anonymousInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
+    if (bindingResult.hasErrors()) {
+      LOG.info("error bind error inside method processConfirmationForm: ");
+      return "redirect:/login";
     }
 
-
-    @RequestMapping(value = "/confirmationEmail", method = RequestMethod.POST)
-    public String processConfirmationForm(
-            @ModelAttribute("accountFromRegistrationByEmail") Account accountFromRegistrationByEmail,
-            BindingResult bindingResult,
-            @RequestParam Map requestParams,
-            Model model,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            RedirectAttributes redir)
-            throws UnsupportedEncodingException, MalformedURLException {
-
-        emailInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
-        if (bindingResult.hasErrors()) {
-            LOG.info("error bind error inside method processConfirmationForm: ");
-            return "redirect:/login";
-        }
-        EmailInvitation token = emailInvitationService.findByToken((String) requestParams.get("token"));
-
-        if (token == null) {
-            bindingResult.reject("password");
-            redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
-            return "redirect:/login";
-        }
-
-        Map<String, String> responseParams = new HashMap<>();
-        Object userPassword = requestParams.get("password");
-        Object userName = requestParams.get("name");
-
-        if (userPassword == null ||
-                StringUtils.isBlank((String) userPassword) || userName == null
-                || StringUtils.isBlank((String) userName)) {
-            return "redirect:/login";
-        }
-
-        Account userAccount = userAccountRepository.findByName((String) userName);
-        if (userAccount != null) {
-            boolean matches = new BCryptPasswordEncoder().matches((String) userPassword, userAccount.getPassword());
-            if (!matches) {
-                responseParams.put("token", (String) requestParams.get("token"));
-                responseParams.put("sender", (String) requestParams.get("sender"));
-                responseParams.put("receiver", (String) requestParams.get("receiver"));
-                String url = "confirmationEmail?";
-                String queryParams = responseParams.keySet().stream()
-                        .map(key -> key + "=" + encodeValue(responseParams.get(key)))
-                        .collect(joining("&", "", ""));
-                redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
-                return "redirect:/" + url + queryParams;
-            }
-        }
-        String password = (String) userPassword;
-        String name = (String) userName;
-        Account account = new Account(name.trim(), password.trim());
-        userAccountDao
-                .processEmailInvitationAndUpdateBuddyListIfAbsent(token, account, userServiceImpl);
-
-        securityServiceImpl.autoLogin(account.getName(), password, request, response);
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Account user = userServiceImpl.findByName(auth.getName());
-        redir.addFlashAttribute(USER_NAME, user.getName());
-        return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
+    if (userName == null || StringUtils.isBlank((String) userName)) {
+      return "redirect:/login";
     }
 
-    @RequestMapping(value = "/chat/anonymous", method = RequestMethod.GET)
-    public String anonymousLoginForChat(Model model, @RequestParam("token") String token) {
+    EmailInvitation emailToken = emailInvitationService
+        .findByToken((String) requestParams.get("token"));
 
-        if (token == null ||
-                StringUtils.isBlank((String) token)) {
-            return "redirect:/login";
-        }
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    Account account = userAccountRepository.findByName((String) userName);
+    if (account == null) {
+      account = new Account(((String) userName).trim(), UUID.randomUUID().toString());
+    } else if (!isAnonymousUser(account.getRole())) {
 
-        EmailInvitation anonymousInvitationToken = emailInvitationService
-                .findByToken(token);
+      responseParams.put("token", (String) requestParams.get("token"));
+      String url = "chat/anonymous?";
+      String queryParams = responseParams.keySet().stream()
+          .map(key -> key + "=" + encodeValue(responseParams.get(key)))
+          .collect(joining("&", "", ""));
+      redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
+      return "redirect:/" + url + queryParams;
 
-        if (anonymousInvitationToken == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("confirmationToken", anonymousInvitationToken.getToken());
-        model.addAttribute("invitedBy", anonymousInvitationToken.getSender());
-        return "anonymousUserRegistration";
+
     }
 
-    @RequestMapping(value = "/chat/anonymous", method = RequestMethod.POST)
-    public String processInvitationForAnonymousUsers(
-            @ModelAttribute("accountFromRegistrationByEmail") Account accountFromRegistrationByEmail,
-            BindingResult bindingResult,
-            @RequestParam Map requestParams,
-            Model model,
-            HttpServletRequest request,
-            HttpServletResponse response,
-            RedirectAttributes redir)
-            throws UnsupportedEncodingException {
+    userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account,
+        anonymousUserServiceImpl);
+    anonymousSecurityServiceImpl
+        .autoLogin(account.getName(), account.getPassword(), request, response);
+    redir.addFlashAttribute(USER_NAME, userName);
+    return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
+  }
 
-        Boolean alreadyLoggedIn = false;
-        String name = null;
-        Object userName = requestParams.get("name");
-        Map<String, String> responseParams = new HashMap<>();
+  private boolean isAnonymousUser(List<Role> roles) {
 
-        anonymousInvitationValidator.validate(accountFromRegistrationByEmail, bindingResult);
-        if (bindingResult.hasErrors()) {
-            LOG.info("error bind error inside method processConfirmationForm: ");
-            return "redirect:/login";
-        }
-
-        if (userName == null || StringUtils.isBlank((String) userName)) {
-            return "redirect:/login";
-        }
-
-        EmailInvitation emailToken = emailInvitationService
-                .findByToken((String) requestParams.get("token"));
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Account account = userAccountRepository.findByName((String) userName);
-        if (account == null) {
-            account = new Account(((String) userName).trim(), UUID.randomUUID().toString());
-        } else if (!isAnonymousUser(account.getRole())) {
-
-            responseParams.put("token", (String) requestParams.get("token"));
-            String url = "chat/anonymous?";
-            String queryParams = responseParams.keySet().stream()
-                    .map(key -> key + "=" + encodeValue(responseParams.get(key)))
-                    .collect(joining("&", "", ""));
-            redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
-            return "redirect:/" + url + queryParams;
-
-
-        }
-
-        userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(emailToken, account,
-                anonymousUserServiceImpl);
-        anonymousSecurityServiceImpl
-                .autoLogin(account.getName(), account.getPassword(), request, response);
-        redir.addFlashAttribute(USER_NAME, userName);
-        return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
+    for (Role rol : roles) {
+      if (rol.getName().equals("ROLE_ANONYMOUS_CHAT")) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    private boolean isAnonymousUser(List<Role> roles) {
-
-        for (Role rol : roles)
-            if (rol.getName().equals("ROLE_ANONYMOUS_CHAT"))
-                return true;
-        return false;
+  private String encodeValue(String value) {
+    try {
+      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    } catch (UnsupportedEncodingException e) {
+      return null;
     }
-
-    private String encodeValue(String value) {
-        try {
-            return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-        } catch (UnsupportedEncodingException e) {
-            return null;
-        }
-    }
+  }
 }
