@@ -32,4 +32,4 @@ fuser -n tcp -k 8080
 rm -f toneanalyzer.log
 rm -f  tone-analyzer-0.0.1-SNAPSHOT.jar
 aws s3 cp s3://mozammal-bucket/tone-analyzer-0.0.1-SNAPSHOT.jar /home/ubuntu/tone-analyzer-0.0.1-SNAPSHOT.jar
-sudo nohup java -jar tone-analyzer-0.0.1-SNAPSHOT.jar > toneanalyzer.log&
+sudo nohup java -jar tone-analyzer-0.0.1-SNAPSHOT.jar >toneanalyzer.log&
