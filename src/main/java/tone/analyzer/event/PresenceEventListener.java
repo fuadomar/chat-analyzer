@@ -25,6 +25,8 @@ import tone.analyzer.domain.repository.ParticipantRepository;
  * received
  *
  * @author Sergi Almar
+ *
+ * slighty modified by mozammal
  */
 @Component
 public class PresenceEventListener {

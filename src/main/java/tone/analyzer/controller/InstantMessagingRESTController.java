@@ -29,6 +29,7 @@ import tone.analyzer.domain.entity.Account;
 import tone.analyzer.domain.entity.Message;
 import tone.analyzer.domain.repository.AccountRepository;
 import tone.analyzer.domain.repository.MessageRepository;
+import tone.analyzer.domain.repository.ParticipantRepository;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.gateway.InstantMessagingGateway;
 import tone.analyzer.domain.model.ChatMessage;
@@ -47,6 +48,9 @@ public class InstantMessagingRESTController {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstantMessagingRESTController.class);
 
+    @Value("${app.user.unseen.message.topic}")
+    private String unseenMessageTopic;
+
     @Autowired
     private InstantMessagingGateway chatGateway;
 
@@ -64,9 +68,6 @@ public class InstantMessagingRESTController {
 
     @Autowired
     private AccountRepository accountRepository;
-
-    @Value("${app.user.unseen.message.topic}")
-    private String unseenMessageTopic;
 
     @RequestMapping(
             value = "/fetch/messages",
