@@ -183,6 +183,7 @@ function createChatBox(userId) {
   return chatBox;
 }
 
+var singleton = {};
 $(document).ready(function () {
 
   var chatList = $("#contacts-uli");
@@ -191,6 +192,8 @@ $(document).ready(function () {
   console.log("host: " + host);
   var socket = null;
   var stompClient = null;
+  singleton.receiverId = "";
+  var receiverId = singleton.receiverId;
 
   function establishConnection() {
 
@@ -199,6 +202,12 @@ $(document).ready(function () {
     stompClient.connect('', function (frame) {
 
       $("#failed-msg-connection-error").hide();
+      if (typeof singleton.receiverId !== 'undefined'
+          && singleton.receiverId
+          !== null && singleton.receiverId !== "") {
+        $("#contacts-uli" + " #mgs-li-" + singleton.receiverId).trigger('click');
+      }
+
       console.log(socket._transport.url);
       var url = socket._transport.url.split("/");
       var userName = frame.headers['user-name'];
@@ -512,7 +521,7 @@ $(document).ready(function () {
         console.log('clicked ' + $(this).attr('id'));
         $('#ul-messages').html('');
         $('#message-input-div').show();
-        var receiverId = $(this).attr('id').replace("mgs-li-", "")
+        receiverId = $(this).attr('id').replace("mgs-li-", "")
         profileImageLoggedInUser = $('.wrap img').attr('src');
         profileImageBuddy = $("#" + $(this).attr('id') + " .wrap img").attr(
             'src');
@@ -521,8 +530,10 @@ $(document).ready(function () {
         currentUserToChat = currentUserToChat + '<p>' + $(".meta " + "#"
             + receiverId).html() + '</p>';
         $("#contact-profile").html(currentUserToChat);
+        $('.message-input').show();
         $('.message-input').attr('id', receiverId);
         var receiver = receiverId;
+        singleton.receiverId = receiverId;
 
         userClickedOnWhcihBuddyMessageBox = $(
             "#" + $(this).attr('id') + " .wrap .meta .name").text();
@@ -703,7 +714,7 @@ $(document).ready(function () {
   function stompFailure(error) {
 
     $("#failed-msg-connection-error").show();
-    $(".message-input").html("")
+    $('.message-input').hide();
     setTimeout(establishConnection, 10000);
   }
 

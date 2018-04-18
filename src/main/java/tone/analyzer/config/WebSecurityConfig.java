@@ -179,7 +179,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
             "/chat/anonymous/**",
             "/confirmationEmail/**")
         .permitAll()
-        .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**")
+        .antMatchers("/admin/**", "/health/**", "/metrics/**", "/info/**","/actuator/**")
         .hasRole(ADMIN_ROLE_NAME)
         .antMatchers("/chat/**")
         .hasAnyRole(USER_ROLE_NAME, ADMIN_ROLE_NAME, ACTUATOR_ROLE_NAME)

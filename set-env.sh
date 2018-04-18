@@ -13,3 +13,5 @@ fi
 export SPRING_RABBITMQ_HOST=${DOCKER_HOST_IP?}
 export SPRING_DATA_MONGODB_URI=mongodb://${DOCKER_HOST_IP?}/biyeta
 echo ${DOCKER_HOST_IP?}
+
+#delete session: redis-cli keys 'spring:session:*' | xargs redis-cli del

@@ -5,9 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Created by user on 3/19/2018.
- */
+
+
 
 @Controller
 public class AppErrorHandlerController implements ErrorController {
