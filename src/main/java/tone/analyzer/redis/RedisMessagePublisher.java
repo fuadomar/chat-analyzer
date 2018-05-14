@@ -4,26 +4,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 
-/**
- * Created by Dell on 1/29/2018.
- */
+/** Created by Dell on 1/29/2018. */
 public class RedisMessagePublisher implements MessagePublisher {
 
-    @Autowired
-    private RedisTemplate<String, Object> redisTemplate;
-    @Autowired
-    private ChannelTopic topic;
+  @Autowired private RedisTemplate<String, Object> redisTemplate;
 
-    public RedisMessagePublisher() {
-    }
+  @Autowired private ChannelTopic topic;
 
-    public RedisMessagePublisher(
-            RedisTemplate<String, Object> redisTemplate, ChannelTopic topic) {
-        this.redisTemplate = redisTemplate;
-        this.topic = topic;
-    }
+  public RedisMessagePublisher() {}
 
-    public void publish(String message) {
-        redisTemplate.convertAndSend(topic.getTopic(), message);
-    }
+  public RedisMessagePublisher(RedisTemplate<String, Object> redisTemplate, ChannelTopic topic) {
+    this.redisTemplate = redisTemplate;
+    this.topic = topic;
+  }
+
+  public void publish(String message) {
+    redisTemplate.convertAndSend(topic.getTopic(), message);
+  }
 }

@@ -1,15 +1,14 @@
 package tone.analyzer.auth.service;
 
-import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.entity.UserAccount;
 
-/**
- * Created by mozammal on 4/18/17.
- */
+/** Created by mozammal on 4/18/17. */
 public interface UserService {
 
-    Account save(Account account);
+  UserAccount save(UserAccount userAccount);
 
-    Account findByName(String username);
+  UserAccount findByName(String username);
 
-    public void addBudyyToUser(Account emailInvitationSenser, Account emailInvitationEeceiver);
+  public void addBudyyToUser(
+      UserAccount emailInvitationSenser, UserAccount emailInvitationEeceiver);
 }

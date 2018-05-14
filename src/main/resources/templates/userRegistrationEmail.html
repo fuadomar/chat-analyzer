@@ -10,14 +10,14 @@
     <meta name="author" content=""/>
     <link rel="icon" href="favicon.ico"/>
 
-   <!-- <title>User Registration with Spring Boot</title>-->
+    <!-- <title>User Registration with Spring Boot</title>-->
 
     <!-- Bootstrap core CSS -->
-  <!--  <link
-            href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-            rel="stylesheet"
-            integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-            crossorigin="anonymous"/>-->
+    <!--  <link
+              href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+              rel="stylesheet"
+              integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+              crossorigin="anonymous"/>-->
 
     <link th:href="@{css/style.css}" rel="stylesheet"/>
     <link th:href="@{css/fv.css}" rel="stylesheet"/>
@@ -39,7 +39,7 @@
         <div class="content-body">
             <div class="make-it-center">
                 <h2>Start chat with <p th:text="${invitedBy}"></p>   <br>Plesae enter your name</h2>
-                <form th:object="${accountFromRegistrationByEmail}" th:action="@{/confirmationEmail}" method="post">
+                <form th:object="${userAccountFromRegistrationByEmail}" th:action="@{/confirmationEmail}" method="post">
                     <input type="hidden" name="token" th:value="${confirmationToken}"/>
                     <input type="hidden" name="sender" th:value="${invitedBy}"/>
                     <input type="hidden" name="receiver" th:value="${invitedTo}"/>
@@ -74,7 +74,8 @@
         </div>
         <div class="footer">
             <span>© Nascenia Limited</span>
-            <span class="pull-right"> Developed using <a href="https://www.ibm.com/watson/" target="_blank">IBM Watson </a> and Spring Boot</span>
+            <span class="pull-right"> Developed using <a href="https://www.ibm.com/watson/"
+                                                         target="_blank">IBM Watson </a> and Spring Boot</span>
         </div>
 
 

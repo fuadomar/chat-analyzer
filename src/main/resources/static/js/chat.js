@@ -123,7 +123,7 @@ function drawDonut(dataPoint, div, title) {
                     fontSize: '18px'
                 },
                 formatter: function () {
-                    return '<span style="fill: ' + this.color + ';">' + this.point.name + '<br/>'+ (this.y)+'%</span>';
+                    return '<span style="fill: ' + this.color + ';">' + this.point.name + '<br/>' + (this.y) + '%</span>';
                     //return '<b>' + this.point.name + '<br />' + (this.y) + '%</b>: '
                 }
             },
@@ -426,7 +426,7 @@ $(document).ready(function () {
 
                 $.get({
                     type: 'get',
-                    url: '/tone-analyzer-between-users',
+                    url: '/chat-analyzer-between-users',
                     dataType: "json",
                     data: 'sender=' + sender + "&recipient=" + userName,
                     success: function (data) {

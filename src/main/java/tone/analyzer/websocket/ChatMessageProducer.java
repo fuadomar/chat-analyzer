@@ -8,28 +8,24 @@ import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.domain.repository.ParticipantRepository;
 
-/**
- * Created by mozammal on 4/11/17.
- */
+/** Created by mozammal on 4/11/17. */
 @Component
 public class ChatMessageProducer {
 
-    @Value("${app.user.message.topic}")
-    private String messageTopic;
+  @Value("${app.user.message.topic}")
+  private String messageTopic;
 
-    @Autowired
-    private SimpMessagingTemplate template;
+  @Autowired private SimpMessagingTemplate template;
 
-    @Autowired
-    private ParticipantRepository participantRepository;
+  @Autowired private ParticipantRepository participantRepository;
 
-    public void sendMessageToRecipient(ChatMessage chatMessage) {
+  public void sendMessageToRecipient(ChatMessage chatMessage) {
 
-        this.template.convertAndSendToUser(chatMessage.getRecipient(), messageTopic, chatMessage);
-    }
+    this.template.convertAndSendToUser(chatMessage.getRecipient(), messageTopic, chatMessage);
+  }
 
-    public void sendMessageForLiveUser(LoginEvent loginevent) {
+  public void sendMessageForLiveUser(LoginEvent loginevent) {
 
-        participantRepository.add(loginevent.getUserName(), loginevent);
-    }
+    participantRepository.add(loginevent.getUserName(), loginevent);
+  }
 }

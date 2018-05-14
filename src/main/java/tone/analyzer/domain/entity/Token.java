@@ -9,26 +9,23 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
 
 import java.util.Date;
 
-/**
- * Created by mozammal on 5/4/17.
- */
+/** Created by mozammal on 5/4/17. */
 @Document
 @CompoundIndexes({
-        @CompoundIndex(name = "i_username", def = "{'username': 1}"),
-        @CompoundIndex(name = "i_series", def = "{'series': 1}")
+  @CompoundIndex(name = "i_username", def = "{'username': 1}"),
+  @CompoundIndex(name = "i_series", def = "{'series': 1}")
 })
 public class Token extends PersistentRememberMeToken {
 
-    @Id
-    private final String id;
+  @Id private final String id;
 
-    @PersistenceConstructor
-    public Token(String id, String username, String series, String tokenValue, Date date) {
-        super(username, series, tokenValue, date);
-        this.id = id;
-    }
+  @PersistenceConstructor
+  public Token(String id, String username, String series, String tokenValue, Date date) {
+    super(username, series, tokenValue, date);
+    this.id = id;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 }

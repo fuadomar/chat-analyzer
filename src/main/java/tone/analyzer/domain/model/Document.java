@@ -1,10 +1,7 @@
 package tone.analyzer.domain.model;
 
-/**
- * Created by Dell on 1/17/2018.
- */
+/** Created by Dell on 1/17/2018. */
 public class Document {
-
 
   private byte[] content;
 
@@ -12,9 +9,17 @@ public class Document {
 
   private String thumbNail;
 
+  public Document() {}
+
   public Document(String name, byte[] content) {
     this.setContent(content);
     this.setName(name);
+  }
+
+  public Document createDocument(String name, byte[] content) {
+    this.setContent(content);
+    this.setName(name);
+    return this;
   }
 
   public void setContent(byte[] content) {
@@ -39,5 +44,10 @@ public class Document {
 
   public void setThumbNail(String thumbNail) {
     this.thumbNail = thumbNail;
+  }
+
+  public Document withThumNail(String thumbNail) {
+    this.thumbNail = thumbNail;
+    return this;
   }
 }

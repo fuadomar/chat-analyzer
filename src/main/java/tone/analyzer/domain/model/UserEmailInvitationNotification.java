@@ -3,9 +3,7 @@ package tone.analyzer.domain.model;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * Created by Dell on 1/15/2018.
- */
+/** Created by Dell on 1/15/2018. */
 public class UserEmailInvitationNotification implements Serializable {
 
   private String subject;
@@ -14,8 +12,7 @@ public class UserEmailInvitationNotification implements Serializable {
 
   private Map<String, Object> model;
 
-  public UserEmailInvitationNotification() {
-  }
+  public UserEmailInvitationNotification() {}
 
   public UserEmailInvitationNotification(String subject, String token) {
     this.subject = subject;

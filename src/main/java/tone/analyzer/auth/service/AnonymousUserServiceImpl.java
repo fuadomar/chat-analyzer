@@ -5,35 +5,33 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import tone.analyzer.auth.service.UserService;
-import tone.analyzer.domain.entity.Account;
+import tone.analyzer.domain.entity.UserAccount;
 import tone.analyzer.domain.entity.Role;
-import tone.analyzer.domain.repository.AccountRepository;
+import tone.analyzer.domain.repository.UserAccountRepository;
 
 @Service
 public class AnonymousUserServiceImpl implements UserService {
 
-    @Autowired
-    private AccountRepository userRepository;
+  @Autowired private UserAccountRepository userRepository;
 
-    @Override
-    public Account save(Account account) {
-        account.setPassword(new BCryptPasswordEncoder().encode(account.getPassword()));
-        account.setEnabled(true);
-        account.setRole(Arrays.asList(new Role("ROLE_ANONYMOUS_CHAT"),
-                new Role("ROLE_USER")));
-        userRepository.save(account);
-        return account;
-    }
+  @Override
+  public UserAccount save(UserAccount userAccount) {
+    userAccount.setPassword(new BCryptPasswordEncoder().encode(userAccount.getPassword()));
+    userAccount.setEnabled(true);
+    userAccount.setRole(Arrays.asList(new Role("ROLE_ANONYMOUS_CHAT"), new Role("ROLE_USER")));
+    userRepository.save(userAccount);
+    return userAccount;
+  }
 
-    @Override
-    public Account findByName(String username) {
-        return userRepository.findByName(username);
-    }
+  @Override
+  public UserAccount findByName(String username) {
+    return userRepository.findByName(username);
+  }
 
-    @Override
-    public void addBudyyToUser(Account emailInvitationSender, Account emailInvitationReceiver) {
-        userRepository.save(emailInvitationSender);
-        userRepository.save(emailInvitationReceiver);
-    }
+  @Override
+  public void addBudyyToUser(
+      UserAccount emailInvitationSender, UserAccount emailInvitationReceiver) {
+    userRepository.save(emailInvitationSender);
+    userRepository.save(emailInvitationReceiver);
+  }
 }

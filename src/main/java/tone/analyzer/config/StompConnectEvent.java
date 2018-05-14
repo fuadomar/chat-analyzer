@@ -11,25 +11,22 @@ import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.event.LoginEvent;
 import tone.analyzer.websocket.ChatMessageProducer;
 
-/**
- * Created by mozammal on 4/12/17.
- */
+/** Created by mozammal on 4/12/17. */
 @Component
 public class StompConnectEvent implements ApplicationListener<SessionConnectEvent> {
 
-    private final Log logger = LogFactory.getLog(StompConnectEvent.class);
+  private final Log LOG = LogFactory.getLog(StompConnectEvent.class);
 
-    @Autowired
-    private ChatMessageProducer messageProducer;
+  @Autowired private ChatMessageProducer messageProducer;
 
-    public void onApplicationEvent(SessionConnectEvent event) {
-        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
+  public void onApplicationEvent(SessionConnectEvent event) {
+    StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
 
-        String user = headers.getUser().getName();
-        logger.debug("Connect event [sessionId: " + headers.getSessionId() + "; user: " + user + " ]");
-        ChatMessage chatMessage = new ChatMessage();
-        chatMessage.setRecipient(user);
-        LoginEvent loginEvent = new LoginEvent(user);
-        messageProducer.sendMessageForLiveUser(loginEvent);
-    }
+    String user = headers.getUser().getName();
+    LOG.debug("Connect event [sessionId: " + headers.getSessionId() + "; user: " + user + " ]");
+    ChatMessage chatMessage = new ChatMessage();
+    chatMessage.setRecipient(user);
+    LoginEvent loginEvent = new LoginEvent(user);
+    messageProducer.sendMessageForLiveUser(loginEvent);
+  }
 }

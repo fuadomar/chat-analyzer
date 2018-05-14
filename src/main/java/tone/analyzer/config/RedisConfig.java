@@ -18,39 +18,35 @@ import tone.analyzer.redis.MessagePublisher;
 import tone.analyzer.redis.RedisMessagePublisher;
 import tone.analyzer.redis.service.RedisMessageSubscriber;
 
-/**
- * Created by Dell on 1/29/2018.
- */
+/** Created by Dell on 1/29/2018. */
 @Configuration
 public class RedisConfig {
 
-    @Resource
-    Environment environment;
+  @Resource Environment environment;
 
-    @Bean
-    JedisConnectionFactory jedisConnectionFactory() {
-        return new JedisConnectionFactory();
-    }
+  @Bean
+  JedisConnectionFactory jedisConnectionFactory() {
+    return new JedisConnectionFactory();
+  }
 
-    @Bean
-    public StringRedisSerializer stringRedisSerializer() {
-        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-        return stringRedisSerializer;
-    }
+  @Bean
+  public StringRedisSerializer stringRedisSerializer() {
+    StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+    return stringRedisSerializer;
+  }
 
+  @Bean
+  public <String, V> RedisTemplate<String, V> genericDTORedisTemplate() {
 
-    @Bean
-    public <String, V> RedisTemplate<String, V> genericDTORedisTemplate() {
+    RedisTemplate<String, V> redisTemplate = new RedisTemplate<>();
+    redisTemplate.setConnectionFactory(jedisConnectionFactory());
+    redisTemplate.setKeySerializer(stringRedisSerializer());
+    redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+    return redisTemplate;
+  }
 
-        RedisTemplate<String, V> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(jedisConnectionFactory());
-        redisTemplate.setKeySerializer(stringRedisSerializer());
-        redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
-        return redisTemplate;
-    }
-
-    @Bean
-    ChannelTopic topic() {
-        return new ChannelTopic(environment.getProperty("spring.data.redis.queue"));
-    }
+  @Bean
+  ChannelTopic topic() {
+    return new ChannelTopic(environment.getProperty("spring.data.redis.queue"));
+  }
 }

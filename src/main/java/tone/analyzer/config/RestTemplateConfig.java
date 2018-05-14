@@ -9,28 +9,24 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * Created by user on 1/24/2018.
- */
-
+/** Created by user on 1/24/2018. */
 @Configuration
 public class RestTemplateConfig {
 
-    @Bean
-    public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory) {
-        RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
-        restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-        return restTemplate;
-    }
+  @Bean
+  public RestTemplate restTemplate(ClientHttpRequestFactory httpRequestFactory) {
+    RestTemplate restTemplate = new RestTemplate(httpRequestFactory);
+    restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+    return restTemplate;
+  }
 
-    @Bean
-    public ClientHttpRequestFactory httpRequestFactory(HttpClient httpClient) {
-        return new HttpComponentsClientHttpRequestFactory(httpClient);
-    }
+  @Bean
+  public ClientHttpRequestFactory httpRequestFactory(HttpClient httpClient) {
+    return new HttpComponentsClientHttpRequestFactory(httpClient);
+  }
 
-    @Bean
-    public HttpClient httpClient() {
-        return HttpClientBuilder.create().build();
-    }
-
+  @Bean
+  public HttpClient httpClient() {
+    return HttpClientBuilder.create().build();
+  }
 }

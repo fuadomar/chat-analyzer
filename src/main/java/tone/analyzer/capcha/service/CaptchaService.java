@@ -10,60 +10,56 @@ import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.regex.Pattern;
 
-/**
- * Created by user on 1/24/2018.
- */
+/** Created by user on 1/24/2018. */
 @Service
 public class CaptchaService implements ICaptchaService {
 
-    @Autowired
-    private HttpServletRequest request;
+  @Autowired private HttpServletRequest request;
 
-    @Autowired
-    private CaptchaSettings captchaSettings;
+  @Autowired private CaptchaSettings captchaSettings;
 
-   /* @Autowired
-    private ReCaptchaAttemptService reCaptchaAttemptService;*/
+  /* @Autowired
+  private ReCaptchaAttemptService reCaptchaAttemptService;*/
 
-    @Autowired
-    private RestOperations restTemplate;
+  @Autowired private RestOperations restTemplate;
 
-    private static Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
+  private static Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
 
-    public void processResponse(String response) throws Exception {
-        if (!responseSanityCheck(response)) {
-            throw new Exception("Response contains invalid characters");
-        }
+  public void processResponse(String response) throws Exception {
+    if (!responseSanityCheck(response)) {
+      throw new Exception("Response contains invalid characters");
+    }
 
-        URI verifyUri = URI.create(String.format(
+    URI verifyUri =
+        URI.create(
+            String.format(
                 "https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s&remoteip=%s",
                 getReCaptchaSecret(), response, getClientIP()));
 
-        GoogleResponse googleResponse = restTemplate.getForObject(verifyUri, GoogleResponse.class);
+    GoogleResponse googleResponse = restTemplate.getForObject(verifyUri, GoogleResponse.class);
 
-        if (!googleResponse.isSuccess()) {
-            throw new Exception("reCaptcha was not successfully validated");
-        }
+    if (!googleResponse.isSuccess()) {
+      throw new Exception("reCaptcha was not successfully validated");
     }
+  }
 
+  private boolean responseSanityCheck(final String response) {
+    return StringUtils.hasLength(response) && RESPONSE_PATTERN.matcher(response).matches();
+  }
 
-    private boolean responseSanityCheck(final String response) {
-        return StringUtils.hasLength(response) && RESPONSE_PATTERN.matcher(response).matches();
+  public String getReCaptchaSite() {
+    return captchaSettings.getSite();
+  }
+
+  public String getReCaptchaSecret() {
+    return captchaSettings.getSecret();
+  }
+
+  private String getClientIP() {
+    final String xfHeader = request.getHeader("X-Forwarded-For");
+    if (xfHeader == null) {
+      return request.getRemoteAddr();
     }
-
-    public String getReCaptchaSite() {
-        return captchaSettings.getSite();
-    }
-
-    public String getReCaptchaSecret() {
-        return captchaSettings.getSecret();
-    }
-
-    private String getClientIP() {
-        final String xfHeader = request.getHeader("X-Forwarded-For");
-        if (xfHeader == null) {
-            return request.getRemoteAddr();
-        }
-        return xfHeader.split(",")[0];
-    }
+    return xfHeader.split(",")[0];
+  }
 }

@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AnonymousAuthProvider implements AuthenticationProvider {
 
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        return authentication;
-    }
+  @Override
+  public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    return authentication;
+  }
 
-    @Override
-    public boolean supports(Class<?> authentication) {
-        return (AnonymousAuthenticationToken.class.isAssignableFrom(authentication));
-
-    }
+  @Override
+  public boolean supports(Class<?> authentication) {
+    return (AnonymousAuthenticationToken.class.isAssignableFrom(authentication));
+  }
 }

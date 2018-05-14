@@ -18,36 +18,39 @@ import org.springframework.stereotype.Service;
 @Service
 public class AmazonFileUploaderClient {
 
-    private AmazonS3 s3Client;
+  private AmazonS3 s3Client;
 
-    @Value("${amazonProperties.endpointUrl}")
-    private String endpointUrl;
+  @Value("${amazonProperties.endpointUrl}")
+  private String endpointUrl;
 
-    @Value("${amazonProperties.bucketName}")
-    private String bucketName;
+  @Value("${amazonProperties.bucketName}")
+  private String bucketName;
 
-    @Value("${amazonProperties.accessKey}")
-    private String accessKey;
+  @Value("${amazonProperties.accessKey}")
+  private String accessKey;
 
-    @Value("${amazonProperties.secretKey}")
-    private String secretKey;
+  @Value("${amazonProperties.secretKey}")
+  private String secretKey;
 
-    @PostConstruct
-    private void initializeAmazon() {
-        AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
-        this.s3Client = AmazonS3ClientBuilder.standard().
-                withCredentials(new AWSStaticCredentialsProvider(credentials)).withRegion("us-east-1").build();
-    }
+  @PostConstruct
+  private void initializeAmazon() {
+    AWSCredentials credentials = new BasicAWSCredentials(this.accessKey, this.secretKey);
+    this.s3Client =
+        AmazonS3ClientBuilder.standard()
+            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+            .withRegion("us-east-1")
+            .build();
+  }
 
-    public void uploadFileTos3bucket(String fileName, File file) {
+  public void uploadFileTos3bucket(String fileName, File file) {
 
-        s3Client.putObject(new PutObjectRequest(bucketName, fileName, file)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
-    }
+    s3Client.putObject(
+        new PutObjectRequest(bucketName, fileName, file)
+            .withCannedAcl(CannedAccessControlList.PublicRead));
+  }
 
-    public S3Object downloadFileFromS3bucket(String fileName) {
+  public S3Object downloadFileFromS3bucket(String fileName) {
 
-        return s3Client.getObject(bucketName, fileName);
-    }
-
+    return s3Client.getObject(bucketName, fileName);
+  }
 }

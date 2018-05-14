@@ -5,45 +5,39 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import tone.analyzer.domain.DTO.AwaitingMessagesNotificationDetailsDTO;
+import tone.analyzer.domain.DTO.AwaitingChatMessageNotificationDetailsDTO;
 
-/**
- * Created by Dell on 1/29/2018.
- */
+/** Created by Dell on 1/29/2018. */
 public class AwaitingMessagesRepository
-        implements IHashRepository<AwaitingMessagesNotificationDetailsDTO> {
+    implements IHashRepository<AwaitingChatMessageNotificationDetailsDTO> {
 
-    @Autowired
-    RedisTemplate<String, AwaitingMessagesNotificationDetailsDTO> genericDTORedisTemplate;
+  @Autowired
+  RedisTemplate<String, AwaitingChatMessageNotificationDetailsDTO> genericDTORedisTemplate;
 
-    @Override
-    public void put(AwaitingMessagesNotificationDetailsDTO obj) {
-    }
+  @Override
+  public void put(AwaitingChatMessageNotificationDetailsDTO obj) {}
 
-    @Override
-    public void multiPut(Collection<AwaitingMessagesNotificationDetailsDTO> keys) {
-    }
+  @Override
+  public void multiPut(Collection<AwaitingChatMessageNotificationDetailsDTO> keys) {}
 
-    @Override
-    public AwaitingMessagesNotificationDetailsDTO get(Long id) {
-        return null;
-    }
+  @Override
+  public AwaitingChatMessageNotificationDetailsDTO get(Long id) {
+    return null;
+  }
 
-    @Override
-    public List<AwaitingMessagesNotificationDetailsDTO> multiGet(Collection<Long> keys) {
-        return null;
-    }
+  @Override
+  public List<AwaitingChatMessageNotificationDetailsDTO> multiGet(Collection<Long> keys) {
+    return null;
+  }
 
-    @Override
-    public void delete(AwaitingMessagesNotificationDetailsDTO key) {
-    }
+  @Override
+  public void delete(AwaitingChatMessageNotificationDetailsDTO key) {}
 
-    @Override
-    public List<AwaitingMessagesNotificationDetailsDTO> getObjects() {
-        return null;
-    }
+  @Override
+  public List<AwaitingChatMessageNotificationDetailsDTO> getObjects() {
+    return null;
+  }
 
-    @Override
-    public void delete() {
-    }
+  @Override
+  public void delete() {}
 }

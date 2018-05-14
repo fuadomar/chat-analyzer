@@ -8,16 +8,14 @@ import tone.analyzer.event.LoginEvent;
 
 import java.util.Collection;
 
-/**
- * Created by mozammal on 4/27/17.
- */
+/** Created by mozammal on 4/27/17. */
 public interface IInstantMessaging {
 
-    @MessageMapping("/chat-message/message")
-    @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
-    public String sendChatMessageToDestination(ChatMessage chatMessage);
+  @MessageMapping("/chat-message/message")
+  @PreAuthorize("isAuthenticated() and hasRole('ROLE_USER')")
+  public String sendChatMessageToDestination(ChatMessage chatMessage);
 
-    @SubscribeMapping("/chat.participants")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public Collection<LoginEvent> retrieveParticipants();
+  @SubscribeMapping("/chat.participants")
+  @PreAuthorize("hasAuthority('ROLE_USER')")
+  public Collection<LoginEvent> retrieveParticipants();
 }
