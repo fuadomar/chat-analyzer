@@ -22,9 +22,9 @@ public class GoogleReCaptchaService implements IReCaptchaService {
 
   private static Pattern RESPONSE_PATTERN = Pattern.compile("[A-Za-z0-9_-]+");
 
-  public void processResponse(String response) throws Exception {
+  public boolean validate(String response) throws Exception {
     if (!responseSanityCheck(response)) {
-      throw new Exception("Response contains invalid characters");
+      return false;
     }
 
     URI verifyUri =
@@ -36,8 +36,9 @@ public class GoogleReCaptchaService implements IReCaptchaService {
     GoogleResponse googleResponse = restTemplate.getForObject(verifyUri, GoogleResponse.class);
 
     if (!googleResponse.isSuccess()) {
-      throw new Exception("reCaptcha was not successfully validated");
+      return false;
     }
+    return true;
   }
 
   private boolean responseSanityCheck(final String response) {

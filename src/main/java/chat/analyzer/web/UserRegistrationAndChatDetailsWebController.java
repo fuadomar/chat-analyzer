@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import chat.analyzer.capcha.service.IReCaptchaService;
 import chat.analyzer.dao.UserAccountDao;
@@ -48,8 +47,8 @@ import static java.util.stream.Collectors.joining;
 @Controller
 public class UserRegistrationAndChatDetailsWebController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(
-      UserRegistrationAndChatDetailsWebController.class);
+  private static final Logger LOG =
+      LoggerFactory.getLogger(UserRegistrationAndChatDetailsWebController.class);
 
   public static final String ERROR_ATTRIBUTED = "error";
 
@@ -85,6 +84,7 @@ public class UserRegistrationAndChatDetailsWebController {
 
   public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
   public static final String REDIRECT_CHAT_URI = "redirect:/chat";
+  public static final String G_RECAPTCHA_RESPONSE = "g-recaptcha-response";
 
   @Autowired
   @Qualifier("securityServiceImpl")
@@ -133,7 +133,8 @@ public class UserRegistrationAndChatDetailsWebController {
   public String registration(Model model) {
 
     model.addAttribute(ACCOUNT_FORM, new UserAccount());
-    model.addAttribute("googleReCapcha", commonUtility.createGoogleReCapchaDivForUerRegistrationPage());
+    model.addAttribute(
+        "googleReCapcha", commonUtility.createGoogleReCapchaDivForUerRegistrationPage());
     return USERS_REGISTRATION_VIEW;
   }
 
@@ -148,17 +149,16 @@ public class UserRegistrationAndChatDetailsWebController {
       throws Exception {
 
     userAccountValidator.validate(userAccountForm, bindingResult);
-    ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
       return USERS_REGISTRATION_VIEW;
     }
 
-    String googleReCapcha = request.getParameter("g-recaptcha-response");
-    reCaptchaService.processResponse(googleReCapcha);
+    String googleReCapcha = request.getParameter(G_RECAPTCHA_RESPONSE);
+    if (!reCaptchaService.validate(googleReCapcha)) return USERS_REGISTRATION_VIEW;
 
-    String plainTextPassword = userAccountForm.getPassword();
+    String password = userAccountForm.getPassword();
     userServiceImpl.save(userAccountForm);
-    securityServiceImpl.autoLogin(userAccountForm.getName(), plainTextPassword, request, response);
+    securityServiceImpl.autoLogin(userAccountForm.getName(), password, request, response);
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     UserAccount user = userServiceImpl.findByName(auth.getName());
     redirectAttributes.addFlashAttribute(USER_NAME, user.getName());
@@ -259,12 +259,12 @@ public class UserRegistrationAndChatDetailsWebController {
       boolean matches =
           new BCryptPasswordEncoder().matches((String) userPassword, userUserAccount.getPassword());
       if (!matches) {
-        return redirectWithTheSameQueryStringIfPasswordNotMatched(requestParams, redir,
-            responseParams);
+        return redirectWithTheSameQueryStringIfPasswordNotMatched(
+            requestParams, redir, responseParams);
       }
     }
-    tryToLoggedInTheSystem(request, response, redir, token, (String) userPassword,
-        (String) userName);
+    tryToLoggedInTheSystem(
+        request, response, redir, token, (String) userPassword, (String) userName);
     return "redirect:/chat?invited=" + URLEncoder.encode(token.getSender(), "UTF-8");
   }
 
@@ -321,7 +321,8 @@ public class UserRegistrationAndChatDetailsWebController {
       userAccount = new UserAccount(((String) userName).trim(), UUID.randomUUID().toString());
     } else if (!commonUtility.isAnonymousUser(userAccount.getRole())) {
 
-      return redirectToTheSameUrlIfUserExistsButNotAnynymousUser(requestParams, redir, responseParams);
+      return redirectToTheSameUrlIfUserExistsButNotAnynymousUser(
+          requestParams, redir, responseParams);
     }
 
     userAccountDao.processEmailInvitationAndUpdateBuddyListIfAbsent(
@@ -332,8 +333,10 @@ public class UserRegistrationAndChatDetailsWebController {
     return "redirect:/chat?invited=" + URLEncoder.encode(emailToken.getSender(), "UTF-8");
   }
 
-  private String redirectToTheSameUrlIfUserExistsButNotAnynymousUser(@RequestParam Map requestParams,
-      RedirectAttributes redir, Map<String, String> responseParams) {
+  private String redirectToTheSameUrlIfUserExistsButNotAnynymousUser(
+      @RequestParam Map requestParams,
+      RedirectAttributes redir,
+      Map<String, String> responseParams) {
     responseParams.put("token", (String) requestParams.get("token"));
     String url = "chat/anonymous?";
     String queryParams =
@@ -346,17 +349,18 @@ public class UserRegistrationAndChatDetailsWebController {
     return "redirect:/" + url + queryParams;
   }
 
-  private void populateModelForChatView(Model model, UserAccount loggedInUser, String loggedInUserName) {
+  private void populateModelForChatView(
+      Model model, UserAccount loggedInUser, String loggedInUserName) {
     model.addAttribute("userName", loggedInUserName);
-    String fileLocation = loggedInUser == null?"":
-        (loggedInUser.getDocumentMetaData() != null
+    String avatarUri =
+        loggedInUser.getDocumentMetaData() != null
             ? loggedInUser.getDocumentMetaData().getThumbNail()
-            : null);
-    model.addAttribute("userAvatar", fileLocation);
+            : null;
+    model.addAttribute("userAvatar", avatarUri);
   }
 
-  private void populateModelForUserEmailInviationView(Model model,
-      EmailInvitation emailInvitationServiceByToekn) {
+  private void populateModelForUserEmailInviationView(
+      Model model, EmailInvitation emailInvitationServiceByToekn) {
 
     model.addAttribute("confirmationToken", emailInvitationServiceByToekn.getToken());
     model.addAttribute("invitedBy", emailInvitationServiceByToekn.getSender());
@@ -364,8 +368,13 @@ public class UserRegistrationAndChatDetailsWebController {
     model.addAttribute("userAccountRegistrationFormByEmail", new UserAccount());
   }
 
-  private void tryToLoggedInTheSystem(HttpServletRequest request, HttpServletResponse response,
-      RedirectAttributes redir, EmailInvitation token, String userPassword, String userName) {
+  private void tryToLoggedInTheSystem(
+      HttpServletRequest request,
+      HttpServletResponse response,
+      RedirectAttributes redir,
+      EmailInvitation token,
+      String userPassword,
+      String userName) {
     String password = userPassword;
     String name = userName;
     UserAccount account = new UserAccount(name.trim(), password.trim());
@@ -378,8 +387,10 @@ public class UserRegistrationAndChatDetailsWebController {
     redir.addFlashAttribute(USER_NAME, user.getName());
   }
 
-  private String redirectWithTheSameQueryStringIfPasswordNotMatched(@RequestParam Map requestParams,
-      RedirectAttributes redir, Map<String, String> responseParams) {
+  private String redirectWithTheSameQueryStringIfPasswordNotMatched(
+      @RequestParam Map requestParams,
+      RedirectAttributes redir,
+      Map<String, String> responseParams) {
     responseParams.put("token", (String) requestParams.get("token"));
     responseParams.put("sender", (String) requestParams.get("sender"));
     responseParams.put("receiver", (String) requestParams.get("receiver"));
@@ -409,5 +420,4 @@ public class UserRegistrationAndChatDetailsWebController {
     redir.addFlashAttribute("errorMsg", "Your token has expired or invalid.");
     return "redirect:/login";
   }
-
 }
