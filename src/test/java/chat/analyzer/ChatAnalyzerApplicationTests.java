@@ -1,17 +1,19 @@
 package chat.analyzer;
 
 import chat.analyzer.auth.service.EmailInvitationServiceImpl;
+import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.capcha.service.GoogleReCaptchaService;
-import chat.analyzer.capcha.service.IReCaptchaService;
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.EmailInvitation;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
+import chat.analyzer.domain.repository.UserAccountRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
@@ -33,19 +38,22 @@ import org.springframework.web.context.WebApplicationContext;
 
 import chat.analyzer.config.WebSecurityConfig;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:test.properties")
 @Import(WebSecurityConfig.class)
 public class ChatAnalyzerApplicationTests {
@@ -63,6 +71,8 @@ public class ChatAnalyzerApplicationTests {
   @Autowired private UserAccountDao userAccountDao;
 
   @Autowired private EmailInvitationServiceImpl emailInvitationService;
+
+  @Autowired private UserDetailsServiceImpl userDetailsService;
 
   private MockMvc mockMvc;
 
@@ -90,17 +100,45 @@ public class ChatAnalyzerApplicationTests {
   }
 
   @Test
-  //@WithMockUser(username = "test", password = "test", roles = {"USER", "ROLE_ANONYMOUS_CHAT"} )
+  public void testShouldReturnRegistrationViewForAnonymousUser() throws Exception {
+
+    EmailInvitation emailInvitation = new EmailInvitation("test123", "test123", "test123");
+    Mockito.when(emailInvitationService.findByToken(anyString())).thenReturn(emailInvitation);
+    this.mockMvc
+        .perform(get("/chat/anonymous").param("token", "test123"))
+        .andExpect(view().name("anonymousUserRegistration"));
+  }
+
+  @Test
   public void testShouldReturnChatViewForAnonymousUser() throws Exception {
 
-    UserAccount userAccount = new UserAccount("test", "test");
+    UserAccount userAccount = new UserAccount("test123", "test123");
     userAccount.setPassword(new BCryptPasswordEncoder().encode(userAccount.getPassword()));
     userAccount.setEnabled(true);
     userAccount.setRole(Arrays.asList(new Role("ROLE_ANONYMOUS_CHAT"), new Role("ROLE_USER")));
-    EmailInvitation emailInvitation = new EmailInvitation("test", "test", "test");
-    Mockito.when(userAccountDao.findByName("test")).thenReturn(userAccount);
-    Mockito.when(emailInvitationService.findByToken("token")).thenReturn(emailInvitation);
-    this.mockMvc.perform(get("/chat/anonymous")).andExpect(status().is3xxRedirection()).andExpect(view().name("chat"));
+
+    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+    for (Role rol : userAccount.getRole()) {
+      grantedAuthorities.add(new SimpleGrantedAuthority(rol.getName()));
+    }
+
+    UserDetails userDetails =
+        new org.springframework.security.core.userdetails.User(
+            userAccount.getName(), userAccount.getPassword(), grantedAuthorities);
+
+    EmailInvitation emailInvitation = new EmailInvitation("test123", "test123", "test123");
+    Mockito.when(userAccountDao.findByName(anyString())).thenReturn(null);
+    Mockito.when(emailInvitationService.findByToken(anyString())).thenReturn(emailInvitation);
+    Mockito.when(userDetailsService.loadUserByUsername(anyString())).thenReturn(userDetails);
+    Mockito.when(userAccountDao.findByName(anyString())).thenReturn(userAccount);
+
+    RequestBuilder requestBuilder =
+        createPostRequestBuilderChatAnonymous("test123", "test123", "test123");
+
+    this.mockMvc
+        .perform(requestBuilder)
+        .andExpect(status().is3xxRedirection())
+        .andExpect(view().name("redirect:/chat?invited=test123"));
   }
 
   @Test
@@ -127,7 +165,8 @@ public class ChatAnalyzerApplicationTests {
 
     String validReCaptcha = "validReCaptcha";
     Mockito.when(googleReCaptchaService.validate(validReCaptcha)).thenReturn(true);
-    RequestBuilder requestBuilder = getPostRequestBuilder("te", "121212121212", "validCaptcha");
+    RequestBuilder requestBuilder =
+        createPostRequestBuilderUserRegistration("te", "121212121212", "validCaptcha");
     this.mvc.perform(requestBuilder).andExpect(view().name(REGISTRATION_VIEW_NAME));
   }
 
@@ -135,8 +174,28 @@ public class ChatAnalyzerApplicationTests {
   public void testShouldCreateNewUserAccount() throws Exception {
 
     String validReCaptcha = "validReCaptcha";
+
+    UserAccount userAccount = new UserAccount("test123", "test123123");
+    userAccount.setPassword(new BCryptPasswordEncoder().encode(userAccount.getPassword()));
+    userAccount.setEnabled(true);
+    userAccount.setRole(Arrays.asList(new Role("ROLE_USER")));
+
+    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+    for (Role rol : userAccount.getRole()) {
+      grantedAuthorities.add(new SimpleGrantedAuthority(rol.getName()));
+    }
+
+    UserDetails userDetails =
+        new org.springframework.security.core.userdetails.User(
+            userAccount.getName(), userAccount.getPassword(), grantedAuthorities);
+
     Mockito.when(googleReCaptchaService.validate(validReCaptcha)).thenReturn(true);
-    RequestBuilder requestBuilder = getPostRequestBuilder("test2", "test2test2", validReCaptcha);
+    Mockito.when(userAccountDao.findByName(anyString())).thenReturn(userAccount);
+    Mockito.when(userDetailsService.loadUserByUsername(anyString())).thenReturn(userDetails);
+    Mockito.when(userAccountDao.findByName(anyString())).thenReturn(userAccount);
+
+    RequestBuilder requestBuilder =
+        createPostRequestBuilderUserRegistration("test123", "test123123", validReCaptcha);
     this.mvc
         .perform(requestBuilder)
         .andExpect(status().is3xxRedirection())
@@ -148,17 +207,30 @@ public class ChatAnalyzerApplicationTests {
 
     String inValidReCaptcha = "inValidReCaptcha";
     Mockito.when(googleReCaptchaService.validate(inValidReCaptcha)).thenReturn(false);
-    RequestBuilder requestBuilder = getPostRequestBuilder("test2", "test2test2", inValidReCaptcha);
+    RequestBuilder requestBuilder =
+        createPostRequestBuilderUserRegistration("test2", "test2test2", inValidReCaptcha);
     this.mvc.perform(requestBuilder).andExpect(view().name("userRegistration"));
   }
 
-  private RequestBuilder getPostRequestBuilder(String name, String password, String recaptcha) {
+  private RequestBuilder createPostRequestBuilderUserRegistration(
+      String name, String password, String recaptcha) {
 
     return post("/userRegistration")
         .param("name", name)
         .param("password", password)
         .param("g-recaptcha-response", recaptcha)
         .param("role", "USER")
+        .with(csrf())
+        .accept(MediaType.TEXT_PLAIN);
+  }
+
+  private RequestBuilder createPostRequestBuilderChatAnonymous(
+      String name, String token, String invitedBy) {
+
+    return post("/chat/anonymous")
+        .param("name", name)
+        .param("token", token)
+        .with(csrf())
         .accept(MediaType.TEXT_PLAIN);
   }
 }

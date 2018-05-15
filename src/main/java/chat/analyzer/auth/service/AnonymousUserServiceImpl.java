@@ -1,5 +1,6 @@
 package chat.analyzer.auth.service;
 
+import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
 import chat.analyzer.domain.repository.UserAccountRepository;
@@ -12,26 +13,27 @@ import org.springframework.stereotype.Service;
 @Service
 public class AnonymousUserServiceImpl implements UserService {
 
-  @Autowired private UserAccountRepository userRepository;
+
+  @Autowired private UserAccountDao userAccountDao;
 
   @Override
   public UserAccount save(UserAccount userAccount) {
     userAccount.setPassword(new BCryptPasswordEncoder().encode(userAccount.getPassword()));
     userAccount.setEnabled(true);
     userAccount.setRole(Arrays.asList(new Role("ROLE_ANONYMOUS_CHAT"), new Role("ROLE_USER")));
-    userRepository.save(userAccount);
+    userAccountDao.save(userAccount);
     return userAccount;
   }
 
   @Override
   public UserAccount findByName(String username) {
-    return userRepository.findByName(username);
+    return userAccountDao.findByName(username);
   }
 
   @Override
   public void addBudyyToUser(
       UserAccount emailInvitationSender, UserAccount emailInvitationReceiver) {
-    userRepository.save(emailInvitationSender);
-    userRepository.save(emailInvitationReceiver);
+    userAccountDao.save(emailInvitationSender);
+    userAccountDao.save(emailInvitationReceiver);
   }
 }

@@ -85,6 +85,7 @@ public class UserRegistrationAndChatDetailsWebController {
   public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
   public static final String REDIRECT_CHAT_URI = "redirect:/chat";
   public static final String G_RECAPTCHA_RESPONSE = "g-recaptcha-response";
+  public static final String ANONYMOUS_USER_REGISTRATION_VIEW = "anonymousUserRegistration";
 
   @Autowired
   @Qualifier("securityServiceImpl")
@@ -282,7 +283,7 @@ public class UserRegistrationAndChatDetailsWebController {
     }
     model.addAttribute("confirmationToken", anonymousInvitationToken.getToken());
     model.addAttribute("invitedBy", anonymousInvitationToken.getSender());
-    return "anonymousUserRegistration";
+    return ANONYMOUS_USER_REGISTRATION_VIEW;
   }
 
   @RequestMapping(value = "/chat/anonymous", method = RequestMethod.POST)

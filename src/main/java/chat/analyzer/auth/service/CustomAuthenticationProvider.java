@@ -1,5 +1,6 @@
 package chat.analyzer.auth.service;
 
+import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
 import chat.analyzer.domain.repository.UserAccountRepository;
@@ -21,7 +22,7 @@ import java.util.List;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-  @Autowired private UserAccountRepository userAccountRepository;
+  @Autowired private UserAccountDao userAccountDao;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -31,7 +32,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         authentication.getCredentials() != null
             ? authentication.getCredentials().toString().trim()
             : null;
-    UserAccount user = userAccountRepository.findByName(userName);
+    UserAccount user = userAccountDao.findByName(userName);
     Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
     if (user == null) {
       throw new UsernameNotFoundException("UserAccount not found");

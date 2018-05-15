@@ -3,8 +3,11 @@ package chat.analyzer;
 import static org.mockito.Mockito.mock;
 
 import chat.analyzer.auth.service.EmailInvitationServiceImpl;
+import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.dao.UserAccountDao;
+import chat.analyzer.domain.repository.UserAccountRepository;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import chat.analyzer.capcha.service.GoogleReCaptchaService;
@@ -31,5 +34,11 @@ public class ChatAnalyzerBootTestConfig {
   @Primary
   EmailInvitationServiceImpl emailInvitationService() {
     return Mockito.mock(EmailInvitationServiceImpl.class);
+  }
+
+  @Bean
+  @Primary
+  UserDetailsServiceImpl userDetailsService() {
+    return Mockito.mock(UserDetailsServiceImpl.class);
   }
 }

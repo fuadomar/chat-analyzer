@@ -1,5 +1,6 @@
 package chat.analyzer.auth.service;
 
+import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
 import chat.analyzer.domain.repository.UserAccountRepository;
@@ -18,12 +19,12 @@ import java.util.List;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  @Autowired private UserAccountRepository userRepository;
+  @Autowired private UserAccountDao userAccountDao;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-    UserAccount user = userRepository.findByName(username);
+    UserAccount user = userAccountDao.findByName(username);
     if (user == null) {
       throw new UsernameNotFoundException("UserAccount not found");
     }

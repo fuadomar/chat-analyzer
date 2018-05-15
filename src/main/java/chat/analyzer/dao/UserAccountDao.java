@@ -33,6 +33,10 @@ public class UserAccountDao {
 
   @Autowired private UserAccountRepository userUserAccountRepository;
 
+  public void save(UserAccount userAccount) {
+    userAccountRepository.save(userAccount);
+  }
+
   public UserAccount findOne(String userId) {
     return userAccountRepository.findOne(userId);
   }
