@@ -284,7 +284,6 @@ $(document).ready(function () {
                                 ) && userClickedOnWhcihBuddyMessageBox
                                 == payload.sender[i].userName) {
 
-                              alert(JSON.stringify(payload.sender[i]));
                               stompClient.send("/app/dispose.ack.message.notification", {},
                                   JSON.stringify(payload.sender[i]));
                                 continue;
@@ -441,7 +440,7 @@ $(document).ready(function () {
                 console.log("cur usr id " + $("#cur-user-uuid").val());
                 $.get({
                     type: 'get',
-                    url: '/invitationEmail',
+                    url: '/emailInvitation',
                     dataType: "text",
                     data: "email=" + escapeHtml(email) + "&invitedText=" + invitedText
                     + "&invitedUser="
