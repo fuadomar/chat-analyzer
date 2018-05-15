@@ -1,10 +1,9 @@
 package tone.analyzer.domain.DTO;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.model.LoginEvent;
 
 /** Created by Dell on 1/29/2018. */
 public class AwaitingChatMessageNotificationDetailsDTO implements Serializable {

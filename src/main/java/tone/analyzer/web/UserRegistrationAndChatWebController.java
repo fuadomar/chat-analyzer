@@ -31,7 +31,7 @@ import tone.analyzer.domain.repository.UserAccountRepository;
 import tone.analyzer.service.admin.AdminService;
 import tone.analyzer.utility.ChatAnalyzerScorer;
 import tone.analyzer.utility.CommonUtility;
-import tone.analyzer.validator.AccountValidator;
+import tone.analyzer.validator.UserAccountValidator;
 import tone.analyzer.validator.AnonymousInvitationValidator;
 import tone.analyzer.validator.EmailInvitationValidator;
 
@@ -47,9 +47,9 @@ import static java.util.stream.Collectors.joining;
 
 /** Created by mozammal on 4/18/17. */
 @Controller
-public class UserDetailsWebController {
+public class UserRegistrationAndChatWebController {
 
-  private static final Logger LOG = LoggerFactory.getLogger(UserDetailsWebController.class);
+  private static final Logger LOG = LoggerFactory.getLogger(UserRegistrationAndChatWebController.class);
 
   public static final String ERROR_ATTRIBUTED = "error";
 
@@ -81,7 +81,7 @@ public class UserDetailsWebController {
 
   public static final String ROOT_URI = "/";
 
-  public static final String ACCOUNT_FORM = "accountForm";
+  public static final String ACCOUNT_FORM = "userAccountForm";
 
   public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
 
@@ -101,7 +101,7 @@ public class UserDetailsWebController {
   @Qualifier("anonymousUserServiceImpl")
   private UserService anonymousUserServiceImpl;
 
-  @Autowired private AccountValidator accountValidator;
+  @Autowired private UserAccountValidator userAccountValidator;
 
   @Autowired private EmailInvitationValidator emailInvitationValidator;
 
@@ -114,8 +114,6 @@ public class UserDetailsWebController {
   @Autowired private UserAccountDao userAccountDao;
 
   @Autowired private UserAccountRepository userUserAccountRepository;
-
-  @Autowired private ChatAnalyzerScorer chatAnalyzerScorer;
 
   @Autowired private CommonUtility commonUtility;
 
@@ -134,12 +132,13 @@ public class UserDetailsWebController {
   public String registration(Model model) {
 
     model.addAttribute(ACCOUNT_FORM, new UserAccount());
+    model.addAttribute("googleReCapcha", commonUtility.createGoogleReCapchaDivForUerRegistrationPage());
     return USERS_REGISTRATION_VIEW;
   }
 
   @RequestMapping(value = USER_REGISTRATION_URI, method = RequestMethod.POST)
   public String registration(
-      @ModelAttribute("accountForm") UserAccount userAccountForm,
+      @ModelAttribute("userAccountForm") UserAccount userAccountForm,
       BindingResult bindingResult,
       Model model,
       HttpServletRequest request,
@@ -147,7 +146,7 @@ public class UserDetailsWebController {
       RedirectAttributes redirectAttributes)
       throws Exception {
 
-    accountValidator.validate(userAccountForm, bindingResult);
+    userAccountValidator.validate(userAccountForm, bindingResult);
     ModelAndView modelAndView = new ModelAndView();
     if (bindingResult.hasErrors()) {
       return USERS_REGISTRATION_VIEW;
@@ -284,7 +283,7 @@ public class UserDetailsWebController {
       return "redirect:/login";
     }
 
-    UserAccount userUserAccount = userUserAccountRepository.findByName((String) userName);
+    UserAccount userUserAccount = userAccountDao.findByName((String) userName);
     if (userUserAccount != null) {
       boolean matches =
           new BCryptPasswordEncoder().matches((String) userPassword, userUserAccount.getPassword());

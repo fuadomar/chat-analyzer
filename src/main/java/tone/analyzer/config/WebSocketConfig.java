@@ -1,5 +1,6 @@
 package tone.analyzer.config;
 
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -33,11 +34,30 @@ import java.security.Principal;
 public class WebSocketConfig
     extends AbstractSessionWebSocketMessageBrokerConfigurer<ExpiringSession> {
 
+  public static final String TOPIC = "/topic/";
+
+  public static final String QUEUE = "/queue/";
+
+  public static final String TOPIC_UNRESOLVED_USER_DEST = "/topic/unresolved.user.dest";
+
+  public static final String TOPIC_REGISTRY_BROADCAST = "/topic/registry.broadcast";
+
+  public static final String APP_PREFIX = "/app";
+
+  public static final String CHAT_USER_NAME = "chat-user-name";
+
   @Value("${app.relay.host}")
   private String relayHost;
 
   @Value("${app.relay.port}")
   private Integer relayPort;
+
+  @Value("${raqqbitmq.stomp.user}")
+  private String stompUserName;
+
+  @Value("${raqqbitmq.stomp.password}")
+  private String stompUserPassword;
+
 
   @Override
   protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
@@ -46,14 +66,14 @@ public class WebSocketConfig
 
   public void configureMessageBroker(MessageBrokerRegistry config) {
     config
-        .enableStompBrokerRelay("/topic/", "/queue/")
-        .setUserDestinationBroadcast("/topic/unresolved.user.dest")
-        .setUserRegistryBroadcast("/topic/registry.broadcast")
+        .enableStompBrokerRelay(TOPIC, QUEUE)
+        .setUserDestinationBroadcast(TOPIC_UNRESOLVED_USER_DEST)
+        .setUserRegistryBroadcast(TOPIC_REGISTRY_BROADCAST)
         .setRelayHost(relayHost)
         .setRelayPort(relayPort)
-        .setClientLogin("guest")
-        .setClientPasscode("guest");
-    config.setApplicationDestinationPrefixes("/app");
+        .setClientLogin(stompUserName)
+        .setClientPasscode(stompUserPassword);
+    config.setApplicationDestinationPrefixes(APP_PREFIX);
   }
 
   public void configureClientInboundChannel(ChannelRegistration registration) {
@@ -93,7 +113,7 @@ public class WebSocketConfig
                     new CommonUtility()
                         .findPrincipalNameFromAuthentication((Authentication) authentication);
                 String displayName = userPrincipal.getName();
-                accessor.setNativeHeader("chat-user-name", principalNameFromAuthentication);
+                accessor.setNativeHeader(CHAT_USER_NAME, principalNameFromAuthentication);
                 User user =
                     new User(
                         principalNameFromAuthentication,

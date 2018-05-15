@@ -1,0 +1,10 @@
+[Unit]
+Description=Chat Analyzer Service
+After=syslog.target
+[Service]
+ExecStart=/bin/sh -c "/home/mozammal/deploy-chat-analyzer/prod/chat-analyzer-0.0.1-SNAPSHOT.jar >> /var/logs/chatAnalyzer.log"
+
+SuccessExitStatus=143
+Restart=on-failure
+[Install]
+WantedBy=multi-user.target

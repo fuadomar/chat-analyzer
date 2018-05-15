@@ -13,7 +13,7 @@ import tone.analyzer.domain.DTO.AwaitingChatMessageNotificationDetailsDTO;
 import tone.analyzer.domain.entity.ChatMessage;
 import tone.analyzer.domain.entity.UserAccount;
 import tone.analyzer.domain.repository.ChatMessageRepository;
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.model.LoginEvent;
 import tone.analyzer.redis.service.RedisNotificationStorageService;
 import tone.analyzer.service.chat.ChatService;
 import tone.analyzer.utility.CommonUtility;

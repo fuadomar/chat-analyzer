@@ -29,13 +29,8 @@
                 th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                 class="validation-message"></label>
         </div>
-        <div class="form-group row">
-            <label class="">Captcha</label>
-            <div class="g-recaptcha" data-sitekey="6LciqVMUAAAAACY-qsHFcL_E4PRhFowNxOC06pYz"
-                 data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
-            <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
+        <div class="form-group row" th:utext="${googleReCapcha}">
         </div>
-        <br/>
         <div class="form-group">
             <button type="submit" class="btn btn-primary btn-block">Register User</button>
         </div>

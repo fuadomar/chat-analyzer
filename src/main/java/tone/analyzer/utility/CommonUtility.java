@@ -1,6 +1,7 @@
 package tone.analyzer.utility;
 
 import com.google.common.hash.Hashing;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.model.UserEmailInvitationNotification;
@@ -16,6 +17,10 @@ import java.util.UUID;
 
 @Component
 public class CommonUtility {
+
+
+  @Value("${google.recaptcha.key.site}")
+  private String recapchaKeySite;
 
   public String findBaseUrl(HttpServletRequest request) throws MalformedURLException {
 
@@ -42,12 +47,14 @@ public class CommonUtility {
     return authentication.getName();
   }
 
-  public String generateImageNameFromUser(String userName, String imageType) {
+  public String createImageNameFromUser(String userName, String imageType) {
     String loggedInUserSignature = userName + System.currentTimeMillis();
     String sha256hex =
         Hashing.sha256().hashString(loggedInUserSignature, StandardCharsets.UTF_8).toString();
 
-    if (imageType.equalsIgnoreCase("png")) return sha256hex + UUID.randomUUID().toString() + ".png";
+    if (imageType.equalsIgnoreCase("png")) {
+      return sha256hex + UUID.randomUUID().toString() + ".png";
+    }
 
     return "";
   }
@@ -72,5 +79,19 @@ public class CommonUtility {
     newUserInvitationNotification.setModel(model);
 
     return newUserInvitationNotification;
+  }
+
+  /*<label class="">Captcha</label>
+            <div class="g-recaptcha" data-sitekey="6LciqVMUAAAAACY-qsHFcL_E4PRhFowNxOC06pYz"
+  data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
+            <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
+*/
+  public String createGoogleReCapchaDivForUerRegistrationPage() {
+
+    String googleReCapchaDiv = "<label class=\"\">Captcha</label>";
+    googleReCapchaDiv = googleReCapchaDiv + "<div class=\"g-recaptcha\" data-sitekey=\"" + recapchaKeySite
+        + "\" data-callback=\"onReCaptchaSuccess\" data-expired-callback=\"onReCaptchaExpired\"></div>";
+    googleReCapchaDiv = googleReCapchaDiv + "<span id=\"captchaError\" class=\"alert alert-danger col-sm-4\" style=\"display:none\"></span><br />";
+    return googleReCapchaDiv;
   }
 }

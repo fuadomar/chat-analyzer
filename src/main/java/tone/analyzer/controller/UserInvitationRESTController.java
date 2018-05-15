@@ -32,10 +32,6 @@ public class UserInvitationRESTController {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserInvitationRESTController.class);
 
-  @Autowired private RabbitTemplate rabbitTemplate;
-
-  @Autowired private String rabbitmqQueue;
-
   @Autowired private CommonUtility commonUtility;
 
   @Autowired EmailInvitationRepository emailInvitationRepository;

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import tone.analyzer.domain.DTO.AwaitingChatMessageNotificationDetailsDTO;
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.model.LoginEvent;
 
 /** Created by Dell on 1/29/2018. */
 @Service

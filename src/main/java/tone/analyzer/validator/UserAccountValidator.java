@@ -13,7 +13,7 @@ import tone.analyzer.domain.entity.UserAccount;
 import java.util.regex.Pattern;
 
 @Component
-public class AccountValidator implements Validator {
+public class UserAccountValidator implements Validator {
 
   @Value("${user.name.minimum.length}")
   private Integer USER_NAME_MINIMUM_LENGTH;

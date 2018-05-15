@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import tone.analyzer.domain.model.ChatMessage;
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.model.LoginEvent;
 import tone.analyzer.domain.repository.ParticipantRepository;
 
 /** Created by mozammal on 4/11/17. */

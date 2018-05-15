@@ -16,6 +16,8 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import tone.analyzer.dao.UserAccountDao;
 import tone.analyzer.domain.entity.UserAccount;
+import tone.analyzer.domain.model.LoginEvent;
+import tone.analyzer.domain.model.LogoutEvent;
 import tone.analyzer.domain.repository.UserAccountRepository;
 import tone.analyzer.domain.repository.ParticipantRepository;
 

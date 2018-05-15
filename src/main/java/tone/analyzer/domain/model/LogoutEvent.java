@@ -1,6 +1,8 @@
-package tone.analyzer.event;
+package tone.analyzer.domain.model;
 
-public class LogoutEvent {
+import java.io.Serializable;
+
+public class LogoutEvent implements Serializable{
 
   private String userName;
 

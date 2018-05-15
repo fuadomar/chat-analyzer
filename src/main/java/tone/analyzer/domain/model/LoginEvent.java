@@ -1,6 +1,4 @@
-package tone.analyzer.event;
-
-import com.amazonaws.services.opsworks.model.InstancesCount;
+package tone.analyzer.domain.model;
 
 import java.io.Serializable;
 import java.util.Date;

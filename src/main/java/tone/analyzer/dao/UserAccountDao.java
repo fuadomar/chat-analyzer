@@ -15,9 +15,8 @@ import tone.analyzer.auth.service.UserService;
 import tone.analyzer.domain.entity.UserAccount;
 import tone.analyzer.domain.entity.BuddyDetails;
 import tone.analyzer.domain.entity.EmailInvitation;
-import tone.analyzer.domain.model.ChatMessage;
 import tone.analyzer.domain.repository.UserAccountRepository;
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.model.LoginEvent;
 import tone.analyzer.event.PresenceEventListener;
 
 /** Created by Dell on 1/17/2018. */

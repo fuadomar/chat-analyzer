@@ -2,9 +2,8 @@ package tone.analyzer.domain.repository;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Component;
-import tone.analyzer.event.LoginEvent;
+import tone.analyzer.domain.model.LoginEvent;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

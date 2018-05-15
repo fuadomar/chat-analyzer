@@ -284,27 +284,9 @@ $(document).ready(function () {
                                 ) && userClickedOnWhcihBuddyMessageBox
                                 == payload.sender[i].userName) {
 
-                                var token = $("meta[name='_csrf']").attr("content");
-                                var header = $("meta[name='_csrf_header']").attr("content");
-                                $(document).ajaxSend(function (e, xhr, options) {
-                                    xhr.setRequestHeader(header, token);
-                                });
-
-                                $.ajax({
-                                    type: "POST",
-                                    url: "/dispose_message_notification_by_user",
-                                    data: JSON.stringify(payload.sender[i]),
-                                    contentType: "application/json",
-                                    dataType: "json",
-                                    headers: {
-                                        'X-CSRF-TOKEN': $('meta[name="_csrf"]').attr('content')
-                                    },
-                                    success: function (data) {
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                    }
-                                });
-
+                              alert(JSON.stringify(payload.sender[i]));
+                              stompClient.send("/app/dispose.ack.message.notification", {},
+                                  JSON.stringify(payload.sender[i]));
                                 continue;
                             }
                             if (isFirstIteration) {
@@ -404,9 +386,12 @@ $(document).ready(function () {
                 });
                 dates = [];
                 hideNotificationPanel();
-                $.get({
+
+              stompClient.send("/app/dispose.all.queued.message.notification", {},'');
+
+            /*    $.get({
                     type: 'get',
-                    url: '/dispose_all_message_notification',
+                    url: '/dispose_all_queued_message_notification',
                     success: function (data) {
 
                     },
@@ -414,7 +399,7 @@ $(document).ready(function () {
                         //jQuery.event.trigger("ajaxStop");
                         console.log(textStatus, errorThrown);
                     }
-                });
+                });*/
                 e.stopPropagation();
             });
 

@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import tone.analyzer.dao.ImageRepository;
 import tone.analyzer.domain.entity.ChatAnalyzerImageToneDetails;
@@ -52,7 +50,7 @@ public class ChatAnalyzerChartImagesUploadDownloadGateway {
   public String uploadBase64Image(String image, HttpServletRequest request, String loggedInUser) {
     try {
 
-      String imageName = commonUtility.generateImageNameFromUser(loggedInUser, "png");
+      String imageName = commonUtility.createImageNameFromUser(loggedInUser, "png");
 
       LOG.info("image base64:  {}", image);
       String delimiter = "data:image/png;base64,";
