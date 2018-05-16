@@ -13,7 +13,7 @@ import java.util.Date;
 
 /** Created by mozammal on 4/11/17. */
 @Component
-public class ChatServiceImpl implements ChatService {
+public class ChatMessageSenderServiceImpl implements ChatMessageSenderService {
 
   @Autowired private ChatMessageProducer messageProducer;
 
@@ -24,7 +24,7 @@ public class ChatServiceImpl implements ChatService {
   @Autowired private UserAccountRepository userAccountRepository;
 
   @Override
-  public void sendMessageTo(chat.analyzer.domain.model.ChatMessage chatChatMessage) {
+  public void sendChatMessageToDestination(chat.analyzer.domain.model.ChatMessage chatChatMessage) {
 
     UserAccount recipient = userAccountRepository.findOne(chatChatMessage.getRecipient());
     if (recipient == null) {

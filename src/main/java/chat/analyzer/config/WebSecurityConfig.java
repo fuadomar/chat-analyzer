@@ -2,6 +2,7 @@ package chat.analyzer.config;
 
 import chat.analyzer.auth.service.CustomAuthenticationProvider;
 import chat.analyzer.auth.service.UserServiceImpl;
+import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.UserAccount;
 import chat.analyzer.domain.repository.UserAccountRepository;
 import chat.analyzer.service.token.TokenService;
@@ -60,7 +61,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-/** Created by mozammal on 4/18/17. */
+/**
+ * Created by mozammal on 4/18/17.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -103,22 +106,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   public static final String ADMIN_PANEL_URI = "/admin-login/**";
 
   public static final String REMEMBER_ME = "remember-me";
+
   public static final String CONFIRMATION_EMAIL = "/confirmationEmail/**";
+
   public static final String CHAT_ANONYMOUS = "/chat/anonymous/**";
+
   public static final String LOGIN = "/login/**";
+
   public static final String ADMIN = "/admin/**";
+
   public static final String HEALTH = "/health/**";
+
   public static final String METRICS = "/metrics/**";
+
   public static final String INFO = "/info/**";
+
   public static final String ACTUATOR = "/actuator/**";
+
   public static final String CHAT = "/chat/**";
+
   public static final String RESOURCES = "/resources/**";
+
   public static final String STATIC = "/static/**";
+
   public static final String CSS = "/css/**";
+
   public static final String JS = "/js/**";
+
   public static final String IMAGES = "/images/**";
 
-  @Autowired private UserDetailsService userDetailsService;
+  @Autowired
+  private UserDetailsService userDetailsService;
 
   private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -126,13 +144,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   private final ClientDetailsService clientDetailsService;
 
-  @Autowired private UserAccountRepository userRepository;
+  @Autowired
+  private UserAccountRepository userRepository;
 
-  @Autowired private UserServiceImpl userService;
+  @Autowired
+  private UserServiceImpl userService;
 
-  @Autowired private CustomAuthenticationProvider authProvider;
+  @Autowired
+  private CustomAuthenticationProvider authProvider;
 
-  @Autowired TokenService persistentTokenRepository;
+  @Autowired
+  TokenService persistentTokenRepository;
+
+  @Autowired
+  private CommonUtility commonUtility;
+
+  @Autowired
+  private UserAccountDao userAccountDao;
 
   @Autowired
   public WebSecurityConfig(
@@ -150,7 +178,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   @Override
   public void configure(
       AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer)
-      throws Exception {}
+      throws Exception {
+  }
 
   @Configuration
   @EnableResourceServer
@@ -167,10 +196,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
     http.headers().frameOptions().sameOrigin();
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-
-    /*http.headers().
-            addHeaderWriter(new StaticHeadersWriter("X-Content-Security-Policy", "default-src 'self'"));
-    */
     http.authorizeRequests()
         .antMatchers(
             LOGIN,
@@ -191,7 +216,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
         .disable()
         .formLogin()
         .loginPage(LOGIN_URI)
-        /*.loginProcessingUrl("/login/process")*/
         .defaultSuccessUrl(LIVE_CHAT_URI)
         .successHandler(
             new AuthenticationSuccessHandler() {
@@ -280,6 +304,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   }
 
   private Filter ssoFilter(ClientResources client, String path) {
+
     OAuth2ClientAuthenticationProcessingFilter oAuth2ClientAuthenticationFilter =
         new OAuth2ClientAuthenticationProcessingFilter(path);
     OAuth2RestTemplate oAuth2RestTemplate =
@@ -292,7 +317,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     oAuth2ClientAuthenticationFilter.setTokenServices(tokenServices);
     oAuth2ClientAuthenticationFilter.setAuthenticationSuccessHandler(
         new AuthenticationSuccessHandler() {
-          private final Logger log = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
+          private final Logger LOG = LoggerFactory.getLogger(AuthenticationSuccessHandler.class);
 
           @Override
           public void onAuthenticationSuccess(
@@ -301,13 +326,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
               Authentication authentication)
               throws IOException, ServletException {
 
-            OAuth2Authentication userPrincipal = (OAuth2Authentication) authentication;
             String principalNameFromAuthentication =
-                new CommonUtility().findPrincipalNameFromAuthentication(authentication);
-            String displayName = userPrincipal.getName();
+                commonUtility.findPrincipalNameFromAuthentication(authentication);
 
             if (authentication.isAuthenticated()) {
-              UserAccount userAccount = userRepository.findByName(principalNameFromAuthentication);
+              UserAccount userAccount = userAccountDao.findByName(principalNameFromAuthentication);
 
               if (userAccount == null) {
                 userService.save(
@@ -333,7 +356,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   }
 
   @Override
-  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {}
+  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+  }
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -345,12 +369,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
     auth.authenticationProvider(authProvider);
     auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
   }
-
-  /*@Override
-  protected void configure(
-      AuthenticationManagerBuilder auth) throws Exception {
-    auth.authenticationProvider(new AnonymousAuthProvider());
-  }*/
 }
 
 class ClientResources {

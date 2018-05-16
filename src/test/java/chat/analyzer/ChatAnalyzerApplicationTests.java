@@ -1,6 +1,6 @@
 package chat.analyzer;
 
-import chat.analyzer.auth.service.EmailInvitationServiceImpl;
+import chat.analyzer.service.EmailInvitationServiceImpl;
 import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.capcha.service.GoogleReCaptchaService;
 import chat.analyzer.dao.UserAccountDao;
@@ -12,7 +12,6 @@ import chat.analyzer.domain.model.ChatMessage;
 import chat.analyzer.gateway.ChatAnalyzerGateway;
 import chat.analyzer.service.invitation.UserInvitationService;
 import chat.analyzer.service.tone.recognizer.ToneAnalyzerService;
-import chat.analyzer.utility.CommonUtility;
 import com.google.common.collect.Maps;
 import org.junit.After;
 import org.junit.Assert;
@@ -26,12 +25,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;

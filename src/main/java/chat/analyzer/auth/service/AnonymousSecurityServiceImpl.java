@@ -32,11 +32,6 @@ public class AnonymousSecurityServiceImpl implements SecurityService {
   private static final Logger LOGGER = LoggerFactory.getLogger(AnonymousSecurityServiceImpl.class);
 
   @Override
-  public String findLoggedInUsername() {
-    return null;
-  }
-
-  @Override
   public void autoLogin(
       String username, String password, HttpServletRequest request, HttpServletResponse response) {
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);

@@ -9,6 +9,6 @@ public interface UserService {
 
   UserAccount findByName(String username);
 
-  public void addBudyyToUser(
+  void addBuddyToUserBuddyList(
       UserAccount emailInvitationSenser, UserAccount emailInvitationEeceiver);
 }

@@ -25,8 +25,6 @@ public class UserAccountDao {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserAccountDao.class);
 
-  @Autowired private PresenceEventListener presenceEventListener;
-
   @Autowired private UserAccountRepository userAccountRepository;
 
   @Autowired SimpUserRegistry simpUserRegistry;
@@ -67,7 +65,7 @@ public class UserAccountDao {
         new BuddyDetails(receiverUserAccount.getId(), userAccount.getName()));
     userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
     receiverUserAccount.setBuddyList(emailInvitationReceiverBuddyList);
-    userService.addBudyyToUser(userEmailInvitationSender, receiverUserAccount);
+    userService.addBuddyToUserBuddyList(userEmailInvitationSender, receiverUserAccount);
   }
 
   public List<LoginEvent> findBuddyList(

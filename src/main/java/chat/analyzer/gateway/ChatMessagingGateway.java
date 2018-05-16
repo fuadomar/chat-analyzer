@@ -5,7 +5,7 @@ import chat.analyzer.domain.entity.UserAccount;
 import chat.analyzer.domain.model.LoginEvent;
 import chat.analyzer.domain.repository.ChatMessageRepository;
 import chat.analyzer.redis.service.RedisNotificationStorageService;
-import chat.analyzer.service.chat.ChatService;
+import chat.analyzer.service.chat.ChatMessageSenderService;
 import chat.analyzer.utility.CommonUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class ChatMessagingGateway {
   @Value("${app.user.unseen.message.topic}")
   private String unseenMessageTopic;
 
-  @Autowired private ChatService chatService;
+  @Autowired private ChatMessageSenderService chatMessageSenderService;
 
   @Autowired private UserAccountDao userAccountDao;
 
@@ -69,7 +69,7 @@ public class ChatMessagingGateway {
   }
 
   public void sendMessageTo(chat.analyzer.domain.model.ChatMessage chatChatMessage) {
-    chatService.sendMessageTo(chatChatMessage);
+    chatMessageSenderService.sendChatMessageToDestination(chatChatMessage);
   }
 
   public List<chat.analyzer.domain.entity.ChatMessage> fetchAllMessagesBetweenTwoBuddy(

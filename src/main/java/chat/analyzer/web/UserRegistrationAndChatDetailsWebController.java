@@ -1,6 +1,6 @@
 package chat.analyzer.web;
 
-import chat.analyzer.auth.service.IEmailInvitationService;
+import chat.analyzer.service.IEmailInvitationService;
 import chat.analyzer.auth.service.SecurityService;
 import chat.analyzer.auth.service.UserService;
 import chat.analyzer.domain.repository.UserAccountRepository;

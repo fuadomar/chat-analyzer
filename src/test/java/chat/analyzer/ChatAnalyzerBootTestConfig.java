@@ -2,16 +2,12 @@ package chat.analyzer;
 
 import static org.mockito.Mockito.mock;
 
-import chat.analyzer.auth.service.EmailInvitationServiceImpl;
+import chat.analyzer.service.EmailInvitationServiceImpl;
 import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.dao.UserAccountDao;
-import chat.analyzer.domain.repository.UserAccountRepository;
-import chat.analyzer.gateway.ChatAnalyzerGateway;
 import chat.analyzer.service.invitation.UserInvitationService;
 import chat.analyzer.service.tone.recognizer.ToneAnalyzerService;
-import chat.analyzer.utility.CommonUtility;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import chat.analyzer.capcha.service.GoogleReCaptchaService;

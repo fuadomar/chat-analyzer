@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void addBudyyToUser(
+  public void addBuddyToUserBuddyList(
       UserAccount emailInvitationSender, UserAccount emailInvitationReceiver) {
 
     userRepository.save(emailInvitationSender);

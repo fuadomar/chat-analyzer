@@ -30,7 +30,7 @@ public class AnonymousUserServiceImpl implements UserService {
   }
 
   @Override
-  public void addBudyyToUser(
+  public void addBuddyToUserBuddyList(
       UserAccount emailInvitationSender, UserAccount emailInvitationReceiver) {
     userAccountDao.save(emailInvitationSender);
     userAccountDao.save(emailInvitationReceiver);

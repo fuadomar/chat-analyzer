@@ -19,7 +19,9 @@ import java.util.UUID;
 public class UserInvitationService {
 
   private static final Logger LOG = LoggerFactory.getLogger(UserInvitationService.class);
+
   public static final String EMAIL_CONFIRMATION_RESOURCE = "/confirmationEmail";
+
   public static final String RECEIVER_UNKNOWN = "";
 
   @Autowired private RabbitTemplate rabbitTemplate;

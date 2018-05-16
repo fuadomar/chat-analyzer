@@ -3,7 +3,7 @@ package chat.analyzer.service.chat;
 import chat.analyzer.domain.model.ChatMessage;
 
 /** Created by mozammal on 4/11/17. */
-public interface ChatService {
+public interface ChatMessageSenderService {
 
-  public void sendMessageTo(ChatMessage chatMessage);
+  public void sendChatMessageToDestination(ChatMessage chatMessage);
 }

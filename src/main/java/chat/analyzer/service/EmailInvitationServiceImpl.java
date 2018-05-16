@@ -1,5 +1,6 @@
-package chat.analyzer.auth.service;
+package chat.analyzer.service;
 
+import chat.analyzer.service.IEmailInvitationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import chat.analyzer.domain.entity.EmailInvitation;
@@ -14,13 +15,11 @@ public class EmailInvitationServiceImpl implements IEmailInvitationService {
   @Override
   public EmailInvitation findByToeknAndSenderAndReceiver(
       String token, String sender, String receiver) {
-    // return emailInvitationRepository.findByToken(token);
     return emailInvitationRepository.findByTokenAndSenderAndReceiver(token, sender, receiver);
   }
 
   @Override
   public EmailInvitation findByToken(String token) {
-    // return emailInvitationRepository.findByToken(token);
     return emailInvitationRepository.findByToken(token);
   }
 }

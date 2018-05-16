@@ -25,18 +25,7 @@ public class SecurityServiceImpl implements SecurityService {
 
   @Autowired private UserDetailsService userDetailsService;
 
-  private static final Logger logger = LoggerFactory.getLogger(SecurityServiceImpl.class);
-
-  @Override
-  public String findLoggedInUsername() {
-
-    Object userDetails = SecurityContextHolder.getContext().getAuthentication().getDetails();
-    if (userDetails instanceof UserDetails) {
-      return ((UserDetails) userDetails).getUsername();
-    }
-
-    return null;
-  }
+  private static final Logger LOG = LoggerFactory.getLogger(SecurityServiceImpl.class);
 
   @Override
   public void autoLogin(
@@ -46,7 +35,6 @@ public class SecurityServiceImpl implements SecurityService {
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
         new UsernamePasswordAuthenticationToken(userDetails, password, authorities);
 
-    // generate session if one doesn't exist
     request.getSession();
     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
     Authentication authenticatedUser =
@@ -54,7 +42,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     if (authenticatedUser.isAuthenticated()) {
       SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-      logger.info(String.format("Auto login %s successfully!", username));
+      LOG.info(String.format("Auto login %s successfully!", username));
     }
   }
 }

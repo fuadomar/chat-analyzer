@@ -1,4 +1,4 @@
-package chat.analyzer.auth.service;
+package chat.analyzer.service;
 
 import chat.analyzer.domain.entity.EmailInvitation;
 
