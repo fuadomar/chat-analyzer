@@ -6,6 +6,8 @@ import chat.analyzer.auth.service.EmailInvitationServiceImpl;
 import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.repository.UserAccountRepository;
+import chat.analyzer.service.invitation.UserInvitationService;
+import chat.analyzer.utility.CommonUtility;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -40,5 +42,11 @@ public class ChatAnalyzerBootTestConfig {
   @Primary
   UserDetailsServiceImpl userDetailsService() {
     return Mockito.mock(UserDetailsServiceImpl.class);
+  }
+
+  @Bean
+  @Primary
+  UserInvitationService userInvitationService() {
+    return Mockito.mock(UserInvitationService.class);
   }
 }

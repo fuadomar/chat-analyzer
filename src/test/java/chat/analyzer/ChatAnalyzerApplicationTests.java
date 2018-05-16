@@ -7,23 +7,25 @@ import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.EmailInvitation;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.repository.UserAccountRepository;
+import chat.analyzer.service.invitation.UserInvitationService;
+import chat.analyzer.utility.CommonUtility;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -42,10 +44,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -73,6 +78,8 @@ public class ChatAnalyzerApplicationTests {
   @Autowired private EmailInvitationServiceImpl emailInvitationService;
 
   @Autowired private UserDetailsServiceImpl userDetailsService;
+
+  @Autowired private UserInvitationService userInvitationService;
 
   private MockMvc mockMvc;
 
@@ -139,6 +146,17 @@ public class ChatAnalyzerApplicationTests {
         .perform(requestBuilder)
         .andExpect(status().is3xxRedirection())
         .andExpect(view().name("redirect:/chat?invited=test123"));
+  }
+
+  @Test
+  @WithMockUser(username = "test", password = "test", roles = "USER")
+  public void testShouldReturnAnonymousChatUri() throws Exception {
+
+    String fakeAnonymousUri = "http://localhost/chat/anonymous?token=";
+    this.mockMvc
+        .perform(get("/anonymousChatUri"))
+        .andExpect(status().isOk())
+        .andExpect(content().string(containsString(fakeAnonymousUri)));
   }
 
   @Test

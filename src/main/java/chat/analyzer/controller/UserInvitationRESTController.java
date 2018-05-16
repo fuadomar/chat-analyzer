@@ -7,6 +7,7 @@ import java.security.Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import chat.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
+import java.util.UUID;
 
 /** Created by user on 1/8/2018. */
 @RestController
@@ -30,6 +32,7 @@ public class UserInvitationRESTController {
 
   @Autowired private UserInvitationGateway userInvitationGateway;
 
+  @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/emailInvitation", method = RequestMethod.GET)
   public String inviteUserByEmail(
       @RequestParam("email") String email,
@@ -50,10 +53,15 @@ public class UserInvitationRESTController {
     return "Ok";
   }
 
-  @RequestMapping(value = "/anonymousChatLink", method = RequestMethod.GET)
+  @RequestMapping(value = "/anonymousChatUri", method = RequestMethod.GET)
   public String inviteAnonymousUserByGeneratingLink(HttpServletRequest request, Principal principal)
       throws MalformedURLException {
 
-    return userInvitationGateway.inviteAnonymousUserByGeneratingLink(request);
+    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+    String sender = commonUtility.findPrincipalNameFromAuthentication(auth);
+    String token = UUID.randomUUID().toString();
+    String confirmationUrl = commonUtility.createAnonymousChatUri(token, request);
+    userInvitationGateway.inviteAnonymousUserByGeneratingLink(sender, token);
+    return confirmationUrl;
   }
 }

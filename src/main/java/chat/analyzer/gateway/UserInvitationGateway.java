@@ -5,8 +5,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import chat.analyzer.domain.repository.EmailInvitationRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,10 +30,9 @@ public class UserInvitationGateway {
     return "Ok";
   }
 
-  @RequestMapping(value = "/anonymousChatLink", method = RequestMethod.GET)
-  public String inviteAnonymousUserByGeneratingLink(HttpServletRequest request)
+  public void inviteAnonymousUserByGeneratingLink(String sender, String token)
       throws MalformedURLException {
 
-    return userInvitationService.inviteAnonymousUserByUrlLink(request);
+    userInvitationService.inviteAnonymousUserByUrlLink(sender, token);
   }
 }

@@ -72,7 +72,8 @@ public class ChatMessagingGateway {
     chatService.sendMessageTo(chatChatMessage);
   }
 
-  public List<chat.analyzer.domain.entity.ChatMessage> fetchAllMessagesBetweenTwoBuddy(String receiver, Principal principal) {
+  public List<chat.analyzer.domain.entity.ChatMessage> fetchAllMessagesBetweenTwoBuddy(
+      String receiver, Principal principal) {
 
     String sender;
 

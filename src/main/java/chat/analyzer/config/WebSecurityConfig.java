@@ -132,8 +132,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   @Autowired private CustomAuthenticationProvider authProvider;
 
-  @Autowired
-  TokenService persistentTokenRepository;
+  @Autowired TokenService persistentTokenRepository;
 
   @Autowired
   public WebSecurityConfig(

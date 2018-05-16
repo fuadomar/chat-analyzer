@@ -55,7 +55,7 @@ public class MailService {
       helper.setSubject(userInvitationNotification.getSubject());
       helper.setFrom(mailFrom);
       LOG.info("email message: {}", message);
-      //mailSender.send(message);
+      // mailSender.send(message);
 
       EmailInvitation emailInvitation =
           new EmailInvitation(

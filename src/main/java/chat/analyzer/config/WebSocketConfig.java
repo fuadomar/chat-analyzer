@@ -56,7 +56,6 @@ public class WebSocketConfig
   @Value("${raqqbitmq.stomp.password}")
   private String stompUserPassword;
 
-
   @Override
   protected void configureStompEndpoints(StompEndpointRegistry stompEndpointRegistry) {
     stompEndpointRegistry.addEndpoint("/stomp").withSockJS();

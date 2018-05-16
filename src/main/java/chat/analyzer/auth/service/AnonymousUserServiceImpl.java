@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class AnonymousUserServiceImpl implements UserService {
 
-
   @Autowired private UserAccountDao userAccountDao;
 
   @Override

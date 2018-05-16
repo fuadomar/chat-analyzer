@@ -102,7 +102,8 @@ public class ChatMessagingRESTController {
       @Payload LoginEvent loginEvent, SimpMessageHeaderAccessor headerAccessor) {
 
     String msgSendToUser = headerAccessor.getUser().getName();
-    redisNotificationStorageService.deleteAwaitingMessageNotificationByUser(msgSendToUser, loginEvent);
+    redisNotificationStorageService.deleteAwaitingMessageNotificationByUser(
+        msgSendToUser, loginEvent);
     return "Ok";
   }
 }

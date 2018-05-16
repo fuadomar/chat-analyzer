@@ -284,8 +284,8 @@ $(document).ready(function () {
                                 ) && userClickedOnWhcihBuddyMessageBox
                                 == payload.sender[i].userName) {
 
-                              stompClient.send("/app/dispose.ack.message.notification", {},
-                                  JSON.stringify(payload.sender[i]));
+                                stompClient.send("/app/dispose.ack.message.notification", {},
+                                    JSON.stringify(payload.sender[i]));
                                 continue;
                             }
                             if (isFirstIteration) {
@@ -386,19 +386,19 @@ $(document).ready(function () {
                 dates = [];
                 hideNotificationPanel();
 
-              stompClient.send("/app/dispose.all.queued.message.notification", {},'');
+                stompClient.send("/app/dispose.all.queued.message.notification", {}, '');
 
-            /*    $.get({
-                    type: 'get',
-                    url: '/dispose_all_queued_message_notification',
-                    success: function (data) {
-
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        //jQuery.event.trigger("ajaxStop");
-                        console.log(textStatus, errorThrown);
-                    }
-                });*/
+                /*    $.get({
+                        type: 'get',
+                        url: '/dispose_all_queued_message_notification',
+                        success: function (data) {
+    
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            //jQuery.event.trigger("ajaxStop");
+                            console.log(textStatus, errorThrown);
+                        }
+                    });*/
                 e.stopPropagation();
             });
 
@@ -486,7 +486,7 @@ $(document).ready(function () {
                 $("#userInvitationTextAreaModal").modal('show');
                 $.get({
                     type: 'get',
-                    url: '/anonymousChatLink',
+                    url: '/anonymousChatUri',
                     dataType: "text",
                     success: function (data) {
                         $("#send-invitation-modal").hide();

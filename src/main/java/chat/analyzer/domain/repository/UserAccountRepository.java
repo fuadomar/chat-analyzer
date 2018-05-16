@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /** Created by mozammal on 4/18/17. */
-
 @Repository
 public interface UserAccountRepository extends MongoRepository<UserAccount, String> {
 

@@ -2,7 +2,7 @@ package chat.analyzer.domain.model;
 
 import java.io.Serializable;
 
-public class LogoutEvent implements Serializable{
+public class LogoutEvent implements Serializable {
 
   private String userName;
 

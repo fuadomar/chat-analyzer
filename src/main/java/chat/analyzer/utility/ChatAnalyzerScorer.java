@@ -75,8 +75,7 @@ public class ChatAnalyzerScorer {
     return toneAnalyzerFeedBackDTO;
   }
 
-  private String findAllReceivedMessagesFromSender(
-      ChatMessage chatChatMessage) {
+  private String findAllReceivedMessagesFromSender(ChatMessage chatChatMessage) {
 
     UserAccount sender = userAccountDao.findOne(chatChatMessage.getSender());
     if (sender == null) {

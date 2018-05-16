@@ -21,7 +21,6 @@ import java.util.UUID;
 @Component
 public class CommonUtility {
 
-
   @Value("${google.recaptcha.key.site}")
   private String recapchaKeySite;
 
@@ -85,16 +84,21 @@ public class CommonUtility {
   }
 
   /*<label class="">Captcha</label>
-            <div class="g-recaptcha" data-sitekey="6LciqVMUAAAAACY-qsHFcL_E4PRhFowNxOC06pYz"
-  data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
-            <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
-*/
+              <div class="g-recaptcha" data-sitekey="6LciqVMUAAAAACY-qsHFcL_E4PRhFowNxOC06pYz"
+    data-callback="onReCaptchaSuccess" data-expired-callback="onReCaptchaExpired"></div>
+              <span id="captchaError" class="alert alert-danger col-sm-4" style="display:none"></span>
+  */
   public String createGoogleReCapchaDivForUerRegistrationPage() {
 
     String googleReCapchaDiv = "<label class=\"\">Captcha</label>";
-    googleReCapchaDiv = googleReCapchaDiv + "<div class=\"g-recaptcha\" data-sitekey=\"" + recapchaKeySite
-        + "\" data-callback=\"onReCaptchaSuccess\" data-expired-callback=\"onReCaptchaExpired\"></div>";
-    googleReCapchaDiv = googleReCapchaDiv + "<span id=\"captchaError\" class=\"alert alert-danger col-sm-4\" style=\"display:none\"></span><br />";
+    googleReCapchaDiv =
+        googleReCapchaDiv
+            + "<div class=\"g-recaptcha\" data-sitekey=\""
+            + recapchaKeySite
+            + "\" data-callback=\"onReCaptchaSuccess\" data-expired-callback=\"onReCaptchaExpired\"></div>";
+    googleReCapchaDiv =
+        googleReCapchaDiv
+            + "<span id=\"captchaError\" class=\"alert alert-danger col-sm-4\" style=\"display:none\"></span><br />";
     return googleReCapchaDiv;
   }
 
@@ -116,5 +120,10 @@ public class CommonUtility {
     return false;
   }
 
-
+  public String createAnonymousChatUri(String token, HttpServletRequest request)
+      throws MalformedURLException {
+    String url = findBaseUrl(request) + "/chat/anonymous";
+    String confirmationUrl = url + "?token=" + token;
+    return confirmationUrl;
+  }
 }
