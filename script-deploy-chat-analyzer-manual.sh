@@ -22,7 +22,7 @@ mkdir -p $HOME/$deployFolderName/$env
 
 echo $destFile
 
-cp $destFile $HOME/$deployFolderName/$env
+yes | cp -rf $destFile $HOME/$deployFolderName/$env
 rm -f $projectName.conf
 touch $projectName.conf
 echo "LOG_FOLDER=/var/logs/$env" >> $projectName.conf
