@@ -1,0 +1,56 @@
+Compile from Source
+
+In order to build from source, it is recommended that you install JDK 1.8, maven, mongodb,
+ rabbimq and redis.
+
+Step 1 — Installing JDK 1.8  on Ubuntu 16.04
+
+   sudo add-apt-repository ppa:webupd8team/java
+   sudo apt-get update
+   sudo apt-get install oracle-java8-installer
+
+Step 2 — Installing maven on Ubuntu 16.04
+
+   sudo apt-get install maven
+
+Step 3 — Installing mongodb on Ubuntu 16.04
+
+   sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927
+   echo "deb http://repo.mongodb.org/apt/ubuntu "$(lsb_release -sc)"/mongodb-org/3.2 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list
+   sudo apt-get update
+   sudo apt-get install -y mongodb-org
+   sudo service mongod start
+
+
+Step 4 — Installing redis on Ubuntu 16.04
+
+    sudo apt-get install -y redis-server
+
+
+Step 4 — Installing RabbitMQ on Ubuntu 16.04
+
+    wget http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc
+    sudo apt-key add erlang_solutions.asc
+    sudo apt-get update
+    wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+    sudo dpkg -i erlang-solutions_1.0_all.deb
+    sudo apt-get update
+    sudo apt-get install erlang erlang-nox
+    echo 'deb http://www.rabbitmq.com/debian/ testing main' | sudo tee /etc/apt/sources.list.d/rabbitmq.list
+    wget -O- https://www.rabbitmq.com/rabbitmq-release-signing-key.asc | sudo apt-key add -
+    sudo apt-get update
+    sudo apt-get install rabbitmq-server
+    sudo service rabbitmq-server start
+
+
+Step 5 — Cloning  application source repository from github:
+
+    git clone https://github.com/mozammal/tone-analyzer.git
+
+
+Step 6 — Running  application from command line:
+
+    cd tone-analyzer
+    mvn clean spring-boot:run
+
+Step 7 — Application is running at http://localhost:8080
