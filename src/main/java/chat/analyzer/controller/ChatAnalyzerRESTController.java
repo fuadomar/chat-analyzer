@@ -23,17 +23,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/**
- * Created by mozammal on 4/11/17.
- */
+/** Created by mozammal on 4/11/17. */
 @RestController
 public class ChatAnalyzerRESTController {
 
-  @Autowired
-  private ChatAnalyzerGateway chatAnalyzerGateway;
+  @Autowired private ChatAnalyzerGateway chatAnalyzerGateway;
 
   private static final Logger LOG = LoggerFactory.getLogger(ChatAnalyzerRESTController.class);
-
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/chat-analyzer-between-users", method = RequestMethod.GET)

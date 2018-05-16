@@ -61,9 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
-/**
- * Created by mozammal on 4/18/17.
- */
+/** Created by mozammal on 4/18/17. */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -135,8 +133,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   public static final String IMAGES = "/images/**";
 
-  @Autowired
-  private UserDetailsService userDetailsService;
+  @Autowired private UserDetailsService userDetailsService;
 
   private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
@@ -144,23 +141,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
 
   private final ClientDetailsService clientDetailsService;
 
-  @Autowired
-  private UserAccountRepository userRepository;
+  @Autowired private UserAccountRepository userRepository;
 
-  @Autowired
-  private UserServiceImpl userService;
+  @Autowired private UserServiceImpl userService;
 
-  @Autowired
-  private CustomAuthenticationProvider authProvider;
+  @Autowired private CustomAuthenticationProvider authProvider;
 
-  @Autowired
-  TokenService persistentTokenRepository;
+  @Autowired TokenService persistentTokenRepository;
 
-  @Autowired
-  private CommonUtility commonUtility;
+  @Autowired private CommonUtility commonUtility;
 
-  @Autowired
-  private UserAccountDao userAccountDao;
+  @Autowired private UserAccountDao userAccountDao;
 
   @Autowired
   public WebSecurityConfig(
@@ -178,8 +169,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   @Override
   public void configure(
       AuthorizationServerEndpointsConfigurer authorizationServerEndpointsConfigurer)
-      throws Exception {
-  }
+      throws Exception {}
 
   @Configuration
   @EnableResourceServer
@@ -356,8 +346,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter
   }
 
   @Override
-  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-  }
+  public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {}
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {

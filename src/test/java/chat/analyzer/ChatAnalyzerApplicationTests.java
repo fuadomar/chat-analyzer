@@ -68,32 +68,23 @@ public class ChatAnalyzerApplicationTests {
 
   public static final String USER_REGISTRATION_URI = "/userRegistration";
 
-  @Autowired
-  private WebApplicationContext context;
+  @Autowired private WebApplicationContext context;
 
-  @Autowired
-  org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+  @Autowired org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
 
-  @Autowired
-  private GoogleReCaptchaService googleReCaptchaService;
+  @Autowired private GoogleReCaptchaService googleReCaptchaService;
 
-  @Autowired
-  private UserAccountDao userAccountDao;
+  @Autowired private UserAccountDao userAccountDao;
 
-  @Autowired
-  private EmailInvitationServiceImpl emailInvitationService;
+  @Autowired private EmailInvitationServiceImpl emailInvitationService;
 
-  @Autowired
-  private UserDetailsServiceImpl userDetailsService;
+  @Autowired private UserDetailsServiceImpl userDetailsService;
 
-  @Autowired
-  private UserInvitationService userInvitationService;
+  @Autowired private UserInvitationService userInvitationService;
 
-  @Autowired
-  private ChatAnalyzerGateway chatAnalyzerGateway;
+  @Autowired private ChatAnalyzerGateway chatAnalyzerGateway;
 
-  @Autowired
-  ToneAnalyzerService toneAnalyzerService;
+  @Autowired ToneAnalyzerService toneAnalyzerService;
 
   private MockMvc mockMvc;
 
@@ -113,8 +104,7 @@ public class ChatAnalyzerApplicationTests {
   }
 
   @Test
-  public void contextLoads() {
-  }
+  public void contextLoads() {}
 
   @Test
   public void testShouldRedirectUnauthorizedUser() throws Exception {
@@ -182,16 +172,16 @@ public class ChatAnalyzerApplicationTests {
     ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO = new ToneAnalyzerFeedBackDTO();
     toneAnalyzerFeedBackDTO.put("Anger", 0.159056);
     toneAnalyzerFeedBackDTO.put("Disgust", 0.143912);
-    Mockito.when(toneAnalyzerService.
-        analyzeChatToneBetweenSenderAndReceiver(chatMessage)).
-        thenReturn(toneAnalyzerFeedBackDTO);
-    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO1 = chatAnalyzerGateway
-        .analyzeChatToneBetweenSenderAndReceiver(chatMessage);
+    Mockito.when(toneAnalyzerService.analyzeChatToneBetweenSenderAndReceiver(chatMessage))
+        .thenReturn(toneAnalyzerFeedBackDTO);
+    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO1 =
+        chatAnalyzerGateway.analyzeChatToneBetweenSenderAndReceiver(chatMessage);
 
     int size = toneAnalyzerFeedBackDTO.size();
     int size1 = toneAnalyzerFeedBackDTO1.size();
     Assert.assertEquals(size, size1);
-    Assert.assertTrue(Maps.difference(toneAnalyzerFeedBackDTO1, toneAnalyzerFeedBackDTO).areEqual());
+    Assert.assertTrue(
+        Maps.difference(toneAnalyzerFeedBackDTO1, toneAnalyzerFeedBackDTO).areEqual());
   }
 
   @Test
