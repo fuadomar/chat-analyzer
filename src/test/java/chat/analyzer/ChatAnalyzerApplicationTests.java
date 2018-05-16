@@ -4,12 +4,18 @@ import chat.analyzer.auth.service.EmailInvitationServiceImpl;
 import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.capcha.service.GoogleReCaptchaService;
 import chat.analyzer.dao.UserAccountDao;
+import chat.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import chat.analyzer.domain.entity.EmailInvitation;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
+import chat.analyzer.domain.model.ChatMessage;
+import chat.analyzer.gateway.ChatAnalyzerGateway;
 import chat.analyzer.service.invitation.UserInvitationService;
+import chat.analyzer.service.tone.recognizer.ToneAnalyzerService;
 import chat.analyzer.utility.CommonUtility;
+import com.google.common.collect.Maps;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,19 +73,32 @@ public class ChatAnalyzerApplicationTests {
 
   public static final String USER_REGISTRATION_URI = "/userRegistration";
 
-  @Autowired private WebApplicationContext context;
+  @Autowired
+  private WebApplicationContext context;
 
-  @Autowired org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+  @Autowired
+  org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
 
-  @Autowired private GoogleReCaptchaService googleReCaptchaService;
+  @Autowired
+  private GoogleReCaptchaService googleReCaptchaService;
 
-  @Autowired private UserAccountDao userAccountDao;
+  @Autowired
+  private UserAccountDao userAccountDao;
 
-  @Autowired private EmailInvitationServiceImpl emailInvitationService;
+  @Autowired
+  private EmailInvitationServiceImpl emailInvitationService;
 
-  @Autowired private UserDetailsServiceImpl userDetailsService;
+  @Autowired
+  private UserDetailsServiceImpl userDetailsService;
 
-  @Autowired private UserInvitationService userInvitationService;
+  @Autowired
+  private UserInvitationService userInvitationService;
+
+  @Autowired
+  private ChatAnalyzerGateway chatAnalyzerGateway;
+
+  @Autowired
+  ToneAnalyzerService toneAnalyzerService;
 
   private MockMvc mockMvc;
 
@@ -99,7 +118,8 @@ public class ChatAnalyzerApplicationTests {
   }
 
   @Test
-  public void contextLoads() {}
+  public void contextLoads() {
+  }
 
   @Test
   public void testShouldRedirectUnauthorizedUser() throws Exception {
@@ -157,6 +177,26 @@ public class ChatAnalyzerApplicationTests {
         .perform(get("/anonymousChatUri"))
         .andExpect(status().isOk())
         .andExpect(content().string(containsString(fakeAnonymousUri)));
+  }
+
+  @Test
+  @WithMockUser(username = "test", password = "test", roles = "USER")
+  public void testShouldReturnChatToneBetweenTwoUser() throws Exception {
+
+    ChatMessage chatMessage = new ChatMessage("test", "testing chat tone");
+    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO = new ToneAnalyzerFeedBackDTO();
+    toneAnalyzerFeedBackDTO.put("Anger", 0.159056);
+    toneAnalyzerFeedBackDTO.put("Disgust", 0.143912);
+    Mockito.when(toneAnalyzerService.
+        analyzeChatToneBetweenSenderAndReceiver(chatMessage)).
+        thenReturn(toneAnalyzerFeedBackDTO);
+    ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO1 = chatAnalyzerGateway
+        .analyzeChatToneBetweenSenderAndReceiver(chatMessage);
+
+    int size = toneAnalyzerFeedBackDTO.size();
+    int size1 = toneAnalyzerFeedBackDTO1.size();
+    Assert.assertEquals(size, size1);
+    Assert.assertTrue(Maps.difference(toneAnalyzerFeedBackDTO1, toneAnalyzerFeedBackDTO).areEqual());
   }
 
   @Test

@@ -6,7 +6,9 @@ import chat.analyzer.auth.service.EmailInvitationServiceImpl;
 import chat.analyzer.auth.service.UserDetailsServiceImpl;
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.repository.UserAccountRepository;
+import chat.analyzer.gateway.ChatAnalyzerGateway;
 import chat.analyzer.service.invitation.UserInvitationService;
+import chat.analyzer.service.tone.recognizer.ToneAnalyzerService;
 import chat.analyzer.utility.CommonUtility;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,5 +50,11 @@ public class ChatAnalyzerBootTestConfig {
   @Primary
   UserInvitationService userInvitationService() {
     return Mockito.mock(UserInvitationService.class);
+  }
+
+  @Bean
+  @Primary
+  ToneAnalyzerService toneAnalyzerService() {
+    return Mockito.mock(ToneAnalyzerService.class);
   }
 }

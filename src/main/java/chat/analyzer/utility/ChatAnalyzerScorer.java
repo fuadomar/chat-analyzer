@@ -100,7 +100,6 @@ public class ChatAnalyzerScorer {
     ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO = new ToneAnalyzerFeedBackDTO();
     ToneAnalysis tone = toneAnalyzer.getTone(msg, null).execute();
 
-    /* for (ToneCategory toneCategory : tone.getDocumentTone().getTones()) {*/
     tone.getDocumentTone()
         .getTones()
         .forEach(
@@ -116,14 +115,6 @@ public class ChatAnalyzerScorer {
                         probableToneScore.add(toneScore.getScore());
                       });
             });
-    /*  for (ToneScore toneScore : toneCategory.getTones()) {
-      LOG.debug("{} {} ", toneScore.getName(), toneScore.getScore());
-      if (toneScore.getScore() >= ACCEPTED_WEIGHTED_THRESHOLD) {
-        toneAnalyzerFeedBackDTO.put(toneScore.getName(), toneScore.getScore());
-        probableToneName.add(toneScore.getName());
-        probableToneScore.add(toneScore.getScore());
-      }
-    }*/
     return toneAnalyzerFeedBackDTO;
   }
 

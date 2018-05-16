@@ -23,42 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-/** Created by mozammal on 4/11/17. */
+/**
+ * Created by mozammal on 4/11/17.
+ */
 @RestController
 public class ChatAnalyzerRESTController {
 
-  @Autowired private ChatAnalyzerGateway chatAnalyzerGateway;
+  @Autowired
+  private ChatAnalyzerGateway chatAnalyzerGateway;
 
   private static final Logger LOG = LoggerFactory.getLogger(ChatAnalyzerRESTController.class);
 
-  @PreAuthorize("hasRole('ROLE_USER')")
-  @RequestMapping(value = "/upload/images", method = RequestMethod.POST)
-  public @ResponseBody String uploadImage(
-      @RequestParam("image") String image, HttpServletRequest request) {
-    try {
-
-      String token = UUID.randomUUID().toString();
-      LOG.info("image base64:  {}", image);
-      String delimiter = "data:image/png;base64,";
-      int imageLength = image.length();
-      String bse64Image = image.substring(delimiter.length(), imageLength - 2);
-      String s = image.substring(imageLength - 2);
-      HttpClient httpclient = HttpClients.createDefault();
-      HttpPost httppost = new HttpPost("http://data-uri-to-img-url.herokuapp.com/images.json");
-
-      List<NameValuePair> params = new ArrayList<NameValuePair>(1);
-      params.add(new BasicNameValuePair("image[data_uri]", bse64Image));
-      httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
-
-      HttpResponse response = httpclient.execute(httppost);
-      HttpEntity entity = response.getEntity();
-      String responseString = EntityUtils.toString(entity, "UTF-8");
-      return responseString;
-
-    } catch (Exception e) {
-      return "error = " + e;
-    }
-  }
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/chat-analyzer-between-users", method = RequestMethod.GET)
