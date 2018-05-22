@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
-  @Resource Environment environment;
+  private @Resource Environment environment;
 
   @Bean
   JedisConnectionFactory jedisConnectionFactory() {
@@ -24,8 +24,7 @@ public class RedisConfig {
 
   @Bean
   public StringRedisSerializer stringRedisSerializer() {
-    StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
-    return stringRedisSerializer;
+    return new StringRedisSerializer();
   }
 
   @Bean

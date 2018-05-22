@@ -3,7 +3,6 @@ package chat.analyzer.auth.service;
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

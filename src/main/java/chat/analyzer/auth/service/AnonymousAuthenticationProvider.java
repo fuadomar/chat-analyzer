@@ -1,6 +1,5 @@
 package chat.analyzer.auth.service;
 
-import java.security.AuthProvider;
 
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;

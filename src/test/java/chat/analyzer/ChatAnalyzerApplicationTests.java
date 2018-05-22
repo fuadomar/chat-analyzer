@@ -64,9 +64,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 @Import(WebSecurityConfig.class)
 public class ChatAnalyzerApplicationTests {
 
-  public static final String REGISTRATION_VIEW_NAME = "userRegistration";
+  private static final String REGISTRATION_VIEW_NAME = "userRegistration";
 
-  public static final String USER_REGISTRATION_URI = "/userRegistration";
+  private static final String USER_REGISTRATION_URI = "/userRegistration";
 
   @Autowired private WebApplicationContext context;
 
@@ -125,7 +125,7 @@ public class ChatAnalyzerApplicationTests {
     UserAccount userAccount = new UserAccount("test123", "test123");
     userAccount.setPassword(new BCryptPasswordEncoder().encode(userAccount.getPassword()));
     userAccount.setEnabled(true);
-    userAccount.setRole(Arrays.asList(new Role("ROLE_ANONYMOUS_CHAT"), new Role("ROLE_USER")));
+    userAccount.setRole(Arrays.asList(new Role("ROLE_ANONYMOUS"), new Role("ROLE_USER")));
 
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
     for (Role rol : userAccount.getRole()) {

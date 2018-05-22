@@ -40,12 +40,10 @@ public class AnonymousSecurityServiceImpl implements SecurityService {
         new UsernamePasswordAuthenticationToken(
             userDetails,
             null,
-            AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ANONYMOUS_CHAT"));
+            AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ANONYMOUS"));
 
-    // generate session if one doesn't exist
     request.getSession();
     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));
-    // SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
     Authentication authenticatedUser =
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 

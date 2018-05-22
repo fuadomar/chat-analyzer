@@ -113,7 +113,7 @@ public class CommonUtility {
   public boolean isAnonymousUser(List<Role> roles) {
 
     for (Role rol : roles) {
-      if (rol.getName().equals("ROLE_ANONYMOUS_CHAT")) {
+      if (rol.getName().equals("ROLE_ANONYMOUS")) {
         return true;
       }
     }
