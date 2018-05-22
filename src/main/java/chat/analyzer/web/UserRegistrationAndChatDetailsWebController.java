@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -93,6 +94,12 @@ public class UserRegistrationAndChatDetailsWebController {
   private static final String PARAMETER_PASSWORD = "password";
 
   private static final String PARAMETER_NAME = "name";
+
+  @Value("${meta.tag.facebook.url}")
+  private String metaUrl;
+
+  @Value("${meta.tag.facebook.image.url}")
+  private String meteImageUrl;
 
   @Autowired
   @Qualifier("securityServiceImpl")
@@ -181,6 +188,8 @@ public class UserRegistrationAndChatDetailsWebController {
     if (logout != null) {
       model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
     }
+    model.addAttribute("metaUrl", metaUrl);
+    model.addAttribute("meteImageUrl", meteImageUrl);
     return LOGIN_VIEW;
   }
 
@@ -196,6 +205,8 @@ public class UserRegistrationAndChatDetailsWebController {
     String loggedInUserName = commonUtility.findPrincipalNameFromAuthentication(auth);
     loggedInUser = userAccountDao.findByName(loggedInUserName);
     populateModelForChatView(model, loggedInUser, loggedInUserName);
+    model.addAttribute("metaUrl", metaUrl);
+    model.addAttribute("meteImageUrl", meteImageUrl);
     return CHAT_VIEW;
   }
 

@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:og="http://www.springframework.org/schema/beans">
 
 <head>
-    <meta property="og:url" content="http://dev.myhost.com:8080/login"/>
+    <meta property="og:url" th:content="${metaUrl}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:title" content="tone analyzer"/>
     <meta property="og:description" content="we use machine learning"/>
-    <meta property="og:image" content="http://dev.myhost.com:8080/images/default-avatar.png"/>
+
+    <meta property="og:image" th:content="${meteImageUrl}"/>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">-->
     <script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>

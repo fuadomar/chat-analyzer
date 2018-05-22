@@ -4,10 +4,10 @@
 <head>
 
     <meta property="og:image"
-          content="http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/images/default-avatar.png"/>
+          th:content="${meteImageUrl}"/>
     <meta charset='UTF-8'>
     <meta name="robots" content="noindex">
-    <meta property="og:url" content="http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/login"/>
+    <meta property="og:url" th:content="${metaUrl}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:title" content="tone analyzer"/>
     <meta property="og:description" content="we use machine learning"/>
@@ -15,13 +15,6 @@
     <meta name="_csrf" th:content="${_csrf.token}"/>
     <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta name="ctx" th:content="${#httpServletRequest.getContextPath()}"/>
-    <link rel="shortcut icon" type="image/x-icon"
-          href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"/>
-    <link rel="mask-icon" type=""
-          href="//production-assets.codepen.io/assets/favicon/logo-pin-f2d2b6d2c61838f7e76325261b7195c27224080bc099486ddd6dccb469b8e8e6.svg"
-          color="#111"/>
-    <link rel="canonical"
-          href="https://codepen.io/emilcarlsson/pen/ZOQZaV?limit=all&page=74&q=contact+"/>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,300'
           rel='stylesheet'
           type='text/css'>

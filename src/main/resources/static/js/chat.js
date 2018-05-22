@@ -203,7 +203,7 @@ $(document).ready(function () {
         stompClient.connect('', function (frame) {
 
             $("#failed-msg-connection-error").hide();
-
+            chatList.html("");
             console.log(socket._transport.url);
             var url = socket._transport.url.split("/");
             var userName = frame.headers['user-name'];
@@ -703,6 +703,7 @@ $(document).ready(function () {
 
         $("#failed-msg-connection-error").show();
         $('.message-input').hide();
+        $("#ul-messages").text("");
         setTimeout(establishConnection, 10000);
     }
 
