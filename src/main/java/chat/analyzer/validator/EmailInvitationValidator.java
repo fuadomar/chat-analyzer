@@ -61,7 +61,7 @@ public class EmailInvitationValidator implements Validator {
       /*String regex = "([0-9|a-z|A-Z|\\_\\.])+";
       boolean matches = Pattern.matches(regex, userAccount.getName());
        if (!matches) {
-          errors.rejectValue(NAME, EMPTY_NAME);
+          errors.rejectValue(PARAMETER_NAME, EMPTY_NAME);
       }*/
     }
 

@@ -16,7 +16,7 @@ import tone.analyzer.domain.entity.UserAccount;
 
       public class EmailValidator implements ConstraintValidator<ValidEmail, String> {
 
-        public static final String NAME = "name";
+        public static final String PARAMETER_NAME = "name";
 
         public static final String SIZE_OF_NAME = "Size.AccountForm.name";
 
@@ -24,7 +24,7 @@ import tone.analyzer.domain.entity.UserAccount;
 
         public static final String EMPTY_NAME = "Null.AccountForm.name";
 
-        public static final String PASSWORD = "password";
+        public static final String PARAMETER_PASSWORD = "password";
 
         public static final String NOT_EMPTY_MESSAGE = "NotEmpty.AccountForm";
 
@@ -48,7 +48,7 @@ import tone.analyzer.domain.entity.UserAccount;
         public void validate(Object o, Errors errors) {
           UserAccount account = (UserAccount) o;
 
-          ValidationUtils.rejectIfEmptyOrWhitespace(errors, NAME, NOT_EMPTY_MESSAGE);
+          ValidationUtils.rejectIfEmptyOrWhitespace(errors, PARAMETER_NAME, NOT_EMPTY_MESSAGE);
           String name = account.getName();
           if (name.length() > 0) {
 
@@ -56,9 +56,9 @@ import tone.analyzer.domain.entity.UserAccount;
             boolean matches = Pattern.matches(regex, account.getName());
 
             if (userService.findByName(account.getName()) != null) {
-              errors.rejectValue(NAME, "Name not found");
+              errors.rejectValue(PARAMETER_NAME, "Name not found");
             } else if (!matches) {
-              errors.rejectValue(NAME, EMPTY_NAME);
+              errors.rejectValue(PARAMETER_NAME, EMPTY_NAME);
             }
           }
           if (validateEmail((account.get)))

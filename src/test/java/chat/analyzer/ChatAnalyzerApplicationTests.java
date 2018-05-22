@@ -80,8 +80,6 @@ public class ChatAnalyzerApplicationTests {
 
   @Autowired private UserDetailsServiceImpl userDetailsService;
 
-  @Autowired private UserInvitationService userInvitationService;
-
   @Autowired private ChatAnalyzerGateway chatAnalyzerGateway;
 
   @Autowired ToneAnalyzerService toneAnalyzerService;

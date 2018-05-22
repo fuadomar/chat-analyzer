@@ -50,42 +50,49 @@ public class UserRegistrationAndChatDetailsWebController {
   private static final Logger LOG =
       LoggerFactory.getLogger(UserRegistrationAndChatDetailsWebController.class);
 
-  public static final String ERROR_ATTRIBUTED = "error";
+  private static final String ERROR_ATTRIBUTED = "error";
 
-  public static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
+  private static final String ERROR_MESSAGE_UNSUCCESSFUL_LOGIN =
       "Your username and password is invalid.";
 
-  public static final String MESSAGE_ATTRIBUTED = "message";
+  private static final String MESSAGE_ATTRIBUTED = "message";
 
-  public static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
+  private static final String LOGGED_OUT_SUCCESSFUL_MESSAGE =
       "You have been logged out successfully.";
 
-  public static final String ADMIN_LOGIN_VIEW = "adminLogin";
+  private static final String ADMIN_LOGIN_VIEW = "adminLogin";
 
-  public static final String USERS_REGISTRATION_VIEW = "userRegistration";
+  private static final String USERS_REGISTRATION_VIEW = "userRegistration";
 
-  public static final String LOGIN_VIEW = "login";
+  private static final String LOGIN_VIEW = "login";
 
-  public static final String CHAT_VIEW = "chat";
+  private static final String CHAT_VIEW = "chat";
 
-  public static final String ADMIN_PANEL_VIEW = "adminPanel";
+  private static final String ADMIN_PANEL_VIEW = "adminPanel";
 
-  public static final String USER_NAME = "userName";
+  private static final String USER_NAME = "userName";
 
-  public static final String USER_LIST = "userList";
+  private static final String USER_LIST = "userList";
 
-  public static final String USER_REGISTRATION_URI = "/userRegistration";
+  private static final String USER_REGISTRATION_URI = "/userRegistration";
 
-  public static final String LIVE_CHAT_URI = "/chat";
+  private static final String LIVE_CHAT_URI = "/chat";
 
-  public static final String ROOT_URI = "/";
+  private static final String ROOT_URI = "/";
 
-  public static final String ACCOUNT_FORM = "userAccountForm";
+  private static final String ACCOUNT_FORM = "userAccountForm";
 
-  public static final String USER_REGISTRATION_EMAIL = "userRegistrationEmail";
-  public static final String REDIRECT_CHAT_URI = "redirect:/chat";
-  public static final String G_RECAPTCHA_RESPONSE = "g-recaptcha-response";
-  public static final String ANONYMOUS_USER_REGISTRATION_VIEW = "anonymousUserRegistration";
+  private static final String REDIRECT_CHAT_URI = "redirect:/chat";
+
+  private static final String G_RECAPTCHA_RESPONSE = "g-recaptcha-response";
+
+  private static final String ANONYMOUS_USER_REGISTRATION_VIEW = "anonymousUserRegistration";
+
+  private static final String REDIRECT_LOGIN = "redirect:/login";
+
+  private static final String PARAMETER_PASSWORD = "password";
+
+  private static final String PARAMETER_NAME = "name";
 
   @Autowired
   @Qualifier("securityServiceImpl")
@@ -114,8 +121,6 @@ public class UserRegistrationAndChatDetailsWebController {
   @Autowired private IEmailInvitationService emailInvitationService;
 
   @Autowired private UserAccountDao userAccountDao;
-
-  @Autowired private UserAccountRepository userUserAccountRepository;
 
   @Autowired private CommonUtility commonUtility;
 
@@ -211,14 +216,14 @@ public class UserRegistrationAndChatDetailsWebController {
       @RequestParam("receiver") String receiver) {
 
     if (token == null || StringUtils.isBlank((String) token)) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
 
     EmailInvitation emailInvitationServiceByToekn =
         emailInvitationService.findByToeknAndSenderAndReceiver(token, sender, receiver);
 
     if (emailInvitationServiceByToekn == null) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
     populateModelForUserEmailInviationView(model, emailInvitationServiceByToekn);
     return "userEmailRegistration";
@@ -239,7 +244,7 @@ public class UserRegistrationAndChatDetailsWebController {
     emailInvitationValidator.validate(userAccountFromRegistrationByEmail, bindingResult);
     if (bindingResult.hasErrors()) {
       LOG.info("error bind error inside method processEmailConfirmationForm: ");
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
     EmailInvitation token = emailInvitationService.findByToken((String) requestParams.get("token"));
 
@@ -248,11 +253,11 @@ public class UserRegistrationAndChatDetailsWebController {
     }
 
     Map<String, String> responseParams = new HashMap<>();
-    Object userPassword = requestParams.get("password");
-    Object userName = requestParams.get("name");
+    Object userPassword = requestParams.get(PARAMETER_PASSWORD);
+    Object userName = requestParams.get(PARAMETER_NAME);
 
     if (redirectIfUserNameOrPasswordInvalid(userPassword, userName)) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
 
     UserAccount userUserAccount = userAccountDao.findByName((String) userName);
@@ -273,13 +278,13 @@ public class UserRegistrationAndChatDetailsWebController {
   public String anonymousLoginForChat(Model model, @RequestParam("token") String token) {
 
     if (token == null || StringUtils.isBlank((String) token)) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
 
     EmailInvitation anonymousInvitationToken = emailInvitationService.findByToken(token);
 
     if (anonymousInvitationToken == null) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
     model.addAttribute("confirmationToken", anonymousInvitationToken.getToken());
     model.addAttribute("invitedBy", anonymousInvitationToken.getSender());
@@ -298,7 +303,6 @@ public class UserRegistrationAndChatDetailsWebController {
       RedirectAttributes redir)
       throws UnsupportedEncodingException {
 
-    Boolean alreadyLoggedIn = false;
     String name = null;
     Object userName = requestParams.get("name");
     Map<String, String> responseParams = new HashMap<>();
@@ -306,11 +310,11 @@ public class UserRegistrationAndChatDetailsWebController {
     anonymousInvitationValidator.validate(userAccountFromRegistrationByEmail, bindingResult);
     if (bindingResult.hasErrors()) {
       LOG.info("error bind error inside method processEmailConfirmationForm: ");
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
 
     if (userName == null || StringUtils.isBlank((String) userName)) {
-      return "redirect:/login";
+      return REDIRECT_LOGIN;
     }
 
     EmailInvitation emailToken =

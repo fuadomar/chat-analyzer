@@ -5,7 +5,7 @@ import chat.analyzer.domain.entity.BuddyDetails;
 import chat.analyzer.domain.entity.UserAccount;
 import chat.analyzer.domain.model.LoginEvent;
 import chat.analyzer.domain.repository.UserAccountRepository;
-import chat.analyzer.event.PresenceEventListener;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -53,17 +53,17 @@ public class UserAccountDao {
     }
 
     UserAccount userEmailInvitationSender = userService.findByName(token.getSender());
-    Set<BuddyDetails> emailInvitionSenderBuddyList = userEmailInvitationSender.getBuddyList();
+    Set<BuddyDetails> emailInvitationSenderBuddyList = userEmailInvitationSender.getBuddyList();
 
-    if (emailInvitionSenderBuddyList == null) {
-      emailInvitionSenderBuddyList = new HashSet<>();
+    if (emailInvitationSenderBuddyList == null) {
+      emailInvitationSenderBuddyList = new HashSet<>();
     }
 
     emailInvitationReceiverBuddyList.add(
         new BuddyDetails(userEmailInvitationSender.getId(), token.getSender()));
-    emailInvitionSenderBuddyList.add(
+    emailInvitationSenderBuddyList.add(
         new BuddyDetails(receiverUserAccount.getId(), userAccount.getName()));
-    userEmailInvitationSender.setBuddyList(emailInvitionSenderBuddyList);
+    userEmailInvitationSender.setBuddyList(emailInvitationSenderBuddyList);
     receiverUserAccount.setBuddyList(emailInvitationReceiverBuddyList);
     userService.addBuddyToUserBuddyList(userEmailInvitationSender, receiverUserAccount);
   }
@@ -72,50 +72,56 @@ public class UserAccountDao {
       String userName, boolean completeBuddyListWithOnlinePresence) {
 
     UserAccount userUserAccount = userAccountRepository.findByName(userName);
-    List<LoginEvent> buddyObjectList = new ArrayList<>();
+    List<LoginEvent> buddyListAsLoginEvents = new ArrayList<>();
     Set<BuddyDetails> buddyList = userUserAccount.getBuddyList();
-    List<LoginEvent> onlineBuddyList = new ArrayList<>();
+    List<LoginEvent> onlineBuddyListAsLoginEvents = new ArrayList<>();
 
     if (buddyList == null) {
-      return buddyObjectList;
+      return buddyListAsLoginEvents;
     }
 
-    for (BuddyDetails buddy : buddyList) {
-      LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
-      UserAccount friendUserAccount = userUserAccountRepository.findByName(buddy.getName());
-      if (friendUserAccount == null) {
-        continue;
-      }
-      loginEvent.setId(buddy.getId());
-      loginEvent.setProfileImage(
-          friendUserAccount.getDocumentMetaData() != null
-              ? friendUserAccount.getDocumentMetaData().getThumbNail()
-              : "");
-      buddyObjectList.add(loginEvent);
-    }
+    buddyList.forEach(
+        buddy -> {
+          LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+          UserAccount friendUserAccount = userUserAccountRepository.findByName(buddy.getName());
+          if (friendUserAccount == null) {
+            return;
+          }
+          loginEvent.setId(buddy.getId());
+          loginEvent.setProfileImage(
+              friendUserAccount.getDocumentMetaData() != null
+                  ? friendUserAccount.getDocumentMetaData().getThumbNail()
+                  : "");
+          buddyListAsLoginEvents.add(loginEvent);
+        });
 
-    for (SimpUser currentUser : simpUserRegistry.getUsers()) {
-      LOG.info("currently online: {}", currentUser.getName());
-      if (buddyList.contains(new BuddyDetails(currentUser.getName(), currentUser.getName()))) {
-        int indexOnlineUser = buddyObjectList.indexOf(new LoginEvent(currentUser.getName(), true));
-        if (indexOnlineUser == -1) {
-          continue;
-        }
+    simpUserRegistry
+        .getUsers()
+        .forEach(
+            currentUser -> {
+              LOG.info("currently online: {}", currentUser.getName());
+              if (buddyList.contains(
+                  new BuddyDetails(currentUser.getName(), currentUser.getName()))) {
+                int indexOnlineUser =
+                    buddyListAsLoginEvents.indexOf(new LoginEvent(currentUser.getName(), true));
+                if (indexOnlineUser == -1) {
+                  return;
+                }
+                if (completeBuddyListWithOnlinePresence) {
+                  LoginEvent loginEvent = buddyListAsLoginEvents.get(indexOnlineUser);
+                  loginEvent.setOnline(true);
+                } else {
+                  LoginEvent loginEvent = buddyListAsLoginEvents.get(indexOnlineUser);
+                  loginEvent.setOnline(true);
+                  onlineBuddyListAsLoginEvents.add(loginEvent);
+                }
+              }
+            });
 
-        if (completeBuddyListWithOnlinePresence) {
-          LoginEvent loginEvent = buddyObjectList.get(indexOnlineUser);
-          loginEvent.setOnline(true);
-        } else {
-          LoginEvent loginEvent = buddyObjectList.get(indexOnlineUser);
-          loginEvent.setOnline(true);
-          onlineBuddyList.add(loginEvent);
-        }
-      }
-    }
     if (completeBuddyListWithOnlinePresence) {
-      return buddyObjectList;
+      return buddyListAsLoginEvents;
     }
-    return onlineBuddyList;
+    return onlineBuddyListAsLoginEvents;
   }
 
   public UserAccount findByName(String userId) {

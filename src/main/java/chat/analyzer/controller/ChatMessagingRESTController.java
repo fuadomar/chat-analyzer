@@ -88,7 +88,7 @@ public class ChatMessagingRESTController {
 
   @MessageExceptionHandler
   @MessageMapping("/dispose.all.queued.message.notification")
-  public String DisposeAwaitingMessageNotificationForLoggedInUser(
+  public String disposeAwaitingMessageNotificationForLoggedInUser(
       SimpMessageHeaderAccessor headerAccessor) {
 
     String sender = headerAccessor.getUser().getName();
@@ -98,7 +98,7 @@ public class ChatMessagingRESTController {
 
   @MessageExceptionHandler
   @MessageMapping("/dispose.ack.message.notification")
-  public String DisposeAwaitingMessageNotificationForLoggedInUserBuUser(
+  public String disposeAwaitingMessageNotificationForLoggedInUserBuUser(
       @Payload LoginEvent loginEvent, SimpMessageHeaderAccessor headerAccessor) {
 
     String msgSendToUser = headerAccessor.getUser().getName();
