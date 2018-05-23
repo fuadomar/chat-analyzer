@@ -95,12 +95,6 @@ public class UserRegistrationAndChatDetailsWebController {
 
   private static final String PARAMETER_NAME = "name";
 
-  @Value("${meta.tag.facebook.url}")
-  private String metaUrl;
-
-  @Value("${meta.tag.facebook.image.url}")
-  private String meteImageUrl;
-
   @Autowired
   @Qualifier("securityServiceImpl")
   private SecurityService securityServiceImpl;
@@ -180,7 +174,8 @@ public class UserRegistrationAndChatDetailsWebController {
   }
 
   @RequestMapping(value = "/login", method = RequestMethod.GET)
-  public String login(Model model, String error, String logout) {
+  public String login(Model model, HttpServletRequest request, String error, String logout)
+      throws MalformedURLException {
 
     if (error != null) {
       model.addAttribute(ERROR_ATTRIBUTED, ERROR_MESSAGE_UNSUCCESSFUL_LOGIN);
@@ -188,6 +183,10 @@ public class UserRegistrationAndChatDetailsWebController {
     if (logout != null) {
       model.addAttribute(MESSAGE_ATTRIBUTED, LOGGED_OUT_SUCCESSFUL_MESSAGE);
     }
+
+    String baseUrl = commonUtility.findBaseUrl(request);
+    String metaUrl = baseUrl + "/login";
+    String meteImageUrl = baseUrl + "/images/default-avatar.png";
     model.addAttribute("metaUrl", metaUrl);
     model.addAttribute("meteImageUrl", meteImageUrl);
     return LOGIN_VIEW;
@@ -198,13 +197,18 @@ public class UserRegistrationAndChatDetailsWebController {
     value = {ROOT_URI, LIVE_CHAT_URI},
     method = RequestMethod.GET
   )
-  public String chat(Model model, HttpServletResponse response) throws IOException {
+  public String chat(Model model, HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
 
     UserAccount loggedInUser = null;
     Authentication auth = SecurityContextHolder.getContext().getAuthentication();
     String loggedInUserName = commonUtility.findPrincipalNameFromAuthentication(auth);
     loggedInUser = userAccountDao.findByName(loggedInUserName);
     populateModelForChatView(model, loggedInUser, loggedInUserName);
+
+    String baseUrl = commonUtility.findBaseUrl(request);
+    String metaUrl = baseUrl + "/login";
+    String meteImageUrl = baseUrl + "images/default-avatar.png";
     model.addAttribute("metaUrl", metaUrl);
     model.addAttribute("meteImageUrl", meteImageUrl);
     return CHAT_VIEW;

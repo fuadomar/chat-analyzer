@@ -49,13 +49,9 @@ public class MailService {
       context.setVariables(userInvitationNotification.getModel());
       String html = templateEngine.process("emailInvitation", context);
       LOG.info("email content: {}", html);
-
-      helper.setTo((String) userInvitationNotification.getModel().get("receiver"));
-      helper.setText(html, true);
-      helper.setSubject(userInvitationNotification.getSubject());
-      helper.setFrom(mailFrom);
+      helperBuilder(userInvitationNotification, helper, html);
       LOG.info("email message: {}", message);
-      // mailSender.send(message);
+      mailSender.send(message);
 
       EmailInvitation emailInvitation =
           new EmailInvitation(
@@ -66,5 +62,12 @@ public class MailService {
     } catch (Exception exception) {
       LOG.info("exception sending email {}", exception.getCause());
     }
+  }
+
+  private void helperBuilder(UserEmailInvitationNotification userInvitationNotification, MimeMessageHelper helper, String html) throws MessagingException {
+    helper.setTo((String) userInvitationNotification.getModel().get("receiver"));
+    helper.setText(html, true);
+    helper.setSubject(userInvitationNotification.getSubject());
+    helper.setFrom(mailFrom);
   }
 }
