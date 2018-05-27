@@ -35,12 +35,9 @@ public class AnonymousSecurityServiceImpl implements SecurityService {
   public void autoLogin(
       String username, String password, HttpServletRequest request, HttpServletResponse response) {
     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-    Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
         new UsernamePasswordAuthenticationToken(
-            userDetails,
-            null,
-            AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ANONYMOUS"));
+            userDetails, null, AuthorityUtils.createAuthorityList("ROLE_USER", "ROLE_ANONYMOUS"));
 
     request.getSession();
     usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetails(request));

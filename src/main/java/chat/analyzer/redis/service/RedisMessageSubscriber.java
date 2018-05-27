@@ -16,6 +16,6 @@ public class RedisMessageSubscriber implements MessageListener {
   public void onMessage(Message message, byte[] pattern) {
 
     messageList.add(message.toString());
-    System.out.println("ChatMessage received: " + message.toString());
+    System.out.println("ChatMessageDTO received: " + message.toString());
   }
 }

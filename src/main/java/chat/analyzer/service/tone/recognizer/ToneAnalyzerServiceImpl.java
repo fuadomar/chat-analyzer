@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import chat.analyzer.domain.model.ChatMessage;
+import chat.analyzer.domain.DTO.ChatMessageDTO;
 import chat.analyzer.utility.ChatAnalyzerScorer;
 
 /** Created by mozammal on 4/11/17. */
@@ -24,8 +24,9 @@ public class ToneAnalyzerServiceImpl implements ToneAnalyzerService {
   @Autowired private ChatAnalyzerScorer chatAnalyzerScorer;
 
   @Override
-  public ToneAnalyzerFeedBackDTO analyzeChatToneBetweenSenderAndReceiver(ChatMessage chatMessage) {
+  public ToneAnalyzerFeedBackDTO analyzeChatToneBetweenSenderAndReceiver(
+      ChatMessageDTO chatMessageDTO) {
 
-    return chatAnalyzerScorer.analyzeChatToneBetweenSenderAndReceiverByWatson(chatMessage);
+    return chatAnalyzerScorer.analyzeChatToneBetweenSenderAndReceiverByWatson(chatMessageDTO);
   }
 }

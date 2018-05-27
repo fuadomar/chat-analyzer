@@ -1,6 +1,7 @@
 package chat.analyzer.validator;
 
 /** Created by mozammal on 4/18/17. */
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -68,9 +69,10 @@ public class UserAccountValidator implements Validator {
       }
     }
 
-    ValidationUtils.rejectIfEmptyOrWhitespace(errors, PASSWORD, NOT_EMPTY_MESSAGE);
-
     String password = userAccount.getPassword();
+    if (password == null || StringUtils.isBlank(password))
+      ValidationUtils.rejectIfEmptyOrWhitespace(errors, PASSWORD, NOT_EMPTY_MESSAGE);
+
     if (password.length() > 0) {
       if (password.length() < USER_PASSWORD_MINIMUM_LENGTH
           || password.length() > USER_PASSWORD_MAXIMUM_LENGTH) {

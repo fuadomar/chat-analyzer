@@ -1,7 +1,7 @@
 package chat.analyzer.event;
 
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.model.LoginEvent;
+import chat.analyzer.domain.DTO.UserOnlinePresenceDTO;
 import chat.analyzer.domain.repository.ParticipantRepository;
 import chat.analyzer.domain.repository.UserAccountRepository;
 import java.util.*;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import chat.analyzer.dao.UserAccountDao;
-import chat.analyzer.domain.model.LogoutEvent;
+import chat.analyzer.domain.DTO.LogoutEventDTO;
 
 /**
  * Listener to track user presence. Sends notifications to the login destination when a connected
@@ -72,20 +72,24 @@ public class PresenceEventListener {
 
     UserAccount userAccount = userAccountRepository.findByName(userName);
 
-    LoginEvent loginEvent = new LoginEvent(userName);
-    loginEvent.setId(userAccount.getId());
+    UserOnlinePresenceDTO userOnlinePresenceDTO = new UserOnlinePresenceDTO(userName);
+    userOnlinePresenceDTO.setId(userAccount.getId());
 
-    List<LoginEvent> onlineBuddyList = userAccountDao.findBuddyList(userName, false);
+    List<UserOnlinePresenceDTO> onlineBuddyList =
+        userAccountDao.findFullBuddyListOrOnlineBuddy(userName, false);
     if (onlineBuddyList == null) return;
-    for (LoginEvent loginEvent1 : onlineBuddyList) {
-      messagingTemplate.convertAndSendToUser(loginEvent1.getUserName(), loginTopic, loginEvent);
-      LOG.info("currently users are online: {}", loginEvent1.getUserName());
-    }
+
+    onlineBuddyList.forEach(
+        userOnlinePresenceDTO1 -> {
+          messagingTemplate.convertAndSendToUser(
+              userOnlinePresenceDTO1.getUserName(), loginTopic, userOnlinePresenceDTO);
+          LOG.info("currently users are online: {}", userOnlinePresenceDTO1.getUserName());
+        });
 
     String sessionId = headers.getSessionId();
     LOG.info("logged in user session id: {}", sessionId);
     sessionToUserIdMap.put(sessionId, userName);
-    participantRepository.add(userName, loginEvent);
+    participantRepository.add(userName, userOnlinePresenceDTO);
   }
 
   @EventListener
@@ -95,13 +99,13 @@ public class PresenceEventListener {
             participantRepository.getParticipant(sessionToUserIdMap.get(event.getSessionId())))
         .ifPresent(
             login -> {
-              List<LoginEvent> onlineBuddyList =
-                  userAccountDao.findBuddyList(login.getUserName(), false);
-              for (LoginEvent loginEvent1 : onlineBuddyList) {
+              List<UserOnlinePresenceDTO> onlineBuddyList =
+                  userAccountDao.findFullBuddyListOrOnlineBuddy(login.getUserName(), false);
+              for (UserOnlinePresenceDTO userOnlinePresenceDTO1 : onlineBuddyList) {
                 messagingTemplate.convertAndSendToUser(
-                    loginEvent1.getUserName(),
+                    userOnlinePresenceDTO1.getUserName(),
                     logoutDestination,
-                    new LogoutEvent(login.getUserName(), login.getId()));
+                    new LogoutEventDTO(login.getUserName(), login.getId()));
               }
               participantRepository.removeParticipant(sessionToUserIdMap.get(event.getSessionId()));
             });

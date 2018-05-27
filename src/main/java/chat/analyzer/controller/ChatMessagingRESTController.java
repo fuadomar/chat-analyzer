@@ -3,6 +3,7 @@ package chat.analyzer.controller;
 import chat.analyzer.domain.entity.ChatMessage;
 import java.text.ParseException;
 
+import chat.analyzer.domain.DTO.ChatMessageDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,11 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.DTO.AwaitingChatMessageNotificationDetailsDTO;
-import chat.analyzer.domain.model.LoginEvent;
+import chat.analyzer.domain.DTO.UserOnlinePresenceDTO;
 import chat.analyzer.gateway.ChatMessagingGateway;
 import chat.analyzer.redis.service.RedisNotificationStorageService;
 
@@ -39,6 +41,7 @@ public class ChatMessagingRESTController {
 
   @Autowired private RedisNotificationStorageService redisNotificationStorageService;
 
+  @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(
     value = "/fetch/messages",
     method = RequestMethod.GET,
@@ -53,25 +56,24 @@ public class ChatMessagingRESTController {
   @MessageExceptionHandler
   @MessageMapping("/send.message")
   public String sendChatMessageFromSenderToReceiver(
-      @Payload chat.analyzer.domain.model.ChatMessage chatMessage,
-      SimpMessageHeaderAccessor headerAccessor)
+      @Payload ChatMessageDTO chatMessageDTO, SimpMessageHeaderAccessor headerAccessor)
       throws ParseException {
 
     String sender = headerAccessor.getUser().getName();
-    chatMessage.setSender(sender);
-    chatMessagingGateway.sendMessageTo(chatMessage);
-    chatMessagingGateway.notifyReceiverAboutMessage(chatMessage);
+    chatMessageDTO.setSender(sender);
+    chatMessagingGateway.sendMessageTo(chatMessageDTO);
+    chatMessagingGateway.notifyReceiverAboutMessage(chatMessageDTO);
     return "Ok";
   }
 
   @SubscribeMapping("/chat.participants")
-  public Collection<LoginEvent> retrieveLoggedInUserBuddyListWithOnlineStatus(
+  public Collection<UserOnlinePresenceDTO> retrieveLoggedInUserBuddyListWithOnlineStatus(
       SimpMessageHeaderAccessor headerAccessor) {
 
     LOG.info("retrieveParticipants method fired");
 
     String userName = headerAccessor.getUser().getName();
-    return userAccountDao.findBuddyList(userName, true);
+    return userAccountDao.findFullBuddyListOrOnlineBuddy(userName, true);
   }
 
   @SubscribeMapping("/unseen.messages")
@@ -99,11 +101,12 @@ public class ChatMessagingRESTController {
   @MessageExceptionHandler
   @MessageMapping("/dispose.ack.message.notification")
   public String disposeAwaitingMessageNotificationForLoggedInUserBuUser(
-      @Payload LoginEvent loginEvent, SimpMessageHeaderAccessor headerAccessor) {
+      @Payload UserOnlinePresenceDTO userOnlinePresenceDTO,
+      SimpMessageHeaderAccessor headerAccessor) {
 
     String msgSendToUser = headerAccessor.getUser().getName();
     redisNotificationStorageService.deleteAwaitingMessageNotificationByUser(
-        msgSendToUser, loginEvent);
+        msgSendToUser, userOnlinePresenceDTO);
     return "Ok";
   }
 }

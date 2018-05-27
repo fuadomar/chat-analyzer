@@ -1,6 +1,7 @@
 package chat.analyzer.service.fileuploader;
 
 import chat.analyzer.domain.repository.UserAccountRepository;
+import chat.analyzer.service.image.ImageUploadDownloadService;
 import com.google.common.hash.Hashing;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class FileUploadService {
 
     DocumentMetaData documentMetaData = new DocumentMetaData(fileName, new Date());
     documentMetaData.setThumbNail(thumbNail);
-    documentFileSystemRepository.add(document, false);
+    documentFileSystemRepository.add(document);
 
     UserAccount loggedInUserUserAccount = userUserAccountRepository.findByName(loggedInUser);
     loggedInUserUserAccount.setDocumentMetaData(documentMetaData);
@@ -59,6 +60,5 @@ public class FileUploadService {
 
     BASE64Encoder encoder = new BASE64Encoder();
     return encoder.encode(document.getContent());
-    // documentRepository.save(documentMetaData);
   }
 }

@@ -3,7 +3,7 @@ package chat.analyzer.utility;
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.model.ChatMessage;
+import chat.analyzer.domain.DTO.ChatMessageDTO;
 import chat.analyzer.domain.repository.ChatMessageRepository;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.ToneAnalyzer;
 import com.ibm.watson.developer_cloud.tone_analyzer.v3.model.ToneAnalysis;
@@ -62,10 +62,10 @@ public class ChatAnalyzerScorer {
   @Autowired private UserAccountDao userAccountDao;
 
   public ToneAnalyzerFeedBackDTO analyzeChatToneBetweenSenderAndReceiverByWatson(
-      ChatMessage chatChatMessage) {
+      ChatMessageDTO chatChatMessageDTO) {
 
     ToneAnalyzer toneAnalyzer = getWatsonChatAnalyzer();
-    String msg = findAllReceivedMessagesFromSender(chatChatMessage);
+    String msg = findAllReceivedMessagesFromSender(chatChatMessageDTO);
     if (msg == null) {
       return null;
     }
@@ -75,16 +75,16 @@ public class ChatAnalyzerScorer {
     return toneAnalyzerFeedBackDTO;
   }
 
-  private String findAllReceivedMessagesFromSender(ChatMessage chatChatMessage) {
+  private String findAllReceivedMessagesFromSender(ChatMessageDTO chatChatMessageDTO) {
 
-    UserAccount sender = userAccountDao.findOne(chatChatMessage.getSender());
+    UserAccount sender = userAccountDao.findOne(chatChatMessageDTO.getSender());
     if (sender == null) {
       return null;
     }
     Sort sort = new Sort(Sort.Direction.ASC, "createdTime");
     List<chat.analyzer.domain.entity.ChatMessage> messagesReceivedFromSender =
         chatMessageRepository.findMessagesReceivedFromSender(
-            sender.getName(), chatChatMessage.getRecipient(), sort);
+            sender.getName(), chatChatMessageDTO.getRecipient(), sort);
     final StringBuilder msg = new StringBuilder();
 
     messagesReceivedFromSender.forEach(

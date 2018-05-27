@@ -1,19 +1,19 @@
-package chat.analyzer.domain.model;
+package chat.analyzer.domain.DTO;
 
 import java.io.Serializable;
 
 /** Created by mozammal on 4/11/17. */
-public class ChatMessage implements Serializable {
+public class ChatMessageDTO implements Serializable {
 
-  public ChatMessage() {}
+  public ChatMessageDTO() {}
 
-  public ChatMessage(String topic, String recipient, String message) {
+  public ChatMessageDTO(String topic, String recipient, String message) {
     this.recipient = recipient;
     this.message = message;
     this.topic = topic;
   }
 
-  public ChatMessage(String recipient, String message) {
+  public ChatMessageDTO(String recipient, String message) {
     this.recipient = recipient;
     this.message = message;
   }
@@ -60,7 +60,7 @@ public class ChatMessage implements Serializable {
 
   @Override
   public String toString() {
-    return "ChatMessage{"
+    return "ChatMessageDTO{"
         + "recipient='"
         + recipient
         + '\''

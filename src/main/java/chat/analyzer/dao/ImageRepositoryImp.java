@@ -26,7 +26,7 @@ public class ImageRepositoryImp implements ImageRepository {
   public void init() {}
 
   @Override
-  public void add(Document document, boolean isBAse64Image) throws IOException {
+  public void add(Document document) throws IOException {
 
     File outputImageFile = null;
     try {
@@ -35,15 +35,12 @@ public class ImageRepositoryImp implements ImageRepository {
         throw new IOException();
       }
 
-      if (!isBAse64Image) {
-        // save profile photo using amazon s3
-      } else {
-        BufferedImage img = ImageIO.read(new ByteArrayInputStream(document.getContent()));
-        outputImageFile = new File(document.getName());
-        ImageIO.write(img, "png", outputImageFile);
-        amazonFileUploaderClient.uploadFileTos3bucket(document.getName(), outputImageFile);
-        outputImageFile.delete();
-      }
+      BufferedImage img = ImageIO.read(new ByteArrayInputStream(document.getContent()));
+      outputImageFile = new File(document.getName());
+      ImageIO.write(img, "png", outputImageFile);
+      amazonFileUploaderClient.uploadFileTos3bucket(document.getName(), outputImageFile);
+      outputImageFile.delete();
+
     } catch (Exception exception) {
       if (outputImageFile != null) outputImageFile.delete();
     }

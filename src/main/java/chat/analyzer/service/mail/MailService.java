@@ -64,7 +64,11 @@ public class MailService {
     }
   }
 
-  private void helperBuilder(UserEmailInvitationNotification userInvitationNotification, MimeMessageHelper helper, String html) throws MessagingException {
+  private void helperBuilder(
+      UserEmailInvitationNotification userInvitationNotification,
+      MimeMessageHelper helper,
+      String html)
+      throws MessagingException {
     helper.setTo((String) userInvitationNotification.getModel().get("receiver"));
     helper.setText(html, true);
     helper.setSubject(userInvitationNotification.getSubject());

@@ -8,25 +8,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import chat.analyzer.domain.entity.DocumentMetaData;
-import chat.analyzer.domain.entity.ChatAnalyzerImageToneDetails;
 import chat.analyzer.domain.repository.ChatAnalyzerImageToneDetailsRepository;
 import chat.analyzer.gateway.ChatAnalyzerChartImagesUploadDownloadGateway;
 import chat.analyzer.utility.CommonUtility;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.security.Principal;
 
 /** Created by user on 1/28/2018. */
 @RestController
-public class ChatAnalyzerChartImagesUploadsDownloadRESTController {
+public class ChatAnalyzerToneChartImageUploaderController {
 
   private static final Logger LOG =
-      LoggerFactory.getLogger(ChatAnalyzerChartImagesUploadsDownloadRESTController.class);
+      LoggerFactory.getLogger(ChatAnalyzerToneChartImageUploaderController.class);
 
   @Value("${tone.analyzer.image.repository")
   private String toneAnalyzerImageStorageLocation;
@@ -35,27 +30,6 @@ public class ChatAnalyzerChartImagesUploadsDownloadRESTController {
 
   @Autowired
   private ChatAnalyzerChartImagesUploadDownloadGateway chatAnalyzerChartImagesUploadDownloadGateway;
-
-  @RequestMapping(value = "/tone_analyzer/images/{image}", method = RequestMethod.GET)
-  public void retrieveImageAsByteArray(
-      HttpServletRequest request,
-      HttpServletResponse response,
-      @PathVariable("image") String image,
-      Principal principal)
-      throws IOException {
-
-    ChatAnalyzerImageToneDetails chatAnalyzerImageToneDetails =
-        chatAnalyzerImageToneDetailsRepository.findByDocumentMetaDataName(image);
-    if (chatAnalyzerImageToneDetails == null
-        || chatAnalyzerImageToneDetails.getDocumentMetaData() == null) {
-      return;
-    }
-    DocumentMetaData documentMetaData = chatAnalyzerImageToneDetails.getDocumentMetaData();
-    if (documentMetaData != null && !StringUtils.isEmpty(documentMetaData.getName())) {
-      chatAnalyzerChartImagesUploadDownloadGateway.findImageAsByteArray(
-          request, response, image, true);
-    }
-  }
 
   @PreAuthorize("hasRole('ROLE_USER')")
   @RequestMapping(value = "/tone_analyzer/upload/images", method = RequestMethod.POST)

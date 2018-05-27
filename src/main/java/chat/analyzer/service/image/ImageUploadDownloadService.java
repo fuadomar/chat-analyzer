@@ -1,6 +1,12 @@
 package chat.analyzer.service.image;
 
+import chat.analyzer.dao.ImageRepository;
+import chat.analyzer.domain.entity.ChatAnalyzerImageToneDetails;
+import chat.analyzer.domain.entity.DocumentMetaData;
+import chat.analyzer.domain.model.Document;
+import chat.analyzer.domain.repository.ChatAnalyzerImageToneDetailsRepository;
 import chat.analyzer.service.amazon.AmazonFileUploaderClient;
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.amazonaws.services.s3.model.S3Object;
 
 import java.io.IOException;
@@ -11,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /** Created by Dell on 1/25/2018. */
@@ -18,6 +25,13 @@ import org.springframework.stereotype.Service;
 public class ImageUploadDownloadService {
 
   @Autowired private AmazonFileUploaderClient amazonFileUploaderClient;
+
+  @Autowired private ImageRepository imageRepository;
+
+  @Autowired private ChatAnalyzerImageToneDetailsRepository chatAnalyzerImageToneDetailsRepository;
+
+  @Value("${base.url.tone.chart}")
+  private String baseUrlToneChart;
 
   public void findImageAsByteArray(
       HttpServletRequest request, HttpServletResponse response, String image, boolean isBase64Image)
@@ -51,5 +65,15 @@ public class ImageUploadDownloadService {
         s3ObjectInputStream.close();
       }
     }
+  }
+
+  public String uploadBase64Image(
+      String loggedInUser, Document document, DocumentMetaData documentMetaData)
+      throws IOException {
+
+    imageRepository.add(document);
+    chatAnalyzerImageToneDetailsRepository.save(
+        new ChatAnalyzerImageToneDetails(loggedInUser, documentMetaData));
+    return baseUrlToneChart + document.getName();
   }
 }

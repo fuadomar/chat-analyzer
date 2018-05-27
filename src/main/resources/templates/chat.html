@@ -251,7 +251,17 @@
 <script th:inline="javascript"> var contextRoot = /*[[@{/}]]*/ ''; </script>
 <script
         src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    var metaUrl = [[${metaUrl}]];
+    /*]]>*/
+</script>
+
 <script>$(".messages").animate({scrollTop: $(document).height()}, "fast");
+
 
 // this loads the Facebook API
 (function (d, s, id) {
@@ -285,11 +295,11 @@ window.fbAsyncInit = function () {
         var hidUrl = $("#generate-image-tone-analysis").val();
         console.log("hidden url: " + hidUrl);
         // Dynamically gather and set the FB share data.
-        var FBDesc = 'learn more about machine learning with tone analyzer';
-        var FBTitle = 'This is the tone analyzer';
-        var FBLink = 'http://ec2-34-232-70-44.compute-1.amazonaws.com:8080/login';
+        var FBDesc = 'learn more about machine learning with chat analyzer';
+        var FBTitle = 'This is the chat analyzer';
+        var FBLink = metaUrl;
         var FBPic = hidUrl;
-
+        console.log(FBLink);
         // Open FB share popup
         FB.ui({
                 method: 'share_open_graph',

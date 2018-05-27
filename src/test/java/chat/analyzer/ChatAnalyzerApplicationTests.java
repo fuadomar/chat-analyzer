@@ -8,9 +8,8 @@ import chat.analyzer.domain.DTO.ToneAnalyzerFeedBackDTO;
 import chat.analyzer.domain.entity.EmailInvitation;
 import chat.analyzer.domain.entity.Role;
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.model.ChatMessage;
+import chat.analyzer.domain.DTO.ChatMessageDTO;
 import chat.analyzer.gateway.ChatAnalyzerGateway;
-import chat.analyzer.service.invitation.UserInvitationService;
 import chat.analyzer.service.tone.recognizer.ToneAnalyzerService;
 import com.google.common.collect.Maps;
 import org.junit.After;
@@ -166,14 +165,14 @@ public class ChatAnalyzerApplicationTests {
   @WithMockUser(username = "test", password = "test", roles = "USER")
   public void testShouldReturnChatToneBetweenTwoUser() throws Exception {
 
-    ChatMessage chatMessage = new ChatMessage("test", "testing chat tone");
+    ChatMessageDTO chatMessageDTO = new ChatMessageDTO("test", "testing chat tone");
     ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO = new ToneAnalyzerFeedBackDTO();
     toneAnalyzerFeedBackDTO.put("Anger", 0.159056);
     toneAnalyzerFeedBackDTO.put("Disgust", 0.143912);
-    Mockito.when(toneAnalyzerService.analyzeChatToneBetweenSenderAndReceiver(chatMessage))
+    Mockito.when(toneAnalyzerService.analyzeChatToneBetweenSenderAndReceiver(chatMessageDTO))
         .thenReturn(toneAnalyzerFeedBackDTO);
     ToneAnalyzerFeedBackDTO toneAnalyzerFeedBackDTO1 =
-        chatAnalyzerGateway.analyzeChatToneBetweenSenderAndReceiver(chatMessage);
+        chatAnalyzerGateway.analyzeChatToneBetweenSenderAndReceiver(chatMessageDTO);
 
     int size = toneAnalyzerFeedBackDTO.size();
     int size1 = toneAnalyzerFeedBackDTO1.size();

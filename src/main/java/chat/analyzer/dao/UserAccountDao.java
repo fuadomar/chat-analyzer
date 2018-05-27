@@ -3,7 +3,7 @@ package chat.analyzer.dao;
 import chat.analyzer.auth.service.UserService;
 import chat.analyzer.domain.entity.BuddyDetails;
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.model.LoginEvent;
+import chat.analyzer.domain.DTO.UserOnlinePresenceDTO;
 import chat.analyzer.domain.repository.UserAccountRepository;
 
 import java.util.ArrayList;
@@ -14,7 +14,6 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Component;
 import chat.analyzer.domain.entity.EmailInvitation;
@@ -68,31 +67,32 @@ public class UserAccountDao {
     userService.addBuddyToUserBuddyList(userEmailInvitationSender, receiverUserAccount);
   }
 
-  public List<LoginEvent> findBuddyList(
-      String userName, boolean completeBuddyListWithOnlinePresence) {
+  public List<UserOnlinePresenceDTO> findFullBuddyListOrOnlineBuddy(
+      String userName, boolean fullBuddyList) {
 
     UserAccount userUserAccount = userAccountRepository.findByName(userName);
-    List<LoginEvent> buddyListAsLoginEvents = new ArrayList<>();
+    List<UserOnlinePresenceDTO> buddyListAsUserOnlinePresenceDTOS = new ArrayList<>();
     Set<BuddyDetails> buddyList = userUserAccount.getBuddyList();
-    List<LoginEvent> onlineBuddyListAsLoginEvents = new ArrayList<>();
+    List<UserOnlinePresenceDTO> onlineBuddyListAsUserOnlinePresenceDTOS = new ArrayList<>();
 
     if (buddyList == null) {
-      return buddyListAsLoginEvents;
+      return buddyListAsUserOnlinePresenceDTOS;
     }
 
     buddyList.forEach(
         buddy -> {
-          LoginEvent loginEvent = new LoginEvent(buddy.getName(), false);
+          UserOnlinePresenceDTO userOnlinePresenceDTO =
+              new UserOnlinePresenceDTO(buddy.getName(), false);
           UserAccount friendUserAccount = userUserAccountRepository.findByName(buddy.getName());
           if (friendUserAccount == null) {
             return;
           }
-          loginEvent.setId(buddy.getId());
-          loginEvent.setProfileImage(
+          userOnlinePresenceDTO.setId(buddy.getId());
+          userOnlinePresenceDTO.setProfileImage(
               friendUserAccount.getDocumentMetaData() != null
                   ? friendUserAccount.getDocumentMetaData().getThumbNail()
                   : "");
-          buddyListAsLoginEvents.add(loginEvent);
+          buddyListAsUserOnlinePresenceDTOS.add(userOnlinePresenceDTO);
         });
 
     simpUserRegistry
@@ -103,25 +103,28 @@ public class UserAccountDao {
               if (buddyList.contains(
                   new BuddyDetails(currentUser.getName(), currentUser.getName()))) {
                 int indexOnlineUser =
-                    buddyListAsLoginEvents.indexOf(new LoginEvent(currentUser.getName(), true));
+                    buddyListAsUserOnlinePresenceDTOS.indexOf(
+                        new UserOnlinePresenceDTO(currentUser.getName(), true));
                 if (indexOnlineUser == -1) {
                   return;
                 }
-                if (completeBuddyListWithOnlinePresence) {
-                  LoginEvent loginEvent = buddyListAsLoginEvents.get(indexOnlineUser);
-                  loginEvent.setOnline(true);
+                if (fullBuddyList) {
+                  UserOnlinePresenceDTO userOnlinePresenceDTO =
+                      buddyListAsUserOnlinePresenceDTOS.get(indexOnlineUser);
+                  userOnlinePresenceDTO.setOnline(true);
                 } else {
-                  LoginEvent loginEvent = buddyListAsLoginEvents.get(indexOnlineUser);
-                  loginEvent.setOnline(true);
-                  onlineBuddyListAsLoginEvents.add(loginEvent);
+                  UserOnlinePresenceDTO userOnlinePresenceDTO =
+                      buddyListAsUserOnlinePresenceDTOS.get(indexOnlineUser);
+                  userOnlinePresenceDTO.setOnline(true);
+                  onlineBuddyListAsUserOnlinePresenceDTOS.add(userOnlinePresenceDTO);
                 }
               }
             });
 
-    if (completeBuddyListWithOnlinePresence) {
-      return buddyListAsLoginEvents;
+    if (fullBuddyList) {
+      return buddyListAsUserOnlinePresenceDTOS;
     }
-    return onlineBuddyListAsLoginEvents;
+    return onlineBuddyListAsUserOnlinePresenceDTOS;
   }
 
   public UserAccount findByName(String userId) {

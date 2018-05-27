@@ -33,7 +33,7 @@ public class ChatAnalyzerChartImagesUploadDownloadGateway {
 
   @Autowired private FileUploadService fileUploadService;
 
-  @Autowired private ImageUploadDownloadService profileImageService;
+  @Autowired private ImageUploadDownloadService imageUploadDownloadService;
 
   public String upload(MultipartFile file) throws IOException {
 
@@ -44,7 +44,7 @@ public class ChatAnalyzerChartImagesUploadDownloadGateway {
       HttpServletRequest request, HttpServletResponse response, String image, boolean isBase64Image)
       throws IOException {
 
-    profileImageService.findImageAsByteArray(request, response, image, isBase64Image);
+    imageUploadDownloadService.findImageAsByteArray(request, response, image, isBase64Image);
   }
 
   public String uploadBase64Image(String image, HttpServletRequest request, String loggedInUser) {
@@ -61,10 +61,8 @@ public class ChatAnalyzerChartImagesUploadDownloadGateway {
 
       Document document = new Document(imageName, imageBytes);
       DocumentMetaData documentMetaData = new DocumentMetaData(imageName, new Date());
-      imageRepository.add(document, true);
-      chatAnalyzerImageToneDetailsRepository.save(
-          new ChatAnalyzerImageToneDetails(loggedInUser, documentMetaData));
-      return commonUtility.findBaseUrl(request) + "/tone_analyzer/images/" + document.getName();
+
+      return imageUploadDownloadService.uploadBase64Image(loggedInUser, document, documentMetaData);
     } catch (Exception ex) {
       LOG.info("Exception inside method uploadBase64Image: {}", ex);
       return "error = " + ex.getCause();

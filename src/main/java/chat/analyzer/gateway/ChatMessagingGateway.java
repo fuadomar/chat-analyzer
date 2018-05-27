@@ -2,10 +2,11 @@ package chat.analyzer.gateway;
 
 import chat.analyzer.dao.UserAccountDao;
 import chat.analyzer.domain.entity.UserAccount;
-import chat.analyzer.domain.model.LoginEvent;
+import chat.analyzer.domain.DTO.ChatMessageDTO;
+import chat.analyzer.domain.DTO.UserOnlinePresenceDTO;
 import chat.analyzer.domain.repository.ChatMessageRepository;
 import chat.analyzer.redis.service.RedisNotificationStorageService;
-import chat.analyzer.service.chat.ChatMessageSenderService;
+import chat.analyzer.service.chat.UserChatService;
 import chat.analyzer.utility.CommonUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ public class ChatMessagingGateway {
   @Value("${app.user.unseen.message.topic}")
   private String unseenMessageTopic;
 
-  @Autowired private ChatMessageSenderService chatMessageSenderService;
+  @Autowired private UserChatService userChatService;
 
   @Autowired private UserAccountDao userAccountDao;
 
@@ -44,11 +45,11 @@ public class ChatMessagingGateway {
 
   @Autowired private SimpMessagingTemplate simpMessagingTemplate;
 
-  public void notifyReceiverAboutMessage(chat.analyzer.domain.model.ChatMessage chatMessage) {
+  public void notifyReceiverAboutMessage(ChatMessageDTO chatMessageDTO) {
 
-    UserAccount senderAccount = userAccountDao.findByName(chatMessage.getSender());
-    LoginEvent loginEvent =
-        new LoginEvent()
+    UserAccount senderAccount = userAccountDao.findByName(chatMessageDTO.getSender());
+    UserOnlinePresenceDTO userOnlinePresenceDTO =
+        new UserOnlinePresenceDTO()
             .withId(senderAccount.getId())
             .withUserName(senderAccount.getName())
             .withDate(new Date())
@@ -59,17 +60,19 @@ public class ChatMessagingGateway {
 
     AwaitingChatMessageNotificationDetailsDTO awaitingChatMessageNotificationDetailsDTO =
         new AwaitingChatMessageNotificationDetailsDTO(
-            chatMessage.getRecipient(), new HashSet<>(Arrays.asList(loginEvent)));
+            chatMessageDTO.getRecipient(), new HashSet<>(Arrays.asList(userOnlinePresenceDTO)));
     awaitingChatMessageNotificationDetailsDTO =
         redisNotificationStorageService.cacheUserAwaitingMessagesNotification(
-            chatMessage.getRecipient(), awaitingChatMessageNotificationDetailsDTO);
+            chatMessageDTO.getRecipient(), awaitingChatMessageNotificationDetailsDTO);
 
     simpMessagingTemplate.convertAndSendToUser(
-        chatMessage.getRecipient(), unseenMessageTopic, awaitingChatMessageNotificationDetailsDTO);
+        chatMessageDTO.getRecipient(),
+        unseenMessageTopic,
+        awaitingChatMessageNotificationDetailsDTO);
   }
 
-  public void sendMessageTo(chat.analyzer.domain.model.ChatMessage chatChatMessage) {
-    chatMessageSenderService.sendChatMessageToDestination(chatChatMessage);
+  public void sendMessageTo(ChatMessageDTO chatChatMessageDTO) {
+    userChatService.sendChatMessageToDestination(chatChatMessageDTO);
   }
 
   public List<chat.analyzer.domain.entity.ChatMessage> fetchAllMessagesBetweenTwoBuddy(

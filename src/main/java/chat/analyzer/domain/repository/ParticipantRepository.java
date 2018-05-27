@@ -3,7 +3,7 @@ package chat.analyzer.domain.repository;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Component;
-import chat.analyzer.domain.model.LoginEvent;
+import chat.analyzer.domain.DTO.UserOnlinePresenceDTO;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,17 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Scope(proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ParticipantRepository {
 
-  private Map<String, LoginEvent> activeSessions;
+  private Map<String, UserOnlinePresenceDTO> activeSessions;
 
   public ParticipantRepository() {
     this.activeSessions = new ConcurrentHashMap<>();
   }
 
-  public void add(String sessionId, LoginEvent event) {
+  public void add(String sessionId, UserOnlinePresenceDTO event) {
     activeSessions.putIfAbsent(sessionId, event);
   }
 
-  public LoginEvent getParticipant(String sessionId) {
+  public UserOnlinePresenceDTO getParticipant(String sessionId) {
     return activeSessions.get(sessionId);
   }
 
@@ -31,11 +31,11 @@ public class ParticipantRepository {
     activeSessions.remove(sessionId);
   }
 
-  public Map<String, LoginEvent> getActiveSessions() {
+  public Map<String, UserOnlinePresenceDTO> getActiveSessions() {
     return activeSessions;
   }
 
-  public void setActiveSessions(Map<String, LoginEvent> activeSessions) {
+  public void setActiveSessions(Map<String, UserOnlinePresenceDTO> activeSessions) {
     this.activeSessions = activeSessions;
   }
 }

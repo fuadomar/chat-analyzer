@@ -1,6 +1,6 @@
 package chat.analyzer.redis.service;
 
-import chat.analyzer.domain.model.LoginEvent;
+import chat.analyzer.domain.DTO.UserOnlinePresenceDTO;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,16 +51,17 @@ public class RedisNotificationStorageService {
     return cachedUserAwaitingMessagesNotifications;
   }
 
-  public void deleteAwaitingMessageNotificationByUser(String key, LoginEvent loginEvent) {
+  public void deleteAwaitingMessageNotificationByUser(
+      String key, UserOnlinePresenceDTO userOnlinePresenceDTO) {
 
-    if (loginEvent == null) {
+    if (userOnlinePresenceDTO == null) {
       genericDTORedisTemplate.delete(key);
     } else {
       AwaitingChatMessageNotificationDetailsDTO cachedUserAwaitingMessagesNotifications =
           findCachedUserAwaitingMessagesNotifications(key);
       if (cachedUserAwaitingMessagesNotifications != null
-          && cachedUserAwaitingMessagesNotifications.getSender().contains(loginEvent)) {
-        cachedUserAwaitingMessagesNotifications.getSender().remove(loginEvent);
+          && cachedUserAwaitingMessagesNotifications.getSender().contains(userOnlinePresenceDTO)) {
+        cachedUserAwaitingMessagesNotifications.getSender().remove(userOnlinePresenceDTO);
         genericDTORedisTemplate.delete(key);
         if (cachedUserAwaitingMessagesNotifications.getSender().size() > 0) {
           genericDTORedisTemplate.opsForSet().add(key, cachedUserAwaitingMessagesNotifications);

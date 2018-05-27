@@ -2,6 +2,7 @@ package chat.analyzer.validator;
 
 import chat.analyzer.auth.service.UserServiceImpl;
 import chat.analyzer.domain.entity.UserAccount;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -57,17 +58,13 @@ public class EmailInvitationValidator implements Validator {
       if (name.length() < USER_NAME_MINIMUM_LENGTH || name.length() > USER_NAME_MAXIMUM_LENGTH) {
         errors.rejectValue(NAME, SIZE_OF_NAME);
       }
-
-      /*String regex = "([0-9|a-z|A-Z|\\_\\.])+";
-      boolean matches = Pattern.matches(regex, userAccount.getName());
-       if (!matches) {
-          errors.rejectValue(PARAMETER_NAME, EMPTY_NAME);
-      }*/
     }
 
+    String password = userAccount.getPassword();
+    if (password == null || StringUtils.isBlank(password))
+      ValidationUtils.rejectIfEmptyOrWhitespace(errors, PASSWORD, NOT_EMPTY_MESSAGE);
     ValidationUtils.rejectIfEmptyOrWhitespace(errors, PASSWORD, NOT_EMPTY_MESSAGE);
 
-    String password = userAccount.getPassword();
     if (password.length() > 0) {
       if (password.length() < USER_PASSWORD_MINIMUM_LENGTH
           || password.length() > USER_PASSWORD_MAXIMUM_LENGTH) {

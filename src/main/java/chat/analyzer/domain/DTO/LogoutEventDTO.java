@@ -1,14 +1,14 @@
-package chat.analyzer.domain.model;
+package chat.analyzer.domain.DTO;
 
 import java.io.Serializable;
 
-public class LogoutEvent implements Serializable {
+public class LogoutEventDTO implements Serializable {
 
   private String userName;
 
   private String id;
 
-  public LogoutEvent(String username, String id) {
+  public LogoutEventDTO(String username, String id) {
     this.userName = username;
     this.id = id;
   }

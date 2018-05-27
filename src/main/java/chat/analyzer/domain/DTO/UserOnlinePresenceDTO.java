@@ -1,10 +1,10 @@
-package chat.analyzer.domain.model;
+package chat.analyzer.domain.DTO;
 
 import java.io.Serializable;
 import java.util.Date;
 
 /** Created by mozammal on 4/12/17. */
-public class LoginEvent implements Serializable {
+public class UserOnlinePresenceDTO implements Serializable {
 
   private String userName;
 
@@ -16,15 +16,15 @@ public class LoginEvent implements Serializable {
 
   private String profileImage;
 
-  public LoginEvent() {}
+  public UserOnlinePresenceDTO() {}
 
-  public LoginEvent(String username) {
+  public UserOnlinePresenceDTO(String username) {
     this.userName = username;
     this.date = new Date();
     this.online = true;
   }
 
-  public LoginEvent(String username, boolean active) {
+  public UserOnlinePresenceDTO(String username, boolean active) {
     this.userName = username;
     this.date = new Date();
     this.online = active;
@@ -39,10 +39,10 @@ public class LoginEvent implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if (!(o instanceof LoginEvent)) {
+    if (!(o instanceof UserOnlinePresenceDTO)) {
       return false;
     }
-    LoginEvent other = (LoginEvent) o;
+    UserOnlinePresenceDTO other = (UserOnlinePresenceDTO) o;
     return other.getUserName().equals(this.userName);
   }
 
@@ -86,27 +86,27 @@ public class LoginEvent implements Serializable {
     this.profileImage = profileImage;
   }
 
-  public LoginEvent withUserName(String userName) {
+  public UserOnlinePresenceDTO withUserName(String userName) {
     this.userName = userName;
     return this;
   }
 
-  public LoginEvent withOnline(boolean online) {
+  public UserOnlinePresenceDTO withOnline(boolean online) {
     this.online = online;
     return this;
   }
 
-  public LoginEvent withDate(Date date) {
+  public UserOnlinePresenceDTO withDate(Date date) {
     this.date = date;
     return this;
   }
 
-  public LoginEvent withId(String id) {
+  public UserOnlinePresenceDTO withId(String id) {
     this.id = id;
     return this;
   }
 
-  public LoginEvent withUserProfileImage(String prodileImage) {
+  public UserOnlinePresenceDTO withUserProfileImage(String prodileImage) {
     this.profileImage = prodileImage;
     return this;
   }

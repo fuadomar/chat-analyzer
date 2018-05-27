@@ -230,7 +230,7 @@ public class UserRegistrationAndChatDetailsWebController {
       @RequestParam("sender") String sender,
       @RequestParam("receiver") String receiver) {
 
-    if (token == null || StringUtils.isBlank((String) token)) {
+    if (token == null || StringUtils.isBlank(token)) {
       return REDIRECT_LOGIN;
     }
 

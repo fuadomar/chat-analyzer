@@ -1,6 +1,5 @@
 package chat.analyzer.domain.DTO;
 
-import chat.analyzer.domain.model.LoginEvent;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -9,11 +8,12 @@ public class AwaitingChatMessageNotificationDetailsDTO implements Serializable {
 
   private String receiver;
 
-  private Set<LoginEvent> sender;
+  private Set<UserOnlinePresenceDTO> sender;
 
   public AwaitingChatMessageNotificationDetailsDTO() {}
 
-  public AwaitingChatMessageNotificationDetailsDTO(String receiver, Set<LoginEvent> sender) {
+  public AwaitingChatMessageNotificationDetailsDTO(
+      String receiver, Set<UserOnlinePresenceDTO> sender) {
     this.receiver = receiver;
     this.sender = sender;
   }
@@ -26,11 +26,11 @@ public class AwaitingChatMessageNotificationDetailsDTO implements Serializable {
     this.receiver = receiver;
   }
 
-  public Set<LoginEvent> getSender() {
+  public Set<UserOnlinePresenceDTO> getSender() {
     return sender;
   }
 
-  public void setSender(Set<LoginEvent> sender) {
+  public void setSender(Set<UserOnlinePresenceDTO> sender) {
     this.sender = sender;
   }
 

@@ -2,20 +2,21 @@ package chat.analyzer.service.chat;
 
 import chat.analyzer.domain.entity.Conversation;
 import chat.analyzer.domain.entity.UserAccount;
+import chat.analyzer.domain.DTO.ChatMessageDTO;
 import chat.analyzer.domain.repository.ChatMessageRepository;
 import chat.analyzer.domain.repository.ConversationRepository;
 import chat.analyzer.domain.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import chat.analyzer.websocket.ChatMessageProducer;
+import chat.analyzer.websocket.ChatMessageRelay;
 
 import java.util.Date;
 
 /** Created by mozammal on 4/11/17. */
 @Component
-public class ChatMessageSenderServiceImpl implements ChatMessageSenderService {
+public class UserChatServiceImpl implements UserChatService {
 
-  @Autowired private ChatMessageProducer messageProducer;
+  @Autowired private ChatMessageRelay messageProducer;
 
   @Autowired private ConversationRepository conversationRepository;
 
@@ -24,28 +25,28 @@ public class ChatMessageSenderServiceImpl implements ChatMessageSenderService {
   @Autowired private UserAccountRepository userAccountRepository;
 
   @Override
-  public void sendChatMessageToDestination(chat.analyzer.domain.model.ChatMessage chatChatMessage) {
+  public void sendChatMessageToDestination(ChatMessageDTO chatChatMessageDTO) {
 
-    UserAccount recipient = userAccountRepository.findOne(chatChatMessage.getRecipient());
+    UserAccount recipient = userAccountRepository.findOne(chatChatMessageDTO.getRecipient());
     if (recipient == null) {
       return;
     }
-    chatChatMessage.setRecipient(recipient.getName());
-    messageProducer.sendMessageToRecipient(chatChatMessage);
+    chatChatMessageDTO.setRecipient(recipient.getName());
+    messageProducer.sendMessageToRecipient(chatChatMessageDTO);
     Conversation conversation =
         conversationRepository.findConversationBySenderAndRecipient(
-            chatChatMessage.getSender(), chatChatMessage.getRecipient());
+            chatChatMessageDTO.getSender(), chatChatMessageDTO.getRecipient());
     if (conversation == null) {
       conversation =
           conversationRepository.save(
-              new Conversation(chatChatMessage.getSender(), chatChatMessage.getRecipient()));
+              new Conversation(chatChatMessageDTO.getSender(), chatChatMessageDTO.getRecipient()));
     }
     chatMessageRepository.save(
         new chat.analyzer.domain.entity.ChatMessage(
             conversation.getId(),
-            chatChatMessage.getSender(),
-            chatChatMessage.getRecipient(),
-            chatChatMessage.getMessage(),
+            chatChatMessageDTO.getSender(),
+            chatChatMessageDTO.getRecipient(),
+            chatChatMessageDTO.getMessage(),
             new Date()));
   }
 }
