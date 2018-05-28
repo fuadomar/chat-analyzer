@@ -21,8 +21,10 @@ deployFolderName=deploy-chat-analyzer
 mkdir -p $HOME/$deployFolderName/$env
 
 echo $destFile
+echo $HOME/$deployFolderName/$env/$projectName.jar
 
-yes | cp -rf $destFile $HOME/$deployFolderName/$env
+rm -f $HOME/$deployFolderName/$env/$destFile
+cp  $destFile $HOME/$deployFolderName/$env
 rm -f $projectName.conf
 touch $projectName.conf
 echo "LOG_FOLDER=/var/logs/$env" >> $projectName.conf
@@ -34,7 +36,7 @@ rm -f $curDirectory/$projectName.conf
 
 #use the following command for app deployment from command line
 
-#./script-deploy-chat-analyzer-manual.sh prod chat-analyzer-0.0.1-SNAPSHOT
+#./chat-analyzer-manual-deploy-script.sh prod chat-analyzer-0.0.1-SNAPSHOT
 
 #run as service
 #sudo systemctl daemon-reload
